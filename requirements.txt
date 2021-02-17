@@ -1,0 +1,16 @@
+Django
+mysqlclient
+django_compressor
+django-htmlmin
+django-debug-toolbar
+django-multiselectfield
+djangorestframework
+django-rest-auth
+django-allauth
+django-filter
+python-dateutil
+django-cors-headers
+django-import-export
+django-easy-audit
+django-ckeditor
+django-widget-tweaks
