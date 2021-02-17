@@ -50,6 +50,9 @@ INSTALLED_APPS = [
     'ckeditor',
     'widget_tweaks',
     'ckeditor_uploader',
+    'djoser',
+    'rest_framework',
+    'rest_framework.authtoken',
 ]
 
 CUSTOM_APPS = [

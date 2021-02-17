@@ -17,10 +17,17 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from utils.routers import DefaultRouter
+
+router = DefaultRouter()
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('ckeditor/', include('ckeditor_uploader.urls')),
+    path('api/', include(router.urls)),
+    path('api/accounts/', include('rest_auth.urls')),
+    path('api/profile/', include('accounts.urls')),
+    path('api/registrations/', include('rest_auth.registration.urls')),
 ]
 
 if settings.DEBUG:

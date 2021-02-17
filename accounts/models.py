@@ -17,7 +17,7 @@ USER_LANGUAGE = (
 STAFF_TYPE = (
         ('1', _('Company Admin')),
         ('2', _('Branch Admin')),
-        ('2', _('Filed Executive')),
+        ('3', _('Filed Executive')),
     )
 
 
@@ -26,5 +26,6 @@ class UserProfile(models.Model):
     User Profile model store the basic user information
     """
     user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE)
+    type = models.CharField(max_length=30, choices=STAFF_TYPE, blank=True, null=True)
     mobile = models.CharField(max_length=15, db_index=True)
 

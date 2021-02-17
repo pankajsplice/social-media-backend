@@ -3,7 +3,7 @@ from django.db.models import DateTimeField
 from django.utils.timezone import now
 from rest_auth.registration.serializers import RegisterSerializer as DefaultRegisterSerializer
 from rest_framework import serializers
-
+from accounts.models import STAFF_TYPE
 from accounts.models import UserProfile
 
 User = get_user_model()
@@ -13,19 +13,22 @@ class RegisterSerializer(DefaultRegisterSerializer):
     """
 
     """
-    username = serializers.CharField(max_length=15)
-    first_name = serializers.CharField(max_length=15)
-    last_name = serializers.CharField(max_length=15)
+    username = serializers.CharField(max_length=50)
+    first_name = serializers.CharField(max_length=20)
+    last_name = serializers.CharField(max_length=20)
     email = serializers.EmailField(required=True)
     password1 = serializers.CharField(write_only=True)
     password2 = serializers.CharField(write_only=True)
     mobile = serializers.CharField(max_length=15)
+    type = serializers.ChoiceField(choices=STAFF_TYPE)
 
     def custom_signup(self, request, user):
         mobile = self.validated_data.get('mobile', '')
+        type = self.validated_data.get('type', '')
         user_profile = UserProfile(
             user=user,
-            mobile=mobile
+            mobile=mobile,
+            type=type
         )
         user_profile.save()
 
@@ -37,7 +40,8 @@ class RegisterSerializer(DefaultRegisterSerializer):
             'email': self.validated_data.get('email', ''),
             'first_name': self.validated_data.get('first_name', ''),
             'last_name': self.validated_data.get('last_name', ''),
-            'mobile': self.validated_data.get('mobile', '')
+            'mobile': self.validated_data.get('mobile', ''),
+            'type': self.validated_data.get('type', '')
         }
 
 
@@ -48,7 +52,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserProfile
-        fields = ('mobile')
+        fields = ('mobile', 'type')
 
 
 class UserDetailsSerializer(serializers.ModelSerializer):
