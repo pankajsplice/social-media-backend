@@ -1,0 +1,410 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
+
+  <!-- Favicon -->
+  <link rel="icon" href="{% static 'common/ik-only-logo.png' %}">
+
+  <title id="id_title">
+    {% block title_content %}
+    {% endblock title_content %}
+  </title>
+
+  <!-- vendor css -->
+  <link href="{% static 'lib/@fortawesome/fontawesome-free/css/all.min.css' %}" rel="stylesheet">
+  <link href="{% static 'lib/ionicons/css/ionicons.min.css' %}" rel="stylesheet">
+  <link href="{% static 'lib/datatables.net-dt/css/jquery.dataTables.min.css' %}" rel="stylesheet">
+  <link href="{% static 'lib/datatables.net-responsive-dt/css/responsive.dataTables.min.css' %}" rel="stylesheet">
+  <link href="{% static 'lib/select2/css/select2.min.css' %}" rel="stylesheet">
+  <link href="{% static 'lib/fullcalendar/fullcalendar.min.css' %}" rel="stylesheet">
+  <link href="{% static 'lib/quill/quill.core.css' %}" rel="stylesheet">
+  <link href="{% static 'lib/quill/quill.snow.css' %}" rel="stylesheet">
+  <link href="{% static 'lib/quill/quill.bubble.css' %}" rel="stylesheet">
+  <link href="{% static 'lib/animate.css/animate.min.css' %}" rel="stylesheet">
+  <link href="{% static 'lib/spectrum-colorpicker/spectrum.css' %}" rel="stylesheet">
+
+  <link href="{% static 'plugins/daterangepicker/daterangepicker.css' %}" rel="stylesheet">
+  <link href="{% static 'plugins/timepicker/jquery.timepicker.min.css' %}" rel="stylesheet">
+  <link href="{% static 'plugins/bootstrap-datepicker/bootstrap-datepicker.min.css' %} " rel="stylesheet">
+  <link href="{% static 'plugins/lity/lity.min.css' %}" rel="stylesheet">
+  <link href="{% static 'plugins/dm-uploader/css/jquery.dm-uploader.min.css' %}" rel="stylesheet">
+
+  <!-- DashForge CSS -->
+  <link rel="stylesheet" href="{% static 'assets/css/dashforge.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/dashforge.profile.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/dashforge.dashboard.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/dashforge.calendar.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/dashforge.filemgr.css' %}">
+
+  <link id="id_df_mode" rel="stylesheet" href="{% static 'assets/css/skin.light.css' %}">
+  <link id="id_df_skin" rel="stylesheet" href="{% static 'assets/css/skin.ik-admin.css' %}">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{% static 'assets/css/custom.css' %}">
+  <link rel="stylesheet" href="{% static 'mock_interview/interview.css' %}">
+
+</head>
+
+<body>
+
+  <aside class="aside aside-fixed">
+    <div class="aside-header">
+      <a href="{% url 'uplevel_admin:cohorts' %}" class="aside-logo align-items-center">
+        <img src="{% static 'assets/img/up-level-logo-light.svg' %}" height="25" />
+        <div class="badge bg-white-2 mg-l-10 tx-uppercase tx-8 tx-spacing-1 tx-semibold text-white d-inline">Beta</div>
+      </a>
+      <a href="" class="aside-menu-link">
+        <i data-feather="menu"></i>
+        <i data-feather="x"></i>
+      </a>
+    </div>
+    <div class="aside-body">
+      <ul class="nav nav-aside">
+        <li id="id_users_category_in_left_nav_bar" class="nav-item with-sub">
+          <li id="id_users_in_left_nav_bar">
+            <a href="{% url 'frontend' %}" class="nav-link">
+              <i data-feather="calendar"></i> Global Calendar
+            </a>
+          </li>
+        </li>
+        <li id="id_users_category_in_left_nav_bar" class="nav-item with-sub">
+          <a href="" class="nav-link"><i data-feather="users"></i> <span>People</span></a>
+          <ul>
+            <li id="id_users_in_left_nav_bar">
+              <a href="{% url 'uplevel_admin:users' %}">
+                <i data-feather="users"></i> All
+              </a>
+            </li>
+            <li id="id_interested_candidates_in_left_nav_bar">
+              <a href="{% url 'uplevel_admin:interested_candidates' %}">
+                <i data-feather="user-plus"></i> Candidates
+              </a>
+            </li>
+            <li id="id_students_in_left_nav_bar">
+              <a href="{% url 'uplevel_admin:students' %}">
+                <i data-feather="user-check"></i> Students
+              </a>
+            </li>
+            <li id="id_mock_interviewers_in_left_nav_bar">
+              <a href="{% url 'uplevel_admin:mock_interviewers' %}">
+                <i data-feather="users"></i> Mock Interviewers
+              </a>
+            </li>
+            <!--
+            <li id="id_coaches_in_left_nav_bar">
+              <a href="{% url 'uplevel_admin:coaches' %}">
+                <i data-feather="users"></i> Coaches
+              </a>
+            </li> 
+            -->
+          </ul>
+        </li>
+
+        <li id="id_learning_category_in_left_nav_bar" class="nav-item with-sub">
+          <a href="" class="nav-link"><i data-feather="book-open"></i> <span>Learning Setup</span></a>
+          <ul>
+            <li id="id_topics_in_left_nav_bar">
+              <a href="{% url 'uplevel_admin:topics' %}"><i data-feather="list"></i> Topics</a>
+            </li>
+            <li id="id_modules_in_left_nav_bar">
+              <a href="{% url 'uplevel_admin:modules' %}"><i data-feather="grid"></i> Courses</a>
+            </li>
+            <li id="id_programs_in_left_nav_bar">
+              <a href="{% url 'uplevel_admin:programs' %}"><i data-feather="copy"></i> Programs</a>
+            </li>
+          </ul>
+        </li>
+
+        <li id="id_resources_category_in_left_nav_bar" class="nav-item with-sub">
+          <a href="" class="nav-link"><i data-feather="folder"></i> <span>Resources</span></a>
+          <ul>
+            <li id="id_classes_in_left_nav_bar">
+              <a href="{% url 'uplevel_admin:classes' %}">
+                <i data-feather="clock"></i> <span>Classes</span>
+              </a>
+            </li>
+            <li id="id_feedback_templates_in_left_nav_bar">
+              <a href="{% url 'uplevel_admin:feedback_templates' %}">
+                <i data-feather="message-circle"></i> <span>Feedback Templates</span>
+              </a>
+            </li>
+            <li id="id_free_forms_in_left_nav_bar">
+              <a href="{% url 'uplevel_admin:free_forms' %}">
+                <i data-feather="file-text"></i> <span>Free Form Questions</span>
+              </a>
+            </li>
+            <!-- <li>
+              <a href="#"><i data-feather="monitor"></i> <span>Sessions</span></a>
+            </li>
+            -->
+            <li id="id_mock_interviews_in_left_nav_bar">
+              <a href="{% url 'uplevel_admin:mock_interviews' %}">
+                <i data-feather="message-square"></i> <span>Mock Interviews</span>
+              </a>
+            </li>
+            <li id="id_instructions_in_left_nav_bar">
+              <a href="{% url 'uplevel_admin:instructions' %}">
+                <i data-feather="alert-circle"></i> <span>Instructions</span>
+              </a>
+            </li>
+            <li id="id_mcqs_in_left_nav_bar">
+              <a href="{% url 'uplevel_admin:mcqs' %}">
+                <i data-feather="check-circle"></i> <span>MCQs</span>
+              </a>
+            </li>
+            <li id="id_problems_in_left_nav_bar">
+              <a href="{% url 'uplevel_admin:coding_problems' %}">
+                <i data-feather="help-circle"></i> <span>Problems</span>
+              </a>
+            </li>
+            <li id="id_videos_in_left_nav_bar">
+              <a href="{% url 'uplevel_admin:videos' %}">
+                <i data-feather="video"></i> <span>Videos</span>
+              </a>
+            </li>
+            <li id="id_resource_collections_in_left_nav_bar">
+              <a href="{% url 'uplevel_admin:resource_collections' %}">
+                <i data-feather="code"></i> <span>Resource Collections</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <li id="id_cohorts_category_in_left_nav_bar" class="nav-item with-sub">
+          <a href="" class="nav-link"><i data-feather="folder"></i> <span>Cohorts</span></a>
+          <ul>
+            <li id="id_cohorts_manage_in_left_nav_bar">
+              <a href="{% url 'uplevel_admin:cohorts' %}">
+                <i data-feather="settings"></i> <span>Manage</span>
+              </a>
+            </li>
+            <li id="id_cohorts_activities_in_left_nav_bar">
+              <a href="{% url 'uplevel_admin:cohort_shared_activities' %}">
+                <i data-feather="calendar"></i> <span>Shared Activities</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <li id="id_custom_checks_category_in_left_nav_bar" class="nav-item with-sub">
+          <a href="" class="nav-link"><i data-feather="check-circle"></i> <span>Custom Checks</span></a>
+          <ul>
+            <li id="id_webinar_in_left_nav_bar">
+              <a href="{% url 'uplevel_admin:webinar' %}">
+                <i data-feather="globe"></i> <span>Webinar</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <li id="id_system_setup_category_in_left_nav_bar" class="nav-item with-sub">
+          <a href="" class="nav-link"><i data-feather="settings"></i> <span>System Setup</span></a>
+          <ul>
+            <li id="id_outcome_stages_in_left_nav_bar">
+              <a href="{% url 'system_setup:outcome_stages' %}">
+                <i data-feather="trello"></i> <span>Outcome Stages</span>
+              </a>
+            </li>
+            <li id="id_jobs_in_left_nav_bar">
+              <a href="{% url 'system_setup:jobs' %}">
+                <i data-feather="briefcase"></i> <span>Jobs</span>
+              </a>
+            </li>
+
+            <li id="id_video_call_service_accounts_in_left_nav_bar">
+              <a href="{% url 'video_call:video_call_service_accounts' %}">
+                <i data-feather="video"></i> <span>Service Accounts</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+
+      </ul>
+    </div>
+  </aside>
+
+  <div class="content  ht-100v pd-0">
+
+    <div class="content-header">
+      <div class="navbar-right">
+
+       <button type="button" class="btn bd-0 btn-sm btn-danger tx-medium pd-x-12 ml-3" onclick="window.UserSnap.open();">
+          <i class="fa fa-bug mg-xl-r-3"></i><span class="d-none d-xl-inline"> Report Issues</span>
+        </button>
+
+        <div class="dropdown dropdown-profile">
+          <a href="" class="dropdown-link" data-toggle="dropdown" data-display="static">
+            <div class="avatar avatar-sm"><img src="{% if request.user.profile_pic %}{{request.user.profile_pic}}{% else %}{% static 'common/profile_placeholder.png' %}{% endif %}" class="rounded" alt="">
+            </div>
+          </a><!-- dropdown-link -->
+          <div class="dropdown-menu dropdown-menu-right tx-13">
+            <div class="avatar avatar-lg mg-b-15"><img src="{% if request.user.profile_pic %}{{request.user.profile_pic}}{% else %}{% static 'common/profile_placeholder.png' %}{% endif %}" class="rounded-circle"
+                alt=""></div>
+            <h6 class="tx-semibold mg-b-5">{{request.user}}</h6>
+            <p class="mg-b-25 tx-12 tx-color-03"></p>
+
+            <a href="{% url 'uplevel_admin:update_user' id=request.user.id %}" class="dropdown-item">
+              <i data-feather="user"></i> View Profile</a>
+            <div class="dropdown-divider"></div>
+            <a href="{% url 'authentication:logout' %}" class="dropdown-item"><i data-feather="log-out"></i>Sign Out</a>
+          </div><!-- dropdown-menu -->
+        </div><!-- dropdown -->
+      </div><!-- navbar-right -->
+    </div><!-- content-header -->
+
+    <div class="content-body">
+      <div class="container pd-x-0">
+
+        <div class="d-sm-flex align-items-center justify-content-between mg-b-20 mg-lg-b-25 mg-xl-b-30">
+          <div>
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb breadcrumb-style1 mg-b-10 trimmed-links">
+                {% block breadcrumb_content %}
+                <li class="breadcrumb-item">
+                  <a href="{% url 'uplevel_admin:cohorts' %}">Dashboard</a>
+                </li>
+                {% endblock breadcrumb_content %}
+              </ol>
+            </nav>
+            <h4 class="mg-b-0 tx-spacing--1">
+              {% block heading_content %}
+              {% endblock heading_content %}
+            </h4>
+          </div>
+          {% block actions_content %}
+          {% endblock actions_content %}
+        </div>
+
+        {% block content_inside_container_div_in_content_body_div %}
+        {% endblock content_inside_container_div_in_content_body_div %}
+      </div><!-- container -->
+    </div>
+  </div>
+
+  {% block content_just_before_common_scripts %}
+  {% endblock content_just_before_common_scripts %}
+
+  <script src="{% static 'lib/jquery/jquery.min.js' %}"></script>
+  
+  <script src="{% static 'lib/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'lib/feather-icons/feather.min.js' %}"></script>
+  <script src="{% static 'lib/perfect-scrollbar/perfect-scrollbar.min.js' %}"></script>
+  <script src="{% static 'lib/jqueryui/jquery-ui.min.js' %}"></script>
+
+  <script src="{% static 'lib/jquery.flot/jquery.flot.js' %}"></script>
+  <script src="{% static 'lib/jquery.flot/jquery.flot.stack.js' %}"></script>
+  <script src="{% static 'lib/jquery.flot/jquery.flot.resize.js' %}"></script>
+  <script src="{% static 'lib/peity/jquery.peity.min.js' %}"></script>
+
+  <script src="{% static 'lib/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+  <script src="{% static 'lib/datatables.net-dt/js/dataTables.dataTables.min.js' %}"></script>
+  <script src="{% static 'lib/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+  <script src="{% static 'lib/datatables.net-responsive-dt/js/responsive.dataTables.min.js' %}"></script>
+
+  <script src="{% static 'lib/select2/js/select2.full.min.js' %}"></script>
+  <script src="{% static 'lib/handlebars/handlebars.min.js' %}"></script>
+  <script src="{% static 'lib/cleave.js/cleave.min.js' %}"></script>
+  <script src="{% static 'lib/parsleyjs/parsley.min.js' %}"></script>
+  <script src="{% static 'lib/quill/quill.min.js' %}"></script>
+  <script src="{% static 'lib/moment/min/moment.min.js' %}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.31/moment-timezone-with-data.min.js"></script>
+  <script src="{% static 'lib/fullcalendar/fullcalendar.min.js' %}"></script>
+
+  <script src="{% static 'plugins/touch-punch/touch-punch.min.js' %}"></script>
+  <script src="{% static 'plugins/daterangepicker/daterangepicker.js' %}"></script>
+  <script src="{% static 'plugins/timepicker/jquery.timepicker.min.js' %}"></script>
+  <script src="{% static 'plugins/bootstrap-datepicker/bootstrap-datepicker.min.js' %}"></script>
+  <script src="{% static 'lib/jquery-ui.multidatespicker/jquery-ui.multidatespicker.min.js' %}"></script>
+  <script src="{% static 'plugins/datepair/jquery.datepair.min.js' %}"></script>
+  <script src="{% static 'plugins/lity/lity.min.js' %}"></script>
+  <script src="{% static 'plugins/paginathing/paginathing.min.js' %}"></script>
+  <script src="{% static 'plugins/ace/ace.js' %}"></script>
+  <script src="{% static 'plugins/ace/ext-beautify.js' %}"></script>
+  <script src="{% static 'plugins/awesome-quill/quill-blot-formatter/quill-blot-formatter.min.js' %}"></script>
+  <script src="{% static 'plugins/dm-uploader/js/jquery.dm-uploader.min.js' %}"></script>
+  <script src="{% static 'plugins/jszip/jszip.min.js' %}"></script>
+  <script src="{% static 'plugins/jszip/jszip-utils.min.js' %}"></script>
+  <script src="{% static 'lib/spectrum-colorpicker/spectrum.js' %}"></script>
+
+  <script src="{% static 'assets/js/dashforge.js' %}"></script>
+  <script src="{% static 'assets/js/dashforge.aside.js' %}"></script>
+  <script src="{% static 'commonjs/functions.js' %}"></script>
+  <script src="{% static 'commonjs/handlebars.js' %}"></script>
+  <script src="{% static 'commonjs/api.js' %}"></script>
+  <script src="{% static 'commonjs/interview_constants.js' %}"></script>
+
+  <script type="text/javascript">
+    (function () {
+      ace.config.set('basePath', "{% static 'plugins/ace/' %}");
+      window.onUsersnapLoad = function(api) {
+        window.UserSnap = api;
+        api.init({
+          fields: {
+            email: {
+              initialValue: '{{request.user.email}}',
+              label: 'E-Mail',
+              required: true,
+            },
+          },
+        });
+      }
+      var s = document.createElement("script");
+      s.type = "text/javascript";
+      s.async = true;
+      s.src = '//api.usersnap.com/load/90dced7e-ad0e-479d-a064-16d506170ed9.js?onload=onUsersnapLoad';
+      var x = document.getElementsByTagName('script')[0];
+      x.parentNode.insertBefore(s, x);
+    })();
+
+    $(function () {
+      'use strict';
+
+      var pathname = window.location.pathname;
+      setCookie('last_pathname', pathname, 14);
+    });
+  </script>
+
+
+
+  {% if SETTING_TYPE == "Production" %}
+   <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-54935903-2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-54935903-2');
+  </script>
+
+  <!-- sentry -->
+  <script
+    src="https://browser.sentry-cdn.com/5.30.0/bundle.tracing.min.js"
+    integrity="sha384-Wmp0Jx28tGfR086jrVwifMRcSWk8HQW4TWQ6XsNtI90pVj0dgkH9r2+pI3L2CLf6"
+    crossorigin="anonymous"
+  ></script>
+
+  <script>
+    Sentry.init({
+      dsn: 'https://3f2993da1c3c47fbae2f0efff7c3fa6a@o429184.ingest.sentry.io/5520978',
+      integrations: [
+        new Sentry.Integrations.BrowserTracing(),
+      ],
+      environment: "Production",
+    });
+  </script>
+
+  {% endif %}
+
+  {% block content_just_after_common_scripts %}
+  {% endblock content_just_after_common_scripts %}
+</body>
+
+</html>
