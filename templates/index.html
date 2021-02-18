@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load static%}
+{% block content%}
+    <body data-spy="scroll" data-target=".site-navbar-target" data-offset="200">
+    <div class="site-mobile-menu site-navbar-target">
+      <div class="site-mobile-menu-header">
+        <div class="site-mobile-menu-close mt-3">
+          <span class="icon-close2 js-menu-toggle"></span>
+
+        </div>
+      </div>
+      <div class="site-mobile-menu-body"></div>
+    </div>
+    {% include 'login.html'%}
+    {% include 'forgot_password.html'%}
+
+    </body>
+
+{% endblock %}

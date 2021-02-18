@@ -18,7 +18,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from utils.routers import DefaultRouter
-
+from django.views.generic import TemplateView
 router = DefaultRouter()
 
 urlpatterns = [
@@ -28,6 +28,10 @@ urlpatterns = [
     path('api/accounts/', include('rest_auth.urls')),
     path('api/profile/', include('accounts.urls')),
     path('api/registrations/', include('rest_auth.registration.urls')),
+    path('', TemplateView.as_view(template_name="base.html")),
+    path('login/', TemplateView.as_view(template_name="account/login.html")),
+    path('register/', TemplateView.as_view(template_name="account/user_register.html")),
+    path('change_password/', TemplateView.as_view(template_name="account/changepassword.html")),
 ]
 
 if settings.DEBUG:

@@ -5,6 +5,7 @@ from rest_auth.registration.serializers import RegisterSerializer as DefaultRegi
 from rest_framework import serializers
 from accounts.models import STAFF_TYPE
 from accounts.models import UserProfile
+from django.conf import settings
 
 User = get_user_model()
 
@@ -21,27 +22,34 @@ class RegisterSerializer(DefaultRegisterSerializer):
     password2 = serializers.CharField(write_only=True)
     mobile = serializers.CharField(max_length=15)
     type = serializers.ChoiceField(choices=STAFF_TYPE)
+    profile_pic = serializers.ImageField()
 
     def custom_signup(self, request, user):
         mobile = self.validated_data.get('mobile', '')
         type = self.validated_data.get('type', '')
+        profile_pic = self.validated_data.get('profile_pic', '')
         user_profile = UserProfile(
             user=user,
             mobile=mobile,
-            type=type
+            type=type,
+            profile_pic=profile_pic,
         )
         user_profile.save()
 
-
     def get_cleaned_data(self):
+        if settings.USERNAME == 'email':
+            username = self.validated_data.get('email', '')
+        else:
+            username = self.validated_data.get('mobile', '')
         return {
-            'username': self.validated_data.get('username', ''),
+            'username': username,
             'password1': self.validated_data.get('password1', ''),
             'email': self.validated_data.get('email', ''),
             'first_name': self.validated_data.get('first_name', ''),
             'last_name': self.validated_data.get('last_name', ''),
             'mobile': self.validated_data.get('mobile', ''),
-            'type': self.validated_data.get('type', '')
+            'type': self.validated_data.get('type', ''),
+            'profile_pic': self.validated_data.get('profile_pic', '')
         }
 
 
@@ -52,7 +60,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserProfile
-        fields = ('mobile', 'type')
+        fields = ('mobile', 'type', 'profile_pic')
 
 
 class UserDetailsSerializer(serializers.ModelSerializer):

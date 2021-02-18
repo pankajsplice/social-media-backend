@@ -1,0 +1,75 @@
+{% include "outerbase.html" %}
+{% load static %}
+{% block content %}
+<body>
+
+
+<!--New Login 28-11-2019-->
+
+<section class="login-page-amz">
+    <div class="mui-container">
+
+        <div class="mui-row padt50 text-center">
+            <div class="mui-col-md-12">
+                <img src="logo-new.png" alt="">
+            </div>
+        </div>
+<form class="" method="post" id="">
+                        {% csrf_token %}
+                        {{ form.non_field_errors }}
+        <div class="wid-row-50">
+        <div class="mui-row  padt50">
+            <div class="mui-col-md-12 sign-in-title">
+              Sign In
+            </div>
+            </div>
+
+
+        <div class="mui-row  login-bg-white pad-t-b">
+             <div class="mui-col-md-12 ">
+                 <div class="mui-textfield mui-textfield--float-label">
+                        {{ form.username.errors }}
+                       <input type="text" name="username"  id="id_username" required>
+                    <label>Username or Email</label>
+                        </div>
+                </div>
+
+             <div class="mui-col-md-12 ">
+                 <div class="mui-textfield mui-textfield--float-label">
+                        {{ form.password.errors }}
+                       <input type="password" name="password" id="id_password" required>
+                    <label>Password</label>
+                        </div>
+                </div>
+
+              <div class="mui-col-md-12 log-fgt-pass">
+                 <a href="../change_password/" class="pull-right  ">Forgot Password</a>
+                </div>
+
+
+             <div class="mui-col-md-12 log-btn-sub btn-clr-g pad-t20">
+                 <button type="submit" name="user_login" id="user_login"  class="mui-btn mui-btn--primary">Login</button>
+                </div>
+
+             <div class="mui-col-md-12 log-sm-txt ">
+                <h5>New to SGSPL Base  ?</h5>
+                </div>
+
+
+             <div class="mui-col-md-12 log-btn-sub btn-clr-y ">
+                 <button class="mui-btn mui-btn--primary"><a href="/register">Apply Now</a></button>
+                </div>
+
+            </div>
+
+</div>
+
+</form>
+
+    </div> <!--Container Close-->
+</section>
+
+</body>
+
+{% endblock %}
+{% include 'footer.html' %}
