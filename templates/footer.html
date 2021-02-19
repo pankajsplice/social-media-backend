@@ -1,13 +1,32 @@
-{% load  static %}
-<footer class="text-center white-txt text-center">
-    <p>&COPY; SGSPL Base Project</p>
+{% load static %}
+<footer class="page-footer">
+         <div class="pd-t-4 pd-b-0 pd-x-20">
+            <div class="tx-10 tx-uppercase tx-gray-500 tx-spacing-1">
+               <p class="pd-y-10 mb-0">Copyright&copy; 2019 |  Created By  <a href="https://www.spliceglobal.com/" target="_blank">Splice Global</a></p>
+            </div>
+         </div>
 </footer>
-<script src="{% static 'js/jquery.min.js' %}"></script>
-<script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/user_login.js' %}"></script>
-    <script src="{% static 'js/user_profile.js' %}"></script>
-    <script src="{% static 'js/logout.js' %}"></script>
-    <script src="{% static 'js/user_register.js' %}"></script>
-{#<script src="{% static 'material/material.min.js' %}"></script>#}
-<script src="{% static 'js/mui.min.js' %}"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<!-- jQuery  -->
+<script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'plugins/feather/feather.min.js' %}"></script>
+<!--<script src="{% static 'plugins/metisMenu/metisMenu.min.js' %}"></script>-->
+<script src="{% static 'plugins/slimscroll/jquery.slimscroll.min.js' %}"></script>
+ <script src="{% static 'plugins/jquery-ui/jquery-ui.js' %}"></script>
+ <script src="{% static 'plugins/popper/popper.js' %}"></script>
+ <script src="{% static 'plugins/bootstrap/js/bootstrap.min.js' %}"></script>
+ <script src="{% static 'plugins/typeahead/typeahead.js' %}"></script>
+ <script src="{% static 'plugins/typeahead/typeahead-active.js' %}"></script>
+ <script src="{% static 'plugins/pace/pace.min.js' %}"></script>
+ <script src="{% static 'plugins/highlight/highlight.min.js' %}"></script>
+         <!-- Required Script -->
+
+<!-- App JS -->
+<script src="{% static 'js/app.js' %}"></script>
+<script src="{% static 'js/avesta.js' %}"></script>
+<script src="{% static 'js/avesta-customizer.js' %}"></script>
+<!-- Api js   -->
+<script src="{% static 'js/account/user_login.js' %}"></script>
+<script src="{% static 'js/account/logout.js' %}"></script>
+<script src="{% static 'js/account/user_register.js' %}"></script>
+<script src="{% static 'js/account/forgot-password.js' %}"></script>

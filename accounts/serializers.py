@@ -22,7 +22,7 @@ class RegisterSerializer(DefaultRegisterSerializer):
     password2 = serializers.CharField(write_only=True)
     mobile = serializers.CharField(max_length=15)
     type = serializers.ChoiceField(choices=STAFF_TYPE)
-    profile_pic = serializers.ImageField()
+    profile_pic = serializers.ImageField(required=False, allow_null=True)
 
     def custom_signup(self, request, user):
         mobile = self.validated_data.get('mobile', '')
@@ -79,7 +79,8 @@ class UserDetailsSerializer(serializers.ModelSerializer):
 
         if profile:
             profile_obj = UserProfile.objects.get(user__id=instance.pk)
-            # profile_obj.mobile = profile.get('mobile', profile_obj.mobile)
+            profile_obj.profile_pic = profile.get('profile_pic', profile_obj.profile_pic)
+            profile_obj.mobile = profile.get('mobile', profile_obj.mobile)
 
             profile_obj.save()
         return instance

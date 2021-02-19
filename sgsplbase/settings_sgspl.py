@@ -4,6 +4,9 @@ REST_FRAMEWORK = {
         # 'rest_framework.authentication.BasicAuthentication',
         # 'rest_framework.authentication.SessionAuthentication',
     ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 10
 }
@@ -105,14 +108,25 @@ CKEDITOR_CONFIGS = {
 }
 
 
-EMAIL_HOST = 'in-v3.mailjet.com'
-EMAIL_PORT = '587'
-EMAIL_HOST_USER = 'bd83e39a4e19891beae6420600ccf6cc'
-EMAIL_HOST_PASSWORD = 'c1de3dc0846236370c9f51de0d935fb7'
+# EMAIL_HOST = 'in-v3.mailjet.com'
+# EMAIL_PORT = '587'
+# EMAIL_HOST_USER = 'bd83e39a4e19891beae6420600ccf6cc'
+# EMAIL_HOST_PASSWORD = 'c1de3dc0846236370c9f51de0d935fb7'
+# EMAIL_USE_TLS = True
+#
+# DEFAULT_FROM_EMAIL = 'support@spliceglobal.com'
+# MM_AMDIN_EMAIL = 'support@spliceglobal.com'
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+#Email Staging credentials
+EMAIL_FROM = 'info@easypon.com'
+SENDER = EMAIL_FROM
+SENDERNAME = 'EasyPon'
+DEFAULT_FROM_EMAIL = EMAIL_FROM
+EMAIL_HOST = 'email-smtp.eu-west-1.amazonaws.com'
+EMAIL_HOST_USER = 'AKIAJ42VUSUWBQIVBJWA'
+EMAIL_HOST_PASSWORD = 'Ar/MZuqDRoxSwXZAmpTK9GVXFZG+ONG5dpgVRfdAZsX5'
+
+EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-
-DEFAULT_FROM_EMAIL = 'support@spliceglobal.com'
-MM_AMDIN_EMAIL = 'support@spliceglobal.com'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-
-

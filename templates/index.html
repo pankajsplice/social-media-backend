@@ -1,19 +1,404 @@
-{% extends "base.html" %}
-{% load static%}
-{% block content%}
-    <body data-spy="scroll" data-target=".site-navbar-target" data-offset="200">
-    <div class="site-mobile-menu site-navbar-target">
-      <div class="site-mobile-menu-header">
-        <div class="site-mobile-menu-close mt-3">
-          <span class="icon-close2 js-menu-toggle"></span>
+{% include "outerbase.html" %}
+{% load static %}
+   <title>
+         {% block title %} Dashboard | SGSPL- Base Project {% endblock %}
+   </title>
+   {% block content %}
+    <body>
+      <!--================================-->
+      <!-- Page Container Start -->
+      <!--================================-->
+      <div class="page-container">
+         <!--================================-->
+         <!-- Page Sidebar Start -->
+         <!--================================-->
+         <div class="page-sidebar">
+            <div class="logo">
+               <a class="logo-img" href="index.html">
+               <img class="desktop-logo" src="{% static 'images/logo.png' %}" alt="">
+               <img class="small-logo" src="{% static 'images/small-logo.png' %}" alt="">
+               </a>
+               <a id="sidebar-toggle-button-close"><i class="wd-20" data-feather="x"></i> </a>
+            </div>
+            <!--================================-->
+            <!-- Sidebar Menu Start -->
+            <!--================================-->
+            <div class="page-sidebar-inner">
+               <div class="page-sidebar-menu">
+                  <ul class="accordion-menu">
+                     <li class="mg-l-20-force mg-t-25-force menu-navigation">Dashboard</li>
+                     <li class="open active">
+                        <a href="/"><i data-feather="home"></i>
+                        <span>Dashboard</span><i class="accordion-icon fa fa-angle-left"></i></a>
+                        <ul class="sub-menu" style="display: block;">
+                           <!-- Active Page -->
+                           <li class="active"><a href="/">Home</a></li>
+                           <li><a href="/login">Login</a></li>
+                           <li><a href="/register">Register</a></li>
+                        </ul>
+                     </li>
+                  </ul>
+               </div>
+            </div>
+            <!--/ Sidebar Menu End -->
 
-        </div>
+         </div>
+         <!--/ Page Sidebar End -->
+         <!--================================-->
+         <!-- Page Content Start -->
+         <!--================================-->
+         <div class="page-content">
+            <!--================================-->
+            <!-- Page Header Start -->
+            <!--================================-->
+            <div class="page-header">
+
+               <nav class="navbar navbar-default">
+                  <!--================================-->
+                  <!-- Brand and Logo Start -->
+                  <!--================================-->
+                  <div class="navbar-header">
+                     <div class="navbar-brand">
+                        <ul class="list-inline">
+                           <!-- Mobile Toggle and Logo -->
+                           <li class="list-inline-item"><a class="hidden-md hidden-lg" href="#" id="sidebar-toggle-button"><i data-feather="menu" class="wd-20"></i></a></li>
+                           <!-- PC Toggle and Logo -->
+                           <li class="list-inline-item"><a class=" hidden-xs hidden-sm" href="#" id="collapsed-sidebar-toggle-button"><i data-feather="menu" class="wd-20"></i></a></li>
+                        </ul>
+                     </div>
+                  </div>
+                  <!--/ Brand and Logo End -->
+                  <!--================================-->
+                  <!-- Header Right Start -->
+                  <!--================================-->
+                  <div class="header-right pull-right">
+                     <ul class="list-inline justify-content-end">
+
+                        <!-- Notifications Dropdown Start -->
+                        <!--================================-->
+                        <li class="list-inline-item dropdown hidden-xs">
+                           <a class=" notification-icon" href="" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                           <i data-feather="bell" class="wd-20"></i>
+                           <span class="notification-count wave in"></span>
+                           </a>
+                           <div class="dropdown-menu dropdown-menu-right">
+                              <!-- Top Notifications Area -->
+                              <div class="top-notifications-area">
+                                 <!-- Heading -->
+                                 <div class="notifications-heading">
+                                    <div class="heading-title">
+                                       <h6>Notifications</h6>
+                                    </div>
+                                    <span>5+ New Notifications</span>
+                                 </div>
+                                 <div class="notifications-box" id="notificationsBox">
+                                    <a class="dropdown-item list-group-item" href="">
+                                       <div class="d-flex justify-content-between">
+                                          <div class="wd-35 ht-35 mg-r-10 d-flex align-items-center justify-content-center rounded-circle card-icon-success">
+                                             <i data-feather="smile" class="wd-20"></i>
+                                          </div>
+                                       </div>
+                                       <div class="wd-100p">
+                                          <div class="d-flex justify-content-between">
+                                             <h3 class="tx-13 tx-semibold mb-0">Your order is placed</h3>
+                                             <span class="small tx-gray-500 ft-right">Mar 15, 12:32pm</span>
+                                          </div>
+                                          <div class="tx-gray-700">System reboot has been successfully completed</div>
+                                       </div>
+                                    </a>
+                                    <a class="dropdown-item list-group-item" href="">
+                                       <div class="d-flex justify-content-between">
+                                          <div class="wd-35 ht-35 mg-r-10 d-flex align-items-center justify-content-center rounded-circle card-icon-warning">
+                                             <i data-feather="bell" class="wd-20"></i>
+                                          </div>
+                                       </div>
+                                       <div class="wd-100p">
+                                          <div class="d-flex justify-content-between">
+                                             <h3 class="tx-13 tx-semibold mb-0">Document available</h3>
+                                             <span class="small tx-gray-500 ft-right">Mar 15, 12:32pm</span>
+                                          </div>
+                                          <div class="tx-gray-700">New user feedback received</div>
+                                       </div>
+                                    </a>
+                                    <a class="dropdown-item list-group-item" href="">
+                                       <div class="d-flex justify-content-between">
+                                          <div class="wd-35 ht-35 mg-r-10 d-flex align-items-center justify-content-center rounded-circle card-icon-success">
+                                             <i data-feather="check-circle" class="wd-20"></i>
+                                          </div>
+                                       </div>
+                                       <div class="wd-100p">
+                                          <div class="d-flex justify-content-between">
+                                             <h3 class="tx-13 tx-semibold mb-0">Payment failed!</h3>
+                                             <span class="small tx-gray-500 ft-right">Mar 15, 12:32pm</span>
+                                          </div>
+                                          <div class="tx-gray-700">New file has been uploaded</div>
+                                       </div>
+                                    </a>
+                                    <a class="dropdown-item list-group-item" href="">
+                                       <div class="d-flex justify-content-between">
+                                          <div class="wd-35 ht-35 mg-r-10 d-flex align-items-center justify-content-center rounded-circle card-icon-primary">
+                                             <i data-feather="info" class="wd-20"></i>
+                                          </div>
+                                       </div>
+                                       <div class="wd-100p">
+                                          <div class="d-flex justify-content-between">
+                                             <h3 class="tx-13 tx-semibold mb-0">Document available</h3>
+                                             <span class="small tx-gray-500 ft-right">Mar 15, 12:32pm</span>
+                                          </div>
+                                          <div class="tx-gray-700">New order has been received</div>
+                                       </div>
+                                    </a>
+                                    <a class="dropdown-item list-group-item" href="">
+                                       <div class="d-flex justify-content-between">
+                                          <div class="wd-35 ht-35 mg-r-10 d-flex align-items-center justify-content-center rounded-circle card-icon-primary">
+                                             <i data-feather="info" class="wd-20"></i>
+                                          </div>
+                                       </div>
+                                       <div class="wd-100p">
+                                          <div class="d-flex justify-content-between">
+                                             <h3 class="tx-13 tx-semibold mb-0">New order available</h3>
+                                             <span class="small tx-gray-500 ft-right">Mar 15, 12:32pm</span>
+                                          </div>
+                                          <div class="tx-gray-700">New order has been received</div>
+                                       </div>
+                                    </a>
+                                    <a class="dropdown-item list-group-item" href="">
+                                       <div class="d-flex justify-content-between">
+                                          <div class="wd-35 ht-35 mg-r-10 d-flex align-items-center justify-content-center rounded-circle card-icon-success">
+                                             <i data-feather="smile" class="wd-20"></i>
+                                          </div>
+                                       </div>
+                                       <div class="wd-100p">
+                                          <div class="d-flex justify-content-between">
+                                             <h3 class="tx-13 tx-semibold mb-0">Your order is placed</h3>
+                                             <span class="small tx-gray-500 ft-right">Mar 15, 12:32pm</span>
+                                          </div>
+                                          <div class="tx-gray-700">System reboot has been successfully completed</div>
+                                       </div>
+                                    </a>
+                                    <a class="dropdown-item list-group-item" href="">
+                                       <div class="d-flex justify-content-between">
+                                          <div class="wd-35 ht-35 mg-r-10 d-flex align-items-center justify-content-center rounded-circle card-icon-warning">
+                                             <i data-feather="bell" class="wd-20"></i>
+                                          </div>
+                                       </div>
+                                       <div class="wd-100p">
+                                          <div class="d-flex justify-content-between">
+                                             <h3 class="tx-13 tx-semibold mb-0">Document available</h3>
+                                             <span class="small tx-gray-500 ft-right">Mar 15, 12:32pm</span>
+                                          </div>
+                                          <div class="tx-gray-700">New user feedback received</div>
+                                       </div>
+                                    </a>
+                                 </div>
+                                 <div class="notifications-footer">
+                                    <a href="">View all Notifications</a>
+                                 </div>
+                              </div>
+                           </div>
+                        </li>
+                        <!--/ Notifications Dropdown End -->
+                        <!--================================-->
+                        <!-- Messages Dropdown Start -->
+                        <!--================================-->
+                        <li class="list-inline-item dropdown hidden-xs">
+                           <a class=" message-icon" href="" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                           <i data-feather="message-square" class="wd-20"></i>
+                           <span class="messages-count wave in"></span>
+                           </a>
+                           <div class="dropdown-menu dropdown-menu-right">
+                              <div class="top-message-area">
+                                 <div class="top-message-heading">
+                                    <div class="heading-title">
+                                       <h6>Messages</h6>
+                                    </div>
+                                    <span>5+ New Messages</span>
+                                 </div>
+                                 <div class="message-box" id="messageBox">
+                                    <a class="dropdown-item list-group-item" href="javascript:void(0)">
+                                       <div class="d-flex justify-content-between">
+                                          <div class="pd-r-10">
+                                             <span class="avatar avatar-online">
+                                             <img src="{% static 'images/users-face/1.png' %}" class="img-fluid" alt="">
+                                             <i></i>
+                                             </span>
+                                          </div>
+                                          <div>
+                                             <span class="tx-semibold">Mary Adams</span>
+                                             <span class="small tx-gray-500 ft-right">Mar 20, 22:21pm</span>
+                                             <div class="tx-gray-700">Congratulate! Socrates Itumayfor work anniversaries</div>
+                                          </div>
+                                       </div>
+                                    </a>
+                                    <a class="dropdown-item list-group-item" href="javascript:void(0)">
+                                       <div class="d-flex justify-content-between">
+                                          <div class="pd-r-10">
+                                             <span class="avatar avatar-online">
+                                             <img src="{% static 'images/users-face/2.png' %}" class="img-fluid" alt="">
+                                             <i></i>
+                                             </span>
+                                          </div>
+                                          <div>
+                                             <span class="tx-semibold">Richards Caleb</span>
+                                             <span class="small tx-gray-500 ft-right">Mar 2, 22:21pm</span>
+                                             <div class="tx-gray-700">Richards Caleb, just created a new blog post</div>
+                                          </div>
+                                       </div>
+                                    </a>
+                                    <a class="dropdown-item list-group-item" href="javascript:void(0)">
+                                       <div class="d-flex justify-content-between">
+                                          <div class="pd-r-10">
+                                             <span class="avatar avatar-busy">
+                                             <img src="{% static 'images/users-face/3.png' %}" class="img-fluid" alt="">
+                                             <i></i>
+                                             </span>
+                                          </div>
+                                          <div>
+                                             <span class="tx-semibold">Lane Richards</span>
+                                             <span class="small tx-gray-500 ft-right">Mar 12, 22:21pm</span>
+                                             <div class="tx-gray-700">Richards Caleb, just created a new blog post</div>
+                                          </div>
+                                       </div>
+                                    </a>
+                                    <a class="dropdown-item list-group-item" href="javascript:void(0)">
+                                       <div class="d-flex justify-content-between">
+                                          <div class="pd-r-10">
+                                             <span class="avatar avatar-busy">
+                                             <img src="{% static 'images/users-face/4.png' %}" class="img-fluid" alt="">
+                                             <i></i>
+                                             </span>
+                                          </div>
+                                          <div>
+                                             <span class="tx-semibold">Edward Lane</span>
+                                             <span class="small tx-gray-500 ft-right">Mar 15, 02:21pm</span>
+                                             <div class="tx-gray-700">Adrian Monino, added new comment on your photo</div>
+                                          </div>
+                                       </div>
+                                    </a>
+                                    <a class="dropdown-item list-group-item" href="javascript:void(0)">
+                                       <div class="d-flex justify-content-between">
+                                          <div class="pd-r-10">
+                                             <span class="avatar avatar-offline">
+                                             <img src="{% static 'images/users-face/5.png' %}" class="img-fluid" alt="">
+                                             <i></i>
+                                             </span>
+                                          </div>
+                                          <div>
+                                             <span class="tx-semibold">Lane Richards</span>
+                                             <span class="small tx-gray-500 ft-right">Mar 20, 08:28pm</span>
+                                             <div class="tx-gray-700">Edward Lane, added new comment on your photo</div>
+                                          </div>
+                                       </div>
+                                    </a>
+                                    <a class="dropdown-item list-group-item" href="javascript:void(0)">
+                                       <div class="d-flex justify-content-between">
+                                          <div class="pd-r-10">
+                                             <span class="avatar avatar-offline">
+                                             <img src="{% static 'images/users-face/6.png' %}" class="img-fluid" alt="">
+                                             <i></i>
+                                             </span>
+                                          </div>
+                                          <div>
+                                             <span class="tx-semibold">Edward Lane</span>
+                                             <span class="small tx-gray-500 ft-right">Mar 21, 22:21pm</span>
+                                             <div class="tx-gray-700">Edward Lane, just created a new blog post</div>
+                                          </div>
+                                       </div>
+                                    </a>
+                                 </div>
+                                 <div class="top-message-footer">
+                                    <a href="">View all Messages</a>
+                                 </div>
+                              </div>
+                           </div>
+                        </li>
+                        <!--/ Messages Dropdown End -->
+                        <!--================================-->
+                        <!-- Profile Dropdown Start -->
+                        <!--================================-->
+                        <li class="list-inline-item dropdown">
+                           <a  href="" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                           <img src="{% static 'images/users-face/1.png' %}" class="img-fluid wd-30 ht-30 rounded-circle" alt="">
+                           </a>
+                           <div class="dropdown-menu dropdown-menu-right dropdown-profile">
+                              <div class="user-profile-area">
+                                 <div class="user-profile-heading">
+                                    <div class="profile-thumbnail">
+                                       <img src="{% static 'images/users-face/1.png' %}" class="img-fluid wd-35 ht-35 rounded-circle" alt="">
+                                    </div>
+                                    <div class="profile-text">
+                                       <h6>Ruhul Hasan</h6>
+                                       <span>email@example.com</span>
+                                    </div>
+                                 </div>
+                                 <a href="/register" class="dropdown-item"><i data-feather="user" class="wd-16 mr-2"></i>Register</a>
+                                 <a href="/login" class="dropdown-item"><i data-feather="user" class="wd-16 mr-2"></i> Sign-in</a>
+                              </div>
+                           </div>
+                        </li>
+                        <!-- Profile Dropdown End -->
+                     </ul>
+                  </div>
+                  <!--/ Header Right End -->
+               </nav>
+            </div>
+            <!--/ Page Header End -->
+            <!--================================-->
+            <!-- Page Inner Start -->
+            <!--================================-->
+            <div class="page-inner">
+               <!--================================-->
+               <!-- Breadcrumb Start -->
+               <!--================================-->
+               <div class="pageheader pd-t-25 pd-b-35">
+                  <div class="d-flex justify-content-between">
+                     <div class="clearfix">
+                        <div class="pd-t-5 pd-b-5">
+                           <h1 class="pd-0 mg-0 tx-20 tx-dark">Sales Monitoring</h1>
+                        </div>
+                        <div class="breadcrumb pd-0 mg-0">
+                           <a class="breadcrumb-item" href="index.html"><i class="icon ion-ios-home-outline"></i> Home</a>
+                           <a class="breadcrumb-item" href="">Dashboard</a>
+                           <span class="breadcrumb-item active">Sales Monitoring</span>
+                        </div>
+                     </div>
+                     <div class="d-flex align-items-center">
+                        <button id="dashboardDate" class="btn btn-default dropdown-toggle mr-2 d-none d-md-block pd-y-8-force"></button>
+                        <button type="button" class="btn btn-default mr-2 d-none d-none d-lg-block pd-t-6-force pd-b-5-force">
+                        <i data-feather="log-in" class="wd-16 mr-2"></i>Import</button>
+                        <button type="button" class="btn btn-default mr-2 mb-2 mb-md-0 d-none d-lg-block pd-t-6-force pd-b-5-force">
+                        <i data-feather="printer" class="wd-16 mr-2"></i>Print</button>
+                        <button type="button" class="btn btn-default mb-2 mb-md-0 d-none d-lg-block pd-t-6-force pd-b-5-force">
+                        <i data-feather="download" class="wd-16 mr-2"></i>Download Report</button>
+                     </div>
+                  </div>
+               </div>
+               <!--/ Breadcrumb End -->
+               <!--================================-->
+               <!--  Start -->
+
+            </div>
+            <!--/ Page Inner End -->
+            <!--================================-->
+            <!-- Page Footer Start -->
+            <!--================================-->
+             {% include 'footer.html' %}
+            <!--/ Page Footer End -->
+         </div>
+         <!--/ Page Content End -->
       </div>
-      <div class="site-mobile-menu-body"></div>
-    </div>
-    {% include 'login.html'%}
-    {% include 'forgot_password.html'%}
+      <!--/ Page Container End -->
+      <!--================================-->
+      <!-- Scroll To Top Start-->
+      <!--================================-->
+      <a href="" data-click="scroll-top" class="btn-scroll-top fade"><i class="fa fa-arrow-up"></i></a>
+      <!--/ Scroll To Top End -->
+      <!--================================-->
 
-    </body>
+      <!--================================-->
+      <!-- Footer Script -->
+      <!--================================-->
 
+      <!-- / Javascript -->
+   </body>
 {% endblock %}

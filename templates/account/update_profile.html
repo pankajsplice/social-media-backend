@@ -1,0 +1,161 @@
+{% include "outerbase.html" %}
+{% load static %}
+   <title>
+         {% block title %} Update Profile | SGSPL- Base Project {% endblock %}
+   </title>
+   {% block content %}
+      <body>
+      <!--================================-->
+      <!-- Page Container Start -->
+      <!--================================-->
+      <div class="page-container">
+         <!--================================-->
+         <!-- Page Sidebar Start -->
+         <!--================================-->
+         {% include 'sidebar.html' %}
+         <!--/ Page Sidebar End -->
+         <!--================================-->
+         <!-- Page Content Start -->
+         <!--================================-->
+         <div class="page-content">
+            <!--================================-->
+            <!-- Page Header Start -->
+            <!--================================-->
+            <div class="page-header">
+               {% include 'header.html' %}
+            </div>
+            <!--/ Page Header End -->   
+            <!--================================-->
+            <!-- Page Inner Start -->
+            <!--================================-->
+            <div class="page-inner">
+               <!-- Wrapper -->
+               <div class="wrapper">
+                  <!--================================-->
+                  <!-- Breadcrumb Start -->
+                  <!--================================-->
+                  <div class="pageheader pd-t-25 pd-b-35">
+                     <div class="d-flex justify-content-between">
+                        <div class="clearfix">
+                           <div class="pd-t-5 pd-b-5">
+                              <h1 class="pd-0 mg-0 tx-20 tx-dark">Update Profile</h1>
+                           </div>
+                           <div class="breadcrumb pd-0 mg-0">
+                              <a class="breadcrumb-item" href="/"><i class="icon ion-ios-home-outline"></i> Home</a>
+                              <a class="breadcrumb-item" href="/profile">User</a>
+                              <span class="breadcrumb-item active">Update Profile</span>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <!--/ Breadcrumb End -->
+                  <!--================================-->
+                  <!-- Form Layout Start -->
+                  <!--================================-->
+                  <div class="row clearfix">
+                     <!--================================-->
+                     <!-- Top Label Layout Start -->
+                     <!--================================-->
+                     <div class="col-md-12 col-lg-12">
+                        <div class="card mg-b-30">
+                           <div class="card-header">
+                              <div class="d-flex justify-content-between align-items-center">
+                                 <div>
+                                    <h6 class="card-header-title tx-13 mb-0">User Information</h6>
+                                 </div>
+                              </div>
+                           </div>
+                           <div class="card-body">
+                              <div class="form-layout form-layout-1">
+                                 <form enctype="multipart/form-data">
+                                 <div class="row mg-b-25">
+                                    <div class="col-lg-4">
+                                       <div class="form-group">
+                                          <label class="form-control-label active">Firstname: <span class="tx-danger">*</span></label>
+                                          <input class="form-control" id="id_first_name"  type="text" name="firstname"  placeholder="Enter firstname">
+                                       </div>
+                                    </div>
+                                    <!-- col-4 -->
+                                    <div class="col-lg-4">
+                                       <div class="form-group">
+                                          <label class="form-control-label active">Lastname: <span class="tx-danger">*</span></label>
+                                          <input class="form-control" id="id_last_name"  type="text" name="lastname"  placeholder="Enter lastname">
+                                       </div>
+                                    </div>
+                                    <!-- col-4 -->
+                                    <div class="col-lg-4">
+                                       <div class="form-group">
+                                          <label class="form-control-label active">Email address:</label>
+                                          <input class="form-control" id="id_email" type="text" name="email" readonly placeholder="Enter email address">
+                                       </div>
+                                    </div>
+                                    <!-- col-4 -->
+                                    <div class="col-lg-4">
+                                       <div class="form-group mg-b-10-force">
+                                          <label class="form-control-label active">Mobile: <span class="tx-danger">*</span></label>
+                                          <input class="form-control" id="id_mobile" type="text" name="address" placeholder="878**6*78">
+
+                                       </div>
+                                    </div>
+                                    <!-- col-8 -->
+                                    <div class="col-lg-4">
+                                       <div class="form-group mg-b-10-force">
+                                          <label class="form-control-label">Type: </label>
+                                          <select class="form-control select2 select2-hidden-accessible" id="id_type" disabled data-placeholder="Choose Type" tabindex="-1" aria-hidden="true">
+                                             <option label="Choose Type"></option>
+                                             <option value="1">Company Admin</option>
+                                             <option value="2">Branch Admin</option>
+                                             <option value="3">Filed Executive</option>
+                                          </select>
+                                       </div>
+                                    </div>
+                                    <!-- col-4 -->
+                                    <div class="col-lg-4">
+                                       <img id="profile_icon4" src="{% static 'images/users-face/1.png' %}" alt="" class="d-block rounded-circle hidden-xs">
+                                    <div class="form-group mg-b-10-force">
+                                          <label class="form-control-label active" for="id_profile_pic">Upload file: <span class="tx-danger">*</span></label>
+                                          <input type="file" class="form-control" id="id_profile_pic">
+                                       </div>
+                                    </div>
+                                     <!-- col-4 -->
+                                 </div>
+                                 </form>
+                                 <!-- row -->
+                                 <div class="form-layout-footer">
+                                    <button class="btn btn-primary" id="update_profile">Update Profile</button>
+                                    <a class="btn btn-secondary" href="/profile">Cancel</a>
+                                 </div>
+                                 <!-- form-layout-footer -->
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     <!--/ Top Label Layout End -->	
+                     <!--================================-->
+                  </div>
+                  <!--/ Form Layouts End -->
+               </div>
+               <!--/ Wrapper End -->
+            </div>
+            <!--/ Page Inner End -->
+            <!--================================-->
+            <!-- Page Footer Start -->	
+            <!--================================-->
+               {% include 'footer.html'  %}
+            <!--/ Page Footer End -->		
+         </div>
+         <!--/ Page Content End -->
+      </div>
+      <!--/ Page Container End -->
+      <!--================================-->
+      <!-- Scroll To Top Start-->
+      <!--================================-->	
+      <a href="" data-click="scroll-top" class="btn-scroll-top fade"><i class="fa fa-arrow-up"></i></a>
+      <!--/ Scroll To Top End -->
+      <!--================================-->
+
+   </body>
+   {% endblock %}
+<script src="{% static 'js/account/authenticate.js' %}"></script>
+<script src="{% static 'js/account/update_profile.js' %}"></script>
+</html>

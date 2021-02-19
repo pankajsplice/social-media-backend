@@ -19,6 +19,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from utils.routers import DefaultRouter
 from django.views.generic import TemplateView
+from django.conf.urls import url
 router = DefaultRouter()
 
 urlpatterns = [
@@ -28,10 +29,16 @@ urlpatterns = [
     path('api/accounts/', include('rest_auth.urls')),
     path('api/profile/', include('accounts.urls')),
     path('api/registrations/', include('rest_auth.registration.urls')),
-    path('', TemplateView.as_view(template_name="base.html")),
-    path('login/', TemplateView.as_view(template_name="account/login.html")),
-    path('register/', TemplateView.as_view(template_name="account/user_register.html")),
-    path('change_password/', TemplateView.as_view(template_name="account/changepassword.html")),
+    path('', TemplateView.as_view(template_name="index.html")),
+    path('login/', TemplateView.as_view(template_name="account/user-login.html")),
+    path('register/', TemplateView.as_view(template_name="account/user-register.html")),
+    path('forgot-password/', TemplateView.as_view(template_name="account/forgot-password.html")),
+    path('profile/', TemplateView.as_view(template_name="account/user-profile.html")),
+    path('update-profile/', TemplateView.as_view(template_name="account/update_profile.html")),
+    path('password-reset/', TemplateView.as_view(template_name="registration/password_reset_form.html")),
+    path('password-reset-done/', TemplateView.as_view(template_name="registration/password_reset_done.html")),
+    path('password-reset-complete/', TemplateView.as_view(template_name="registration/password_reset_complete.html")),
+    url(r'^password-reset-confirm/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$', TemplateView.as_view(template_name="registration/password_reset_confirm.html"), name='password_reset_confirm'),
 ]
 
 if settings.DEBUG:

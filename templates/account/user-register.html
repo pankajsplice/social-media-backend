@@ -1,0 +1,93 @@
+{% include "outerbase.html" %}
+{% load static %}
+<title>
+         {% block title %} SignIn | SGSPL- Base Project {% endblock %}
+</title>
+   {% block content %}
+   <body>
+      <!--================================-->
+      <!-- Page Content Start -->
+      <!--================================-->
+      <div class="ht-100v text-center">
+         <div class="row pd-0 mg-0">
+            <div class="col-lg-6 bg-gradient hidden-sm">
+               <div class="ht-100v d-flex">
+                  <div class="align-self-center">
+                     <img src="{% static 'images/logo-sm.png' %}" class="img-fluid" alt="">
+                     <h3 class="tx-20 tx-semibold tx-gray-100 pd-t-50">JOIN OUR GREAT COMMUNITY</h3>
+                     <p class="pd-y-15 pd-x-10 pd-md-x-100 tx-gray-200">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore.</p>
+                     <a href="/login" class="btn btn-outline-primary"><span class="tx-gray-200">Sign In</span></a>
+                  </div>
+               </div>
+            </div>
+            <div class="col-lg-6 bg-light">
+               <div class="ht-100v d-flex align-items-center justify-content-center">
+                  <form class="" action="" method="post" enctype="multipart/form-data">
+                     {% csrf_token %}
+                     <h3 class="tx-dark mg-b-5 tx-left">Create New Account</h3>
+<!--                     <p class="tx-gray-500 tx-15 mg-b-40">Welcome back! Please signin to continue.</p>-->
+                     <div class="form-group tx-left">
+                        <label class="tx-gray-500 mg-b-5">Email address</label>
+                        <input type="email" id="id_email" class="form-control" placeholder="yourname@yourmail.com">
+                        <ul id="id_email_errors" class="custom-errors-list"></ul>
+                     </div>
+
+                     <div class="form-group">
+                        <div class="d-flex justify-content-between mg-b-5">
+                           <label class="tx-gray-500 mg-b-0">First Name</label>
+                        </div>
+                        <input type="text" id="id_first_name" class="form-control" placeholder="First Name">
+                        <ul id="id_first_name_errors" class="custom-errors-list"></ul>
+                     </div>
+                     <div class="form-group">
+                        <div class="d-flex justify-content-between mg-b-5">
+                           <label class="tx-gray-500 mg-b-0">Last Name</label>
+                        </div>
+                        <input type="text" id="id_last_name" class="form-control" placeholder="Last Name">
+                        <ul id="id_last_name_errors" class="custom-errors-list"></ul>
+                     </div>
+                     <div class="form-group">
+                        <div class="d-flex justify-content-between mg-b-5">
+                           <label class="tx-gray-500 mg-b-0">Phone no</label>
+                        </div>
+                        <input type="text" id="id_mobile" class="form-control" placeholder="Phone no">
+                        <ul id="id_mobile_errors" class="custom-errors-list"></ul>
+                     </div>
+                      <div class="form-group">
+                        <div class="d-flex justify-content-between mg-b-5">
+                           <label class="tx-gray-500 mg-b-0">Password</label>
+                        </div>
+                        <input type="password" id="id_password1" class="form-control" placeholder="Enter your password">
+                         <ul id="id_password1_errors" class="custom-errors-list"></ul>
+                     </div>
+                     <div class="form-group">
+                        <div class="d-flex justify-content-between mg-b-5">
+                          <div class="select-box">
+                          <label for="id_type" class="tx-gray-500 mg-b-0">Select Type:</label>
+                          <select class="form-control" id="id_type">
+                            <option value="1">Company Admin</option>
+                            <option value="2">Branch Admin</option>
+                            <option value="3">Field Executive</option>
+                          </select>
+                          </div>
+                        </div>
+                        <ul id="id_type_errors" class="custom-errors-list"></ul>
+                     </div>
+                     <div class="form-group">
+                        <div class="d-flex justify-content-between mg-b-5">
+                           <label class="tx-gray-500 mg-b-0">Profile Pic</label>
+                        </div>
+                        <input type="file" id="id_profile_pic" class="form-control" placeholder="Profile Pic">
+                        <ul id="id_profile_pic_errors" class="custom-errors-list"></ul>
+                     </div>
+                     <button id="user_registration"  class="btn btn-brand btn-block">Create Account</button>
+                     <div class="tx-13 mg-t-20 tx-center tx-gray-500">Already have an account? <a href="/login" class="tx-semibold">Sign In</a></div>
+                  </form>
+               </div>
+            </div>
+         </div>
+      </div>
+   </body>
+   {% endblock %}
+{% include "footer.html" %}
+</html>

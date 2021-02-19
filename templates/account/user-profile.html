@@ -1,0 +1,145 @@
+{% include "outerbase.html" %}
+{% load static %}
+   <title>
+         {% block title %} User-Profile | SGSPL- Base Project {% endblock %}
+   </title>
+   {% block content %}
+      <body>
+         <!--================================-->
+         <!-- Page Container Start -->
+         <!--================================-->
+         <div class="page-container">
+            <!--================================-->
+            <!-- Page Sidebar Start -->
+            <!--================================-->
+            {% include 'sidebar.html' %}
+            <!--/ Page Sidebar End -->
+            <!--================================-->
+            <!-- Page Content Start -->
+            <!--================================-->
+            <div class="page-content">
+               <!--================================-->
+               <!-- Page Header Start -->
+               <!--================================-->
+
+                  {% include 'header.html' %}
+
+
+               <!--/ Page Header End -->
+               <!--================================-->
+               <!-- Page Inner Start -->
+               <!--================================-->
+               <div class="page-inner pd-0-force">
+                  <div class="bg-white mg-b-30">
+                     <div class="media col-md-10 col-lg-8 col-xl-7 pd-30 mx-auto">
+                        <img id="profile_icon4" src="{% static 'images/users-face/1.png' %}" alt="" class="d-block rounded-circle hidden-xs">
+                        <div class="media-body ml-0 ml-md-5">
+                           <h4 id="profile_icon_name2" class="tx-semibold">Ruhul Hasan</h4>
+                           <p class="tx-gray-500">Redhead, Innovator, Saviour of Mankind, Hopeless Romantic, Attractive 20-something Yogurt Enthusiast... <a href="">Read more</a>
+                           </p>
+                           <div class="d-flex mg-b-25">
+                              <button class="btn btn-default">Message</button>
+                              <button class="btn btn-primary mg-l-10">Follow</button>
+                           </div>
+                           <a href="" class="d-inline-block ">
+                           <strong>2,574</strong>
+                           <span >followers</span>
+                           </a>
+                           <a href="" class="d-inline-block  ml-3">
+                           <strong>1,254</strong>
+                           <span >following</span>
+                           </a>
+                        </div>
+                     </div>
+                     <hr class="m-0">
+                  </div>
+                  <div class="row clearfix mg-x-15-force">
+                     <div class="col">
+                        <!-- Info -->
+                        <div class="card mg-b-30">
+                           <div class="card-header d-flex align-items-center justify-content-between">
+                              <h6 class="tx-16 tx-semibold mg-b-0">Personal Information</h6>
+                              <nav class="nav nav-with-icon tx-13">
+                                 <a href="" class="nav-link pd-0"><span data-feather="plus" class="wd-16"></span> Add New</a>
+                              </nav>
+                           </div>
+                           <!-- card-header -->
+                           <div class="card-body">
+                              <h6 class="my-3">Personal</h6>
+                              <div class="row mb-2">
+                                 <div class="col-md-3 tx-gray-500 tx-semibold">First Name:</div>
+                                 <div id="profile_first_name" class="col-md-9">Nellie</div>
+                              </div>
+                              <div class="row mb-2">
+                                 <div class="col-md-3 tx-gray-500 tx-semibold">Last Name:</div>
+                                 <div id="profile_last_name" class="col-md-9">Maxwell</div>
+                              </div>
+                              <div class="row mb-2">
+                                 <div class="col-md-3 tx-gray-500 tx-semibold">Birthday:</div>
+                                 <div class="col-md-9">May 3, 1995</div>
+                              </div>
+                              <div class="row mb-2">
+                                 <div class="col-md-3 tx-gray-500 tx-semibold">Country:</div>
+                                 <div class="col-md-9">
+                                    <a href="" >Canada</a>
+                                 </div>
+                              </div>
+                              <div class="row mb-2">
+                                 <div class="col-md-3 tx-gray-500 tx-semibold">Languages:</div>
+                                 <div class="col-md-9">
+                                    <a href="" >English</a>
+                                 </div>
+                              </div>
+                              <h6 class="my-3">Contacts</h6>
+                              <div class="row mb-2">
+                                 <div class="col-md-3 tx-gray-500 tx-semibold">Email:</div>
+                                 <div id="profile_email" class="col-md-9">example@yourdomain.com</div>
+                              </div>
+                              <div class="row mb-2">
+                                 <div class="col-md-3 tx-gray-500 tx-semibold">Website:</div>
+                                 <div class="col-md-9">http://yourdomain.com</div>
+                              </div>
+                              <div class="row mb-2">
+                                 <div class="col-md-3 tx-gray-500 tx-semibold">Phone:</div>
+                                 <div id="profile_phone" class="col-md-9"> +0 (123) 456 7891 </div>
+                              </div>
+                              <div class="row mb-2">
+                                 <div class="col-md-3 tx-gray-500 tx-semibold">Fax:</div>
+                                 <div class="col-md-9"> +0 (123) 456 7891 </div>
+                              </div>
+                              <h6 class="my-3">Interests</h6>
+
+                           </div>
+
+                        </div>
+                        <!-- / Info -->
+
+                     </div>
+
+                  </div>
+               </div>
+               <!--/ Page Inner End -->
+               <!--================================-->
+               <!-- Page Footer Start -->
+               <!--================================-->
+               {% include "footer.html" %}
+               <!--/ Page Footer End -->
+            </div>
+            <!--/ Page Content End -->
+         </div>
+         <!--/ Page Container End -->
+         <!--================================-->
+         <!-- Scroll To Top Start-->
+         <!--================================-->
+         <a href="" data-click="scroll-top" class="btn-scroll-top fade"><i class="fa fa-arrow-up"></i></a>
+         <!--/ Scroll To Top End -->
+         <!--================================-->
+         <!-- Footer Script -->
+         <!--================================-->
+      </body>
+   {% endblock %}
+
+<!--check user_authenticate-->
+<script src="{% static 'js/account/authenticate.js' %}"></script>
+<script src="{% static 'js/account/user_profile.js' %}"></script>
+</html>

@@ -45,12 +45,13 @@ INSTALLED_APPS = [
     #3rd parth apps
     'allauth',
     'allauth.account',
+    'allauth.socialaccount',
     'rest_auth.registration',
     'debug_toolbar',
     'ckeditor',
     'widget_tweaks',
     'ckeditor_uploader',
-    'djoser',
+    # 'djoser',
     'rest_framework',
     'rest_framework.authtoken',
 ]
