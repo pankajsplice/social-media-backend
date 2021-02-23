@@ -11,4 +11,5 @@ User = get_user_model()
 
 urlpatterns = [
     path('', include(router.urls)),
+
 ]

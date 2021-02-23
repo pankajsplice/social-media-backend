@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'widget_tweaks',
     'ckeditor_uploader',
+    'django_filters',
     # 'djoser',
     'rest_framework',
     'rest_framework.authtoken',
@@ -58,6 +59,7 @@ INSTALLED_APPS = [
 
 CUSTOM_APPS = [
     'accounts.apps.AccountsConfig',
+    'event',
 ]
 
 INSTALLED_APPS += CUSTOM_APPS
@@ -75,7 +77,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
-ROOT_URLCONF = 'sgsplbase.urls'
+ROOT_URLCONF = 'event_scheduler.urls'
 
 TEMPLATES = [
     {
@@ -93,8 +95,14 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'sgsplbase.wsgi.application'
+WSGI_APPLICATION = 'event_scheduler.wsgi.application'
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -154,7 +162,7 @@ LANGUAGES = (
 )
 
 
-
+CKEDITOR_UPLOAD_PATH='upload/'
 CORS_ORIGIN_ALLOW_ALL = True
 
 INTERNAL_IPS = ['127.0.0.1']
@@ -162,8 +170,8 @@ INTERNAL_IPS = ['127.0.0.1']
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 try:
-    from sgsplbase.settings_local import *
-    from sgsplbase.settings_sgspl import *
+    from event_scheduler.settings_local import *
+    from event_scheduler.settings_sgspl import *
 except ImportError:
     pass
 

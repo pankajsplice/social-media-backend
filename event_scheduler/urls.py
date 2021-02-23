@@ -21,16 +21,15 @@ from utils.routers import DefaultRouter
 from django.views.generic import TemplateView
 from django.conf.urls import url
 router = DefaultRouter()
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('ckeditor/', include('ckeditor_uploader.urls')),
-    path('api/', include(router.urls)),
+    path('', include('event.urls')),
     path('api/accounts/', include('rest_auth.urls')),
     path('api/profile/', include('accounts.urls')),
     path('api/registrations/', include('rest_auth.registration.urls')),
-    path('', TemplateView.as_view(template_name="index.html")),
-    path('login/', TemplateView.as_view(template_name="account/user-login.html")),
+    # path('', TemplateView.as_view(template_name="index.html")),
+    # path('login/', TemplateView.as_view(template_name="account/user-login.html")),
     path('register/', TemplateView.as_view(template_name="account/user-register.html")),
     path('forgot-password/', TemplateView.as_view(template_name="account/forgot-password.html")),
     path('profile/', TemplateView.as_view(template_name="account/user-profile.html")),

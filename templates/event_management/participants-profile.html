@@ -1,0 +1,169 @@
+{% extends 'event_management/base.html' %}
+{% load static %}
+{% block content %}
+<section class="dashboard">
+  <div class="container-fluid">
+    <div class="row">
+    
+      <div id="mySidenav" class="col-md-3 lft-menu sidenav">
+         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+         <div class="dash-prof"><i class="fa fa-user" aria-hidden="true"></i> <span>George Jhon</span></div>
+          <ul>
+          <li><a href="dashboard.html">Home</a></li>
+          <li><a href="events.html">Events</a></li>
+          <li><a href="profile.html">Profile</a></li>
+            <li><a href="#">Notification</a></li>
+              <li><a href="#">Change Password</a></li>
+          <li><a href="">Log Out</a></li>
+           <li><a href="">About Us</a></li>
+        </ul>
+      </div>
+
+      <div class="col-md-9">
+        <div class="row right-main">
+          <div class="col">
+
+          
+
+            <div class="row parti-title">
+              <div class="col"><h2>Participants Details</h2></div>
+              
+            </div>
+
+        <div class="row recent-tab participant mb-5 pb-5">
+          <div class="col mb-5 ">
+                                        
+
+<div class="tabdata">
+<div id="London" class="tabcontent">
+  <ul>
+    <li>
+      <div class="row">
+        <div class="col-md-2"><img src="{% static 'event/img/participant-prof.png' %}"></div>
+        <div class="col-md-5 offset-4">
+          <h5>Event Name : <span>World Water Day</span></h5>
+      <h6>Participant Name: <span>The Strange Work</span></h6>
+      <div class="date">Date: <span>26/02/2021</span></div>
+        </div>
+      </div>
+      <div class="tab-cont-img">
+       
+      </div>
+      
+      
+    </li>
+
+    <li>
+      <div class="row">
+        <div class="col-md-2"><img src="{% static 'event/img/participant-prof.png' %}"></div>
+        <div class="col-md-5 offset-4">
+          <h5>Event Name : <span>World Water Day</span></h5>
+      <h6>Participant Name: <span>The Strange Work</span></h6>
+      <div class="date">Date: <span>26/02/2021</span></div>
+        </div>
+      </div>
+      <div class="tab-cont-img">
+       
+      </div>
+      
+      
+    </li>
+
+    <li>
+      <div class="row">
+        <div class="col-md-2"><img src="{% static 'event/img/participant-prof.png' %}"></div>
+        <div class="col-md-5 offset-4">
+          <h5>Event Name : <span>World Water Day</span></h5>
+      <h6>Participant Name: <span>The Strange Work</span></h6>
+      <div class="date">Date: <span>26/02/2021</span></div>
+        </div>
+      </div>
+      <div class="tab-cont-img">
+       
+      </div>
+      
+      
+    </li>
+
+    <li>
+      <div class="row">
+        <div class="col-md-2"><img src="{% static 'event/img/participant-prof.png' %}"></div>
+        <div class="col-md-5 offset-4">
+          <h5>Event Name : <span>World Water Day</span></h5>
+      <h6>Participant Name: <span>The Strange Work</span></h6>
+      <div class="date">Date: <span>26/02/2021</span></div>
+        </div>
+      </div>
+      <div class="tab-cont-img">
+       
+      </div>
+      
+      
+    </li>
+
+
+
+  </ul>
+   <div class="readmore"><a href="">Read More</a></div>
+</div>
+
+<!-- <div id="Paris" class="tabcontent tabcon2">
+
+   <ul>
+    <li>
+      <div class="tab-cont-img">
+        <img src="img/event-tab-icon.png">
+      </div>
+      <h5>Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs.</h5>
+      <h6><a href="">Read More</a></h6>
+      
+    </li>
+
+     <li>
+      <div class="tab-cont-img">
+        <img src="img/event-tab-icon.png">
+      </div>
+      <h5>Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs.</h5>
+      <h6><a href="">Read More</a></h6>
+      
+    </li>
+  </ul>
+</div> -->
+
+</div>
+          </div>
+        </div>
+
+
+
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="mob-foot">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col">
+        <ul>
+          <li><a href="dashboard.html"><i class="fa fa-home" aria-hidden="true"></i>
+
+ Home</a></li>
+          <li><a href="events.html"><i class="fa fa-calendar" aria-hidden="true"></i>
+Events</a></li>
+          <li><a href="profile.html"><i class="fa fa-user" aria-hidden="true"></i>
+
+Profile</a></li>
+          <li><a href=""><i class="fa fa-bell" aria-hidden="true"></i>
+
+Notification</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

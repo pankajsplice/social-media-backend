@@ -40,7 +40,7 @@ HTML_MINIFY = True
 COMPRESS_ENABLED = True
 COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter', 'compressor.filters.cssmin.CSSMinFilter']
 
-CKEDITOR_UPLOAD_PATH = "uploads/"
+
 
 
 

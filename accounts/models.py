@@ -16,8 +16,14 @@ USER_LANGUAGE = (
 
 STAFF_TYPE = (
         ('1', _('Company Admin')),
-        ('2', _('Branch Admin')),
-        ('3', _('Filed Executive')),
+        ('2', _('Organizer')),
+        ('3', _('Participant')),
+    )
+
+GENDER_TYPE = (
+        ('male','Male'),
+        ('female','Female'),
+        ('other','Other'),
     )
 
 
@@ -26,6 +32,7 @@ class UserProfile(models.Model):
     User Profile model store the basic user information
     """
     user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE)
+    gender = models.CharField(max_length=20,choices=GENDER_TYPE,null=True,blank=True)
     type = models.CharField(max_length=30, choices=STAFF_TYPE, blank=True, null=True)
     mobile = models.CharField(max_length=15, db_index=True)
     profile_pic = models.ImageField(blank=True, null=True, help_text=_('Upload your profile pic'))
