@@ -1,10 +1,17 @@
+from django.db.models import Q
 from rest_framework import serializers
+
 
 class QuerySetFilterMixin(object):
     def get_queryset(self):
         # This query is okay for Organization user
         # this query return data based on created by and mapped to related organization
-        # queryset = super().get_queryset().filter(created_by__profile__organization_id=self.request.user.profile.organization)
+
+        if self.request.user.is_superuser:
+            queryset = super().get_queryset()
+            return queryset
+
+        queryset = super().get_queryset().filter(Q(created_by=self.request.user))
         return queryset
 
     def perform_create(self, serializer):
@@ -19,12 +26,9 @@ class QuerySetFilterMixin(object):
 
 class CustomBaseSerializer(serializers.ModelSerializer):
     def save(self, **kwargs):
-        validated_data = dict(
-            list(self.validated_data.items()) +
-            list(kwargs.items())
-        )
-
-        validated_data['updated_by'] = self.updated_by
+        validated_data = dict(list(self.validated_data.items()) + list(kwargs.items()))
+        print("validated_data: ", validated_data)
+        # validated_data['updated_by'] = self.updated_by
 
         if self.instance is not None:
             self.instance = self.update(self.instance, validated_data)
@@ -32,7 +36,7 @@ class CustomBaseSerializer(serializers.ModelSerializer):
                 '`update()` did not return an object instance.'
             )
         else:
-            validated_data['created_by'] = self.created_by
+            # validated_data['created_by'] = self.created_by
             self.instance = self.create(validated_data)
             assert self.instance is not None, (
                 '`create()` did not return an object instance.'

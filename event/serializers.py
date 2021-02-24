@@ -1,17 +1,20 @@
-from rest_framework import serializers
-from event.models import EventModel,EventParticipant,EventType
+from event.models import EventModel, EventParticipant, EventType
+from utils.custom_mixin import QuerySetFilterMixin, CustomBaseSerializer
 
-class EventModelSerializer(serializers.ModelSerializer):
+
+class EventModelSerializer(CustomBaseSerializer):
     class Meta:
         model = EventModel
         fields = '__all__'
 
-class EventParticipantSerializer(serializers.ModelSerializer):
+
+class EventParticipantSerializer(CustomBaseSerializer):
     class Meta:
         model = EventParticipant
         fields = '__all__'
 
-class EventTypeSerializer(serializers.ModelSerializer):
+
+class EventTypeSerializer(CustomBaseSerializer):
     class Meta:
         model = EventType
         fields = '__all__'

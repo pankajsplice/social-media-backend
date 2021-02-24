@@ -1,19 +1,29 @@
 from django.contrib import admin
-from .models import EventModel,EventType,EventParticipant
+from import_export.admin import ImportExportModelAdmin
+from utils.admin import CustomModelAdminMixin
+from .models import EventModel, EventType, EventParticipant
+from .resources import EventModelResource, EventParticipantResource, EventTypeResource
+
 
 # Register your models here.
-
-class EventTypeAdmin(admin.ModelAdmin):
-    list_display = ['name']
-
-class EventModelAdmin(admin.ModelAdmin):
-    list_display = ['type','title','time','date','location','description','created_on','updated_on','created_by','updated_by']
-
-class EventParticipantAdmin(admin.ModelAdmin):
-    list_display = ['event','user','created_on','updated_on']
+class EventTypeAdmin(CustomModelAdminMixin, ImportExportModelAdmin):
+    resource_class = EventTypeResource
+    search_fields = ['name']
+    list_filter = ('status',)
 
 
+class EventModelAdmin(CustomModelAdminMixin, ImportExportModelAdmin):
+    resource_class = EventModelResource
+    search_fields = ['type', 'title', 'time', 'date', 'location', 'description']
+    list_filter = ('status', 'title')
 
-admin.site.register(EventType,EventTypeAdmin)
-admin.site.register(EventModel,EventModelAdmin)
-admin.site.register(EventParticipant,EventParticipantAdmin)
+
+class EventParticipantAdmin(CustomModelAdminMixin, ImportExportModelAdmin):
+    resource_class = EventParticipantResource
+    search_fields = ['event', 'participant']
+    list_filter = ('status',)
+
+
+admin.site.register(EventType, EventTypeAdmin)
+admin.site.register(EventModel, EventModelAdmin)
+admin.site.register(EventParticipant, EventParticipantAdmin)

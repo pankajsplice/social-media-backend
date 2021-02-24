@@ -52,9 +52,10 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'ckeditor_uploader',
     'django_filters',
-    # 'djoser',
+    'djoser',
     'rest_framework',
     'rest_framework.authtoken',
+    'import_export',
 ]
 
 CUSTOM_APPS = [
@@ -167,6 +168,12 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 INTERNAL_IPS = ['127.0.0.1']
 
+
+
+# REST_AUTH_REGISTER_SERIALIZERS = {
+#     'REGISTER_SERIALIZER': 'accounts.serializers.RegisterSerializer',
+# }
+
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 try:
@@ -174,4 +181,5 @@ try:
     from event_scheduler.settings_sgspl import *
 except ImportError:
     pass
+
 
