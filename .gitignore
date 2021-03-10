@@ -132,3 +132,4 @@ spaces/webpack-stats.json
 /acgcc/xapian_index/
 /nextop/settings_local.py
 *.pkl
+event_scheduler/settings_local.py
