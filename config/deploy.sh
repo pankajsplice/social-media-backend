@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-cd /opt/apps/ducis_api/
+cd /opt/apps/pwa-event/
 git pull origin master
-source /home/admin/.virtualenvs/ducis_api/bin/activate
-pip install -r /opt/apps/ducis_api/requirements.txt
-/home/admin/.virtualenvs/ducis_api/bin/python manage.py migrate_schemas --shared
-/home/admin/.virtualenvs/ducis_api/bin/python manage.py collectstatic --noinput
-sudo supervisorctl stop ducis_api
-kill $(lsof -t -i:8000)
-sudo supervisorctl start ducis_api
+source /root/.virtualenvs/pwaevent/bin/activate
+pip install -r /opt/apps/pwa-event/requirements.txt
+/root/.virtualenvs/pwaevent/bin/python manage.py migrate
+/root/.virtualenvs/pwaevent/bin/python manage.py collectstatic --noinput
+sudo supervisorctl stop pwaevent
+kill $(lsof -t -i:8001)
+sudo supervisorctl start pwaevent

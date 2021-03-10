@@ -1,16 +1,18 @@
 from pathlib import Path
 import os
 
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'sgsplbase',
+        'NAME': 'pwa_event',
         'USER': 'admin',
-        'PASSWORD': 'vishnu',
+        'PASSWORD': '@dm!9098)(*',
         'HOST': '127.0.0.1',
         'PORT': '',
     }
 }
+
 
 HTML_MINIFY = False
 

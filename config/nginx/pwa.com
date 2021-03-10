@@ -1,7 +1,7 @@
 server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
-    server_name ducishr.com, *.ducishr.com;
+    #listen 80 default_server;
+    #listen [::]:80 default_server;
+    server_name 107.180.74.83;
 
 
     real_ip_header X-Forwarded-For;
@@ -18,11 +18,11 @@ server {
     keepalive_timeout 5;
 
     location /static/ {
-        alias /opt/apps/ducis_api/public/static/;
+        alias /opt/apps/pwa-event/public/static/;
         expires max;
     }
     location /media/ {
-        alias /opt/apps/ducis_api/media/;
+        alias /opt/apps/pwa-event/media/;
         expires max;
     }
 
@@ -34,7 +34,7 @@ server {
 
 
         if (!-f $request_filename) {
-            proxy_pass http://127.0.0.1:8000;
+            proxy_pass http://127.0.0.1:8001;
             break;
        }
    }
