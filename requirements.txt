@@ -1,5 +1,5 @@
 Django
-#mysqlclient
+mysqlclient
 mysql-connector-python
 django_compressor
 django-htmlmin
@@ -16,3 +16,4 @@ django-easy-audit
 django-ckeditor
 django-widget-tweaks
 pillow
+djoser
