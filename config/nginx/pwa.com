@@ -1,7 +1,7 @@
 server {
     #listen 80 default_server;
     #listen [::]:80 default_server;
-    server_name 107.180.74.83;
+    server_name 108.160.132.248;
 
 
     real_ip_header X-Forwarded-For;
