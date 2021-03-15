@@ -1,4 +1,4 @@
-"""sgsplbase URL Configuration
+"""local_mingle_backend URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.1/topics/http/urls/
@@ -45,6 +45,6 @@ if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += [path('__debug__/', include(debug_toolbar.urls)),]
 
-admin.site.site_title = ""
-admin.site.site_header = " Administration"
-admin.site.index_title = "Welcome to Admin Portal"
+admin.site.site_title = "Local Mingle"
+admin.site.site_header = "Local Mingle Admin"
+admin.site.index_title = "Welcome to Local Mingle Admin Portal"
