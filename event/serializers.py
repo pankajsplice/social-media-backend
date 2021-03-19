@@ -1,20 +1,20 @@
-from event.models import EventModel, EventParticipant, EventType
+from event.models import Event, Category, Venue
 from utils.custom_mixin import QuerySetFilterMixin, CustomBaseSerializer
 
 
-class EventModelSerializer(CustomBaseSerializer):
+class EventSerializer(CustomBaseSerializer):
     class Meta:
-        model = EventModel
+        model = Event
         fields = '__all__'
 
 
-class EventParticipantSerializer(CustomBaseSerializer):
+class CategorySerializer(CustomBaseSerializer):
     class Meta:
-        model = EventParticipant
+        model = Category
         fields = '__all__'
 
 
-class EventTypeSerializer(CustomBaseSerializer):
+class VenueSerializer(CustomBaseSerializer):
     class Meta:
-        model = EventType
+        model = Venue
         fields = '__all__'
