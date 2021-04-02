@@ -7,6 +7,13 @@ from mptt.models import MPTTModel, TreeForeignKey
 User = get_user_model()
 # Create your models here.
 
+SUBSCRIPTION_CHOICES = (
+    ('1', 'Monthly'),
+    ('3', 'Quarterly'),
+    ('6', 'HalfYearly'),
+    ('12', 'Yearly'),
+)
+
 
 class Event(ModelMixin):
     name = models.CharField(max_length=100, help_text=_('Event Name'))
@@ -23,6 +30,7 @@ class Event(ModelMixin):
     timezone = models.CharField(max_length=30, help_text=_('Timezone'))
     time = models.TimeField(help_text=_('Event Timing'), blank=True, null=True)
     date = models.DateField(help_text=_('Event Date'), blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
     description = models.TextField(help_text=_('Event Description'), null=True, blank=True)
 
     def __str__(self):
@@ -35,6 +43,9 @@ class Category(MPTTModel):
 
     class MPTTMeta:
         order_insertion_by = ['name']
+
+    def __str__(self):
+        return "{}".format(self.name)
 
 
 class Venue(ModelMixin):
@@ -53,3 +64,49 @@ class Venue(ModelMixin):
 
     def __str__(self):
         return "{}".format(self.name)
+
+
+class Comment(ModelMixin):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, )
+    msg = models.TextField(help_text=_('message'))
+    verified = models.BooleanField(default=False)
+
+    def __str__(self):
+        return "{}".format(self.event.name)
+
+
+class Like(ModelMixin):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, )
+    count = models.CharField(max_length=50, blank=True, null=True)
+
+    def __str__(self):
+        return "{}".format(self.event.name)
+
+
+class Subscription(ModelMixin):
+    name = models.CharField(max_length=255, unique=True, help_text=_('Subscription Name'))
+    price = models.DecimalField(max_digits=8, decimal_places=3, help_text=_('Subscription Price'))
+    validity = models.IntegerField(choices=SUBSCRIPTION_CHOICES, help_text=_('Validity in months'))
+    description = models.TextField(blank=True, null=True, help_text=_('Description'))
+
+    def __str__(self):
+        return "{}".format(self.name)
+
+
+class UserSubscription(ModelMixin):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    subscription = models.ForeignKey(Subscription, on_delete=models.SET_NULL, null=True)
+    payment_amount = models.DecimalField(max_digits=8, decimal_places=3, help_text=_('Payment Amount'))
+    payment_mode = models.CharField(max_length=100, blank=True, null=True, help_text=_('Mode of payment'))
+    transaction_no = models.CharField(max_length=50, blank=True, null=True, unique=True, help_text=_('Transaction No.'))
+
+
+class Follow(ModelMixin):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, help_text=_('Follower'))
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, help_text=_('Event'))
+
+
+class Message(ModelMixin):
+    sender = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='sender', null=True, help_text=_('sender'))
+    receiver = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='receiver', null=True,  help_text=_('receiver'))
+    msg = models.TextField(help_text=_('message'))

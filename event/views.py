@@ -5,8 +5,10 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from utils.custom_mixin import QuerySetFilterMixin
-from event.models import Event, Category, Venue
-from event.serializers import EventSerializer, CategorySerializer, VenueSerializer
+from event.models import Event, Category, Venue, Comment, Like, Subscription, UserSubscription,\
+    Follow, Message
+from event.serializers import EventSerializer, CategorySerializer, VenueSerializer, UserSubscriptionSerializer, \
+    CommentSerializer, LikeSerializer, SubscriptionSerializer, FollowSerializer, MessageSerializer
 from event.ticketmaster import GetEventList
 
 User = get_user_model()
@@ -19,7 +21,7 @@ class EventViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
     serializer_class = EventSerializer
     queryset = Event.objects.all()
     filter_backends = (filters.DjangoFilterBackend,)
-    filterset_fields = ['status']
+    filterset_fields = ['status', 'venue__name', 'category__name']
 
 
 # to create events' category
@@ -165,3 +167,50 @@ class FetchEventTicketMasterApiView(APIView):
                                                date=event.local_start_date, description='')
                         event_instance.save()
         return Response({'status': 'ok'})
+
+
+# crud for comment
+class CommentViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = CommentSerializer
+    queryset = Comment.objects.all()
+    filterset_fields = ['event__id']
+
+
+# crud for like
+class LikeViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = LikeSerializer
+    queryset = Like.objects.all()
+
+
+# crud for subscription
+class SubscriptionViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = SubscriptionSerializer
+    queryset = Subscription.objects.all()
+
+
+# crud for User subscription
+class UserSubscriptionViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = UserSubscriptionSerializer
+    queryset = UserSubscription.objects.all()
+
+
+class FollowViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = FollowSerializer
+    queryset = Follow.objects.all()
+
+
+class MessageViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = MessageSerializer
+    queryset = Message.objects.all()
