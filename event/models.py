@@ -110,3 +110,26 @@ class Message(ModelMixin):
     sender = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='sender', null=True, help_text=_('sender'))
     receiver = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='receiver', null=True,  help_text=_('receiver'))
     msg = models.TextField(help_text=_('message'))
+
+
+class Member(ModelMixin):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='member')
+    invited = models.BooleanField(default=False)
+
+
+class Group(ModelMixin):
+    name = models.CharField(max_length=255, help_text=_('Group Name'), unique=True)
+    description = models.TextField(help_text=_('Group Description'))
+    member = models.ManyToManyField(Member, blank=True, null=True)
+    limit = models.IntegerField(blank=True, null=True)
+
+
+class EventGroup(ModelMixin):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, help_text=_('Event'))
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, help_text=_('Select Group'))
+
+
+class EventSetting(ModelMixin):
+    event = models.ForeignKey(Event, on_delete=models.SET_NULL, help_text=_('Event'), null=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, help_text=_('User'), null=True)
+    going = models.BooleanField(default=False)

@@ -6,9 +6,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from utils.custom_mixin import QuerySetFilterMixin
 from event.models import Event, Category, Venue, Comment, Like, Subscription, UserSubscription,\
-    Follow, Message
+    Follow, Message, Member, Group, EventGroup, EventSetting
 from event.serializers import EventSerializer, CategorySerializer, VenueSerializer, UserSubscriptionSerializer, \
-    CommentSerializer, LikeSerializer, SubscriptionSerializer, FollowSerializer, MessageSerializer
+    CommentSerializer, LikeSerializer, SubscriptionSerializer, FollowSerializer, MessageSerializer, MemberSerializer,\
+    GroupSerializer, EventGroupSerializer, EventSettingSerializer
+
 from event.ticketmaster import GetEventList
 
 User = get_user_model()
@@ -214,3 +216,31 @@ class MessageViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = MessageSerializer
     queryset = Message.objects.all()
+
+
+class MemberViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = MemberSerializer
+    queryset = Member.objects.all()
+
+
+class GroupViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = GroupSerializer
+    queryset = Group.objects.all()
+
+
+class EventGroupViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = EventGroupSerializer
+    queryset = EventGroup.objects.all()
+
+
+class EventSettingViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = EventSettingSerializer
+    queryset = EventSetting.objects.all()

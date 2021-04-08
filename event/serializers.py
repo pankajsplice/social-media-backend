@@ -1,5 +1,5 @@
 from event.models import Event, Category, Venue, Comment, Subscription, UserSubscription, Like,\
-    Follow, Message
+    Follow, Message, Member, Group, EventGroup, EventSetting
 from utils.custom_mixin import QuerySetFilterMixin, CustomBaseSerializer
 
 
@@ -57,3 +57,25 @@ class MessageSerializer(CustomBaseSerializer):
         fields = '__all__'
 
 
+class MemberSerializer(CustomBaseSerializer):
+    class Meta:
+        model = Member
+        fields = '__all__'
+
+
+class GroupSerializer(CustomBaseSerializer):
+    class Meta:
+        model = Group
+        fields = '__all__'
+
+
+class EventGroupSerializer(CustomBaseSerializer):
+    class Meta:
+        model = EventGroup
+        fields = '__all__'
+
+
+class EventSettingSerializer(CustomBaseSerializer):
+    class Meta:
+        model = EventSetting
+        fields = '__all__'
