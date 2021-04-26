@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-cd /opt/apps/local_mingle_backend/
+cd /opt/apps/local_mingle_backend
 git pull origin master
 source /root/.virtualenvs/localmingle/bin/activate
 pip install -r /opt/apps/local_mingle_backend/requirements.txt
