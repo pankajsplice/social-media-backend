@@ -21,9 +21,9 @@ class ModelMixin(models.Model):
     date_created = models.DateTimeField(auto_now_add=True, auto_now=False)
     date_updated = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(User, related_name="%(app_label)s_%(class)s_created",
-                                   on_delete=models.CASCADE)
+                                   on_delete=models.CASCADE, blank=True, null=True)
     updated_by = models.ForeignKey(User, related_name="%(app_label)s_%(class)s_updated",
-                                   on_delete=models.CASCADE)
+                                   on_delete=models.CASCADE, blank=True, null=True)
     status = models.CharField(max_length=10, default='active', choices=STATUS_TYPE, help_text=_('Status'))
 
     class Meta:
