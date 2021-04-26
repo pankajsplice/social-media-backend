@@ -1,7 +1,7 @@
 server {
     #listen 80 default_server;
     #listen [::]:80 default_server;
-    server_name 108.160.132.248;
+    server_name localmingle.keycorp.in;
 
 
     real_ip_header X-Forwarded-For;
@@ -18,11 +18,11 @@ server {
     keepalive_timeout 5;
 
     location /static/ {
-        alias /opt/apps/pwa-event/public/static/;
+        alias /opt/apps/local_mingle_backend/public/static/;
         expires max;
     }
     location /media/ {
-        alias /opt/apps/pwa-event/media/;
+        alias /opt/apps/local_mingle_backend/public/media/;
         expires max;
     }
 
@@ -34,7 +34,7 @@ server {
 
 
         if (!-f $request_filename) {
-            proxy_pass http://127.0.0.1:8001;
+            proxy_pass http://127.0.0.1:8004;
             break;
        }
    }

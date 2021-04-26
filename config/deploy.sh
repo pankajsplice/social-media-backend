@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-cd /opt/apps/pwa-event/
+cd /opt/apps/local_mingle_backend/
 git pull origin master
-source /root/.virtualenvs/pwaevent/bin/activate
-pip install -r /opt/apps/pwa-event/requirements.txt
-/root/.virtualenvs/pwaevent/bin/python manage.py migrate
-/root/.virtualenvs/pwaevent/bin/python manage.py collectstatic --noinput
-sudo supervisorctl stop pwaevent
-kill $(lsof -t -i:8001)
-sudo supervisorctl start pwaevent
+source /root/.virtualenvs/localmingle/bin/activate
+pip install -r /opt/apps/local_mingle_backend/requirements.txt
+/root/.virtualenvs/localmingle/bin/python manage.py migrate
+/root/.virtualenvs/localmingle/bin/python manage.py collectstatic --noinput
+sudo supervisorctl stop localmingle
+kill $(lsof -t -i:8004)
+sudo supervisorctl start localmingle
