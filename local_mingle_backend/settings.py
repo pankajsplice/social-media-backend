@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'import_export',
+    'mptt',
 ]
 
 CUSTOM_APPS = [
@@ -177,8 +178,8 @@ INTERNAL_IPS = ['127.0.0.1']
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 try:
-    from local_mingle_backend.settings_local import *
     from local_mingle_backend.settings_sgspl import *
+    from local_mingle_backend.settings_local import *
 except ImportError:
     pass
 
