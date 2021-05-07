@@ -11,7 +11,8 @@ class QuerySetFilterMixin(object):
             queryset = super().get_queryset()
             return queryset
 
-        queryset = super().get_queryset().filter(Q(created_by=self.request.user))
+        # queryset = super().get_queryset().filter(Q(created_by=self.request.user))
+        queryset = super().get_queryset()
         return queryset
 
     def perform_create(self, serializer):
