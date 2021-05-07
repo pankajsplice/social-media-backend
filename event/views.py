@@ -18,8 +18,8 @@ User = get_user_model()
 
 # to create events
 class EventViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
-    authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (permissions.IsAuthenticated,)
+    # authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.AllowAny,)
     serializer_class = EventSerializer
     queryset = Event.objects.all()
     filter_backends = (filters.DjangoFilterBackend,)
@@ -27,7 +27,7 @@ class EventViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
 
 
 # to create events' category
-class CategoryViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
+class CategoryViewSet(viewsets.ModelViewSet):
     authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = CategorySerializer
