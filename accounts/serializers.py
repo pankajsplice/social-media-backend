@@ -60,7 +60,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserProfile
-        fields = ('mobile', 'type', 'profile_pic')
+        fields = ('mobile', 'type', 'profile_pic', 'location', 'profile_groups', 'profile_interest')
 
 
 class UserDetailsSerializer(serializers.ModelSerializer):
@@ -81,6 +81,9 @@ class UserDetailsSerializer(serializers.ModelSerializer):
             profile_obj = UserProfile.objects.get(user__id=instance.pk)
             profile_obj.profile_pic = profile.get('profile_pic', profile_obj.profile_pic)
             profile_obj.mobile = profile.get('mobile', profile_obj.mobile)
+            profile_obj.location = profile.get('location', profile_obj.location)
+            profile_obj.profile_groups = profile.get('profile_groups', profile_obj.profile_groups)
+            profile_obj.profile_interest = profile.get('profile_interest', profile_obj.profile_interest)
 
             profile_obj.save()
         return instance
