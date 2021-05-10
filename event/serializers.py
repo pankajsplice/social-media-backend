@@ -1,12 +1,31 @@
 from event.models import Event, Category, Venue, Comment, Subscription, UserSubscription, Like,\
     Follow, Message, Member, Group, EventGroup, EventSetting
 from utils.custom_mixin import QuerySetFilterMixin, CustomBaseSerializer
+from rest_framework import serializers
 
 
 class EventSerializer(CustomBaseSerializer):
+    like = serializers.SerializerMethodField()
+    comment = serializers.SerializerMethodField()
+    group = serializers.SerializerMethodField()
+
     class Meta:
         model = Event
-        fields = '__all__'
+        fields = ('name', 'global_id', 'url', 'price_min', 'price_max', 'event_status', 'currency',
+                  'image_json', 'event_image', 'category', 'venue', 'seatmap_url', 'timezone', 'time', 'date',
+                  'user', 'description', 'like', 'comment', 'group')
+
+    def get_like(self, obj):
+        like = Like.objects.filter(event_id=obj.id).count()
+        return like
+
+    def get_comment(self, obj):
+        comment = Comment.objects.filter(event_id=obj.id).count()
+        return comment
+
+    def get_group(self, obj):
+        group = EventGroup.objects.filter(event_id=obj.id).count()
+        return group
 
 
 class CategorySerializer(CustomBaseSerializer):
