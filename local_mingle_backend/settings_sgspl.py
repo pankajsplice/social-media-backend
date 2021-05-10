@@ -110,12 +110,9 @@ CKEDITOR_CONFIGS = {
 }
 
 
-EMAIL_HOST = 'in-v3.mailjet.com'
-EMAIL_PORT = '587'
-EMAIL_HOST_USER = 'bd83e39a4e19891beae6420600ccf6cc'
-EMAIL_HOST_PASSWORD = 'c1de3dc0846236370c9f51de0d935fb7'
-EMAIL_USE_TLS = True
-
-DEFAULT_FROM_EMAIL = 'support@spliceglobal.com'
-MM_AMDIN_EMAIL = 'support@spliceglobal.com'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'auctionvillage1'
+EMAIL_HOST_PASSWORD = 'auction@12345'
