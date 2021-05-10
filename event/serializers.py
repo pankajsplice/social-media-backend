@@ -2,6 +2,9 @@ from event.models import Event, Category, Venue, Comment, Subscription, UserSubs
     Follow, Message, Member, Group, EventGroup, EventSetting
 from utils.custom_mixin import QuerySetFilterMixin, CustomBaseSerializer
 from rest_framework import serializers
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 
 class EventSerializer(CustomBaseSerializer):
@@ -11,9 +14,10 @@ class EventSerializer(CustomBaseSerializer):
 
     class Meta:
         model = Event
-        fields = ('name', 'global_id', 'url', 'price_min', 'price_max', 'event_status', 'currency',
+        fields = ('id', 'name', 'global_id', 'url', 'price_min', 'price_max', 'event_status', 'currency',
                   'image_json', 'event_image', 'category', 'venue', 'seatmap_url', 'timezone', 'time', 'date',
-                  'user', 'description', 'like', 'comment', 'group')
+                  'user', 'description', 'like', 'comment', 'group', 'created_by', 'updated_by', 'status',
+                  'date_created', 'date_updated')
 
     def get_like(self, obj):
         like = Like.objects.filter(event_id=obj.id).count()
@@ -41,9 +45,17 @@ class VenueSerializer(CustomBaseSerializer):
 
 
 class CommentSerializer(CustomBaseSerializer):
+    username = serializers.SerializerMethodField()
+
     class Meta:
         model = Comment
-        fields = '__all__'
+        fields = ('id', 'event', 'msg', 'verified', 'created_by', 'updated_by', 'status', 'username',
+                  'date_created', 'date_updated' )
+
+    def get_username(self, obj):
+        user = User.objects.filter(id=obj.created_by.pk).get()
+        username = "{} {}".format(user.first_name, user.last_name)
+        return username
 
 
 class LikeSerializer(CustomBaseSerializer):
