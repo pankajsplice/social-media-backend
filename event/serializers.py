@@ -53,8 +53,11 @@ class CommentSerializer(CustomBaseSerializer):
                   'date_created', 'date_updated' )
 
     def get_username(self, obj):
-        user = User.objects.filter(id=obj.created_by.pk).get()
-        username = "{} {}".format(user.first_name, user.last_name)
+        if obj.created_by:
+            user = User.objects.filter(id=obj.created_by.pk).get()
+            username = "{} {}".format(user.first_name, user.last_name)
+        else:
+            username = None
         return username
 
 
