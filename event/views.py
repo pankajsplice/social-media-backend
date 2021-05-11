@@ -9,7 +9,7 @@ from event.models import Event, Category, Venue, Comment, Like, Subscription, Us
     Follow, Message, Member, Group, EventGroup, EventSetting
 from event.serializers import EventSerializer, CategorySerializer, VenueSerializer, UserSubscriptionSerializer, \
     CommentSerializer, LikeSerializer, SubscriptionSerializer, FollowSerializer, MessageSerializer, MemberSerializer,\
-    GroupSerializer, EventGroupSerializer, EventSettingSerializer
+    GroupSerializer, EventGroupSerializer, EventSettingSerializer, GroupMemberSerializer
 
 from event.ticketmaster import GetEventList
 
@@ -232,11 +232,20 @@ class GroupViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
     queryset = Group.objects.all()
 
 
+class GroupMemberViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = GroupMemberSerializer
+    queryset = Group.objects.all()
+    filterset_fields = ['id']
+
+
 class EventGroupViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
     authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = EventGroupSerializer
     queryset = EventGroup.objects.all()
+    filterset_fields = ['event__id', 'group__id']
 
 
 class EventSettingViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
