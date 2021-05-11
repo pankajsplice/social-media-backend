@@ -117,12 +117,18 @@ class Member(ModelMixin):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='member')
     invited = models.BooleanField(default=False)
 
+    def __del__(self):
+        return "{}".format(self.user)
+
 
 class Group(ModelMixin):
     name = models.CharField(max_length=255, help_text=_('Group Name'), unique=True)
     description = models.TextField(help_text=_('Group Description'))
     member = models.ManyToManyField(Member, blank=True, null=True)
     limit = models.IntegerField(blank=True, null=True)
+
+    def __str__(self):
+        return "{}".format(self.name)
 
 
 class EventGroup(ModelMixin):

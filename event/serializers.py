@@ -50,7 +50,7 @@ class CommentSerializer(CustomBaseSerializer):
     class Meta:
         model = Comment
         fields = ('id', 'event', 'msg', 'verified', 'created_by', 'updated_by', 'status', 'username',
-                  'date_created', 'date_updated' )
+                  'date_created', 'date_updated')
 
     def get_username(self, obj):
         if obj.created_by:
@@ -92,15 +92,44 @@ class MessageSerializer(CustomBaseSerializer):
 
 
 class MemberSerializer(CustomBaseSerializer):
+    name = serializers.SerializerMethodField()
+    profile = serializers.SerializerMethodField()
+
     class Meta:
         model = Member
-        fields = '__all__'
+        fields = ('id', 'user', 'name', 'profile', 'invited', 'created_by', 'updated_by', 'date_created', 'date_updated')
+
+    def get_name(self, obj):
+        name = "{} {}".format(obj.user.first_name, obj.user.last_name)
+        return name
+
+    def get_profile(self, obj):
+        profile = obj.user.profile.profile_pic
+        if profile:
+            profile = profile.url
+            return profile
+        else:
+            return None
 
 
 class GroupSerializer(CustomBaseSerializer):
     class Meta:
         model = Group
         fields = '__all__'
+
+
+class GroupMemberSerializer(CustomBaseSerializer):
+    member = MemberSerializer(read_only=True, many=True)
+    total_member = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Group
+        fields = ('id', 'name', 'description', 'limit', 'member', 'total_member', 'created_by', 'updated_by',
+                  'date_created', 'date_updated')
+
+    def get_total_member(self, obj):
+        member = obj.member.all().count()
+        return member
 
 
 class EventGroupSerializer(CustomBaseSerializer):
