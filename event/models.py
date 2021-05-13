@@ -16,7 +16,7 @@ SUBSCRIPTION_CHOICES = (
 
 
 class Event(ModelMixin):
-    name = models.CharField(max_length=100, help_text=_('Event Name'))
+    name = models.CharField(max_length=255, help_text=_('Event Name'))
     global_id = models.CharField(max_length=50, help_text=_('Global Event Id'))
     url = models.URLField(help_text=_('Event Url'), null=True, blank=True)
     price_min = models.CharField(max_length=10, help_text=_('Price Range Min'), null=True, blank=True)
@@ -50,15 +50,15 @@ class Category(MPTTModel):
 
 
 class Venue(ModelMixin):
-    name = models.CharField(max_length=100, help_text=_('Venue Name'))
+    name = models.CharField(max_length=255, help_text=_('Venue Name'))
     global_id = models.CharField(max_length=50, help_text=_('Global Venue Id'))
-    city = models.CharField(max_length=50, help_text=_('Venue Name'))
-    address = models.CharField(max_length=100, help_text=_('Venue Address'))
+    city = models.CharField(max_length=100, help_text=_('Venue Name'))
+    address = models.CharField(max_length=255, help_text=_('Venue Address'))
     state_code = models.CharField(max_length=20, help_text=_('State Code'))
-    state_name = models.CharField(max_length=50, help_text=_('State Name'))
+    state_name = models.CharField(max_length=100, help_text=_('State Name'))
     postal_code = models.CharField(max_length=10, help_text=_('Postal Code'))
     country_code = models.CharField(max_length=20, help_text=_('Country Code'))
-    country_name = models.CharField(max_length=50, help_text=_('Country Name'))
+    country_name = models.CharField(max_length=100, help_text=_('Country Name'))
     latitude = models.CharField(max_length=20, help_text=_('Latitude'), null=True, blank=True)
     longitude = models.CharField(max_length=20, help_text=_('Longitude'), null=True, blank=True)
     url = models.URLField(help_text=_('Venue Url'), null=True, blank=True)

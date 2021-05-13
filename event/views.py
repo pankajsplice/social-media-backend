@@ -23,7 +23,13 @@ class EventViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
     serializer_class = EventSerializer
     queryset = Event.objects.all()
     filter_backends = (filters.DjangoFilterBackend,)
-    filterset_fields = ['status', 'venue__name', 'category__name']
+    filterset_fields = {'status': ['exact'],
+                        'venue__name': ['iexact', 'istartswith'],
+                        'category__name': ['iexact', 'istartswith'],
+                        'name': ['iexact', 'istartswith'],
+                        'event_status': ['iexact', 'istartswith'],
+                        'date': ['gte', 'lte', 'exact'],
+                        }
 
 
 # to create events' category
@@ -49,8 +55,12 @@ class FetchEventTicketMasterApiView(APIView):
         category = self.request.query_params['category']
         event = GetEventList(category)
         result = event.fetch()
+        pg_limit = 0
         for page in result:
-            if page.number == 0:
+            pg_limit = pg_limit + 1
+            if pg_limit == 50:
+                return Response({'status': 'Max paging depth exceeded for category '+self.request.query_params['category']})
+            if page.size == 0:
                 return Response({'status': 'Not Found any data from the data source related to '+self.request.query_params['category']})
             for event in page:
                 if event.status == 'cancelled':
@@ -59,68 +69,84 @@ class FetchEventTicketMasterApiView(APIView):
                     # creating venue
                     ven_id = None
                     venue_instance = None
-                    global_venue_json = event.venues[0].json
-                    # check if events already exists
-                    venue_availability = Venue.objects.filter(global_id=global_venue_json['id']).values('id')
-                    if venue_availability.exists():
-                        for venue in venue_availability:
-                            ven_id = venue['id']
-                    else:
-                        try:
-                            state_code = global_venue_json['state']['stateCode']
-                            state_name = global_venue_json['state']['name']
-                            postal_code = global_venue_json['postalCode']
-                            address = global_venue_json['address']['line1']
-                            longitude = global_venue_json['location']['longitude']
-                            latitude = global_venue_json['location']['latitude']
-                            url = global_venue_json['url']
-                            name = global_venue_json['name']
-                        except:
-                            state_code = state_name = postal_code = address = longitude = latitude = url = name = ''
-
-                        venue_instance = Venue(name=name, global_id=global_venue_json['id'],
-                                               city=global_venue_json['city']['name'], address=address,
-                                               state_code=state_code,
-                                               state_name=state_name,
-                                               postal_code=postal_code,
-                                               country_code=global_venue_json['country']['countryCode'],
-                                               country_name=global_venue_json['country']['name'],
-                                               latitude=latitude,
-                                               longitude=longitude,
-                                               url=url)
-                        venue_instance.save()
-                        print(venue_instance.pk)
-                    # creating category
-                    genre_id, genre_name, genre = None, None, False
-                    # check if sub-category is available in data source
-                    try:
-                        genre_name = event.classifications[0].json['genre']['name']
-                        genre = True
-                    except:
-                        genre = False
-                    category_name = event.classifications[0].json['segment']['name']
-                    if genre:
-                        genre_name = event.classifications[0].json['genre']['name']
-                    category_availability = Category.objects.filter(name=category_name).values('name', 'id')
-                    category_instance = None
-                    if category_availability.exists():
-                        for cat in category_availability:
-                            if genre:
-                                genre_availability = Category.objects.filter(name=genre_name).values('name', 'id')
-                                if genre_availability.exists():
-                                    for gen in genre_availability:
-                                        genre_id = gen['id']
+                    if event.venues:
+                        global_venue_json = event.venues[0].json
+                        # check if venue already exists
+                        venue_availability = Venue.objects.filter(global_id=global_venue_json['id']).values('id')
+                        if venue_availability.exists():
+                            for venue in venue_availability:
+                                ven_id = venue['id']
+                        else:
+                            global_id = city = country_code = country_name = ''
+                            try:
+                                state = global_venue_json.get('state', '')
+                                if state == '':
+                                    state_code = ''
+                                    state_name = ''
                                 else:
-                                    parent_id = cat['id']
-                                    category_instance = Category(name=genre_name, parent_id=parent_id)
-                                    category_instance.save()
-                            else:
-                                genre_id = cat['id']
+                                    state_code = global_venue_json['state']['stateCode']
+                                    state_name = global_venue_json['state']['name']
 
-                    else:
-                        category_instance = Category(name=category_name)
-                        category_instance.save()
+                                address = global_venue_json.get('address', '')
+                                if address == '':
+                                    address = address
+                                else:
+                                    address = global_venue_json['address']['line1']
+
+                                location = global_venue_json.get('location', '')
+                                if location == '':
+                                    longitude = ''
+                                    latitude = ''
+                                else:
+                                    longitude = global_venue_json['location']['longitude']
+                                    latitude = global_venue_json['location']['latitude']
+
+                                country = global_venue_json.get('country', '')
+                                if country == '':
+                                    country_code = ''
+                                    country_name = ''
+                                else:
+                                    country_code = global_venue_json['country']['countryCode']
+                                    country_name = global_venue_json['country']['name']
+
+                                city = global_venue_json.get('city', '')
+                                if city == '':
+                                    city = city
+                                else:
+                                    city = global_venue_json['city']['name']
+
+                                postal_code = global_venue_json.get('postalCode', '')
+                                url = global_venue_json.get('url', '')
+                                name = global_venue_json.get('name', '')
+                                global_id = global_venue_json.get('id', '')
+                            except:
+                                state_code = state_name = postal_code = address = longitude = latitude = url = name = ''
+
+                            venue_instance = Venue(name=name, global_id=global_id,
+                                                   city=city, address=address,
+                                                   state_code=state_code,
+                                                   state_name=state_name,
+                                                   postal_code=postal_code,
+                                                   country_code=country_code,
+                                                   country_name=country_name,
+                                                   latitude=latitude,
+                                                   longitude=longitude,
+                                                   url=url)
+                            venue_instance.save()
+                            print(venue_instance.pk)
+                        # creating category
+                        genre_id, genre_name, genre = None, None, False
+                        # check if sub-category is available in data source
+                        try:
+                            genre_name = event.classifications[0].json['genre']['name']
+                            genre = True
+                        except:
+                            genre = False
+                        category_name = event.classifications[0].json['segment']['name']
+                        if genre:
+                            genre_name = event.classifications[0].json['genre']['name']
                         category_availability = Category.objects.filter(name=category_name).values('name', 'id')
+                        category_instance = None
                         if category_availability.exists():
                             for cat in category_availability:
                                 if genre:
@@ -134,40 +160,61 @@ class FetchEventTicketMasterApiView(APIView):
                                         category_instance.save()
                                 else:
                                     genre_id = cat['id']
-                        print(category_instance.pk)
-                    # getting category and venue id
-                    try:
-                        category_id = category_instance.pk
-                    except:
-                        category_id = genre_id
-                    try:
-                        venue_id = venue_instance.pk
-                    except:
-                        venue_id = ven_id
-                    price_min = price_max = currency = ''
-                    if len(event.price_ranges) > 0:
-                        price_min = event.json['priceRanges'][0]['min']
-                        price_max = event.json['priceRanges'][0]['max']
-                        currency = event.json['priceRanges'][0]['currency']
 
-                    # creating event
-                    global_event_json = event.json
-                    # check if events already exists
-                    event_availability = Event.objects.filter(global_id=global_event_json['id'])
-                    if event_availability.exists():
-                        pass
-                    else:
+                        else:
+                            category_instance = Category(name=category_name)
+                            category_instance.save()
+                            category_availability = Category.objects.filter(name=category_name).values('name', 'id')
+                            if category_availability.exists():
+                                for cat in category_availability:
+                                    if genre:
+                                        genre_availability = Category.objects.filter(name=genre_name).values('name', 'id')
+                                        if genre_availability.exists():
+                                            for gen in genre_availability:
+                                                genre_id = gen['id']
+                                        else:
+                                            parent_id = cat['id']
+                                            category_instance = Category(name=genre_name, parent_id=parent_id)
+                                            category_instance.save()
+                                    else:
+                                        genre_id = cat['id']
+                            print(category_instance.pk)
+                        # getting category and venue id
                         try:
-                            timezone = event.json['dates']['timezone']
+                            category_id = category_instance.pk
                         except:
-                            timezone = ''
-                        event_instance = Event(name=global_event_json['name'], global_id=global_event_json['id'],
-                                               url=global_event_json['url'], price_min=price_min, price_max=price_max,
-                                               event_status=event.status, currency=currency, image_json=global_event_json['images'],
-                                               category_id=category_id, venue_id=venue_id, seatmap_url='',
-                                               timezone=timezone, time=event.local_start_time,
-                                               date=event.local_start_date, description='')
-                        event_instance.save()
+                            category_id = genre_id
+                        try:
+                            venue_id = venue_instance.pk
+                        except:
+                            venue_id = ven_id
+                        price_min = price_max = currency = ''
+                        if len(event.price_ranges) > 0:
+                            price_min = event.json['priceRanges'][0]['min']
+                            price_max = event.json['priceRanges'][0]['max']
+                            currency = event.json['priceRanges'][0]['currency']
+
+                        # creating event
+                        global_event_json = event.json
+                        # check if events already exists
+                        event_availability = Event.objects.filter(global_id=global_event_json['id'])
+                        if event_availability.exists():
+                            pass
+                        else:
+                            try:
+                                timezone = event.json['dates']['timezone']
+                            except:
+                                timezone = ''
+                            event_instance = Event(name=global_event_json['name'], global_id=global_event_json['id'],
+                                                   url=global_event_json['url'], price_min=price_min, price_max=price_max,
+                                                   event_status=event.status, currency=currency, image_json=global_event_json['images'],
+                                                   category_id=category_id, venue_id=venue_id, seatmap_url='',
+                                                   timezone=timezone, time=event.local_start_time,
+                                                   date=event.local_start_date, description='')
+                            event_instance.save()
+                    else:
+                        print(event)
+                        pass
         return Response({'status': 'ok'})
 
 
