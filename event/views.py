@@ -29,6 +29,7 @@ class EventViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
                         'name': ['iexact', 'istartswith'],
                         'event_status': ['iexact', 'istartswith'],
                         'date': ['gte', 'lte', 'exact'],
+                        'category__parent_id': ['exact'],
                         }
 
 
