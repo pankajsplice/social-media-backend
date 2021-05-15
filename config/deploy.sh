@@ -2,10 +2,10 @@
 
 cd /opt/apps/local_mingle_backend
 git pull origin master
-source /root/.virtualenvs/localmingle/bin/activate
+source /root/.virtualenvs/local_mingle_backend/bin/activate
 pip install -r /opt/apps/local_mingle_backend/requirements.txt
-/root/.virtualenvs/localmingle/bin/python manage.py migrate
-/root/.virtualenvs/localmingle/bin/python manage.py collectstatic --noinput
-supervisorctl stop localmingle
+/root/.virtualenvs/local_mingle_backend/bin/python manage.py migrate
+/root/.virtualenvs/local_mingle_backend/bin/python manage.py collectstatic --noinput
+supervisorctl stop local_mingle_backend
 kill $(lsof -t -i:8003)
-sudo supervisorctl start localmingle
+sudo supervisorctl start local_mingle_backend
