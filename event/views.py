@@ -39,6 +39,11 @@ class CategoryViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
+    filterset_fields = {
+        'name': ['iexact', 'istartswith'],
+        'parent': ['exact', 'isnull'],
+        'level': ['exact']
+    }
 
 
 # to create events' Venue details
