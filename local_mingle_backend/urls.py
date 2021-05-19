@@ -27,6 +27,7 @@ urlpatterns = [
     path('api/events/', include('event.urls')),
     path('api/accounts/', include('rest_auth.urls')),
     path('api/profile/', include('accounts.urls')),
+    path('api/payment/', include('payment.urls')),
     path('api/registrations/', include('rest_auth.registration.urls')),
     path('', TemplateView.as_view(template_name="index.html")),
     path('login/', TemplateView.as_view(template_name="account/user-login.html")),

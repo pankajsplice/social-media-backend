@@ -5,9 +5,9 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from utils.custom_mixin import QuerySetFilterMixin
-from event.models import Event, Category, Venue, Comment, Like, Subscription, UserSubscription,\
+from event.models import Event, Category, Venue, Comment, Like, Subscription,\
     Follow, Message, Member, Group, EventGroup, EventSetting
-from event.serializers import EventSerializer, CategorySerializer, VenueSerializer, UserSubscriptionSerializer, \
+from event.serializers import EventSerializer, CategorySerializer, VenueSerializer, \
     CommentSerializer, LikeSerializer, SubscriptionSerializer, FollowSerializer, MessageSerializer, MemberSerializer,\
     GroupSerializer, EventGroupSerializer, EventSettingSerializer, GroupMemberSerializer
 
@@ -35,8 +35,8 @@ class EventViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
 
 # to create events' category
 class CategoryViewSet(viewsets.ModelViewSet):
-    authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (permissions.IsAuthenticated,)
+    # authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.AllowAny,)
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
     filterset_fields = {
@@ -247,14 +247,6 @@ class SubscriptionViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = SubscriptionSerializer
     queryset = Subscription.objects.all()
-
-
-# crud for User subscription
-class UserSubscriptionViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
-    authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (permissions.IsAuthenticated,)
-    serializer_class = UserSubscriptionSerializer
-    queryset = UserSubscription.objects.all()
 
 
 class FollowViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):

@@ -8,10 +8,9 @@ User = get_user_model()
 # Create your models here.
 
 SUBSCRIPTION_CHOICES = (
-    ('1', 'Monthly'),
-    ('3', 'Quarterly'),
-    ('6', 'HalfYearly'),
-    ('12', 'Yearly'),
+    (1, 'Monthly'),
+    (6, 'HalfYearly'),
+    (12, 'Yearly'),
 )
 
 
@@ -86,20 +85,14 @@ class Like(ModelMixin):
 
 class Subscription(ModelMixin):
     name = models.CharField(max_length=255, unique=True, help_text=_('Subscription Name'))
-    price = models.DecimalField(max_digits=8, decimal_places=3, help_text=_('Subscription Price'))
+    price = models.DecimalField(max_digits=8, decimal_places=2, help_text=_('Subscription Price'))
     validity = models.IntegerField(choices=SUBSCRIPTION_CHOICES, help_text=_('Validity in months'))
+    stripe_product_id = models.CharField(max_length=100, blank=True, null=True)
+    stripe_price_id = models.CharField(max_length=100, blank=True, null=True)
     description = models.TextField(blank=True, null=True, help_text=_('Description'))
 
     def __str__(self):
         return "{}".format(self.name)
-
-
-class UserSubscription(ModelMixin):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    subscription = models.ForeignKey(Subscription, on_delete=models.SET_NULL, null=True)
-    payment_amount = models.DecimalField(max_digits=8, decimal_places=3, help_text=_('Payment Amount'))
-    payment_mode = models.CharField(max_length=100, blank=True, null=True, help_text=_('Mode of payment'))
-    transaction_no = models.CharField(max_length=50, blank=True, null=True, unique=True, help_text=_('Transaction No.'))
 
 
 class Follow(ModelMixin):
