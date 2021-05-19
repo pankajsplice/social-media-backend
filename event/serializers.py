@@ -1,4 +1,4 @@
-from event.models import Event, Category, Venue, Comment, Subscription, UserSubscription, Like,\
+from event.models import Event, Category, Venue, Comment, Subscription, Like,\
     Follow, Message, Member, Group, EventGroup, EventSetting
 from utils.custom_mixin import QuerySetFilterMixin, CustomBaseSerializer
 from rest_framework import serializers
@@ -70,12 +70,6 @@ class LikeSerializer(CustomBaseSerializer):
 class SubscriptionSerializer(CustomBaseSerializer):
     class Meta:
         model = Subscription
-        fields = '__all__'
-
-
-class UserSubscriptionSerializer(CustomBaseSerializer):
-    class Meta:
-        model = UserSubscription
         fields = '__all__'
 
 

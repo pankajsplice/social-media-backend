@@ -1,5 +1,5 @@
 from django.contrib import admin
-from event.models import Event, Venue, Category, Comment, Like, Subscription, UserSubscription, Message, Follow, \
+from event.models import Event, Venue, Category, Comment, Like, Subscription, Message, Follow, \
     Member, Group, EventGroup, EventSetting
 from utils.download_csv import ExportCsvMixin
 
@@ -38,13 +38,7 @@ class LikeAdmin(admin.ModelAdmin, ExportCsvMixin):
 
 class SubscriptionAdmin(admin.ModelAdmin, ExportCsvMixin):
     model = Subscription
-    list_display = ['id', 'name', 'price', 'validity', 'description']
-    actions = ["download_csv"]
-
-
-class UserSubscriptionAdmin(admin.ModelAdmin, ExportCsvMixin):
-    model = UserSubscription
-    list_display = ['id', 'user', 'subscription', 'payment_amount', 'payment_mode', 'transaction_no']
+    list_display = ['id', 'name', 'price', 'validity', 'description', 'stripe_product_id', 'stripe_price_id']
     actions = ["download_csv"]
 
 
@@ -85,7 +79,6 @@ admin.site.register(Category, CategoryAdmin)
 admin.site.register(Comment, CommentAdmin)
 admin.site.register(Like, LikeAdmin)
 admin.site.register(Subscription, SubscriptionAdmin)
-admin.site.register(UserSubscription, UserSubscriptionAdmin)
 admin.site.register(Follow, FollowAdmin)
 admin.site.register(Message, MessageAdmin)
 admin.site.register(Member, MemberAdmin)

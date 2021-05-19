@@ -62,6 +62,7 @@ INSTALLED_APPS = [
 CUSTOM_APPS = [
     'accounts.apps.AccountsConfig',
     'event',
+    'payment',
 ]
 
 INSTALLED_APPS += CUSTOM_APPS
@@ -170,10 +171,13 @@ CORS_ORIGIN_ALLOW_ALL = True
 INTERNAL_IPS = ['127.0.0.1']
 
 
+# *** stripe config start ***
 
-# REST_AUTH_REGISTER_SERIALIZERS = {
-#     'REGISTER_SERIALIZER': 'accounts.serializers.RegisterSerializer',
-# }
+STRIPE_PUBLIC_KEY = 'pk_test_51IsOlbSJfytDQt8mxA52OHmvXU8T4O7zHt9VTHQOzluURMASeYom8cZnOgYMStFTac4qf1FGEEHYy7ooaCUuyUob00JHsKwyXZ'
+STRIPE_SECRET_KEY = 'sk_test_51IsOlbSJfytDQt8mWqloyUXBfkeUPCXmqkHoPEnRa6wIeHuBfa4eJD2ztSVYLDVo0ArHiDijM1DgcL5Wqx9vFDJF00Gzly4eng'
+
+# *** stripe config end ***
+
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
