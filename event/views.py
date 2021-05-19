@@ -35,8 +35,8 @@ class EventViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
 
 # to create events' category
 class CategoryViewSet(viewsets.ModelViewSet):
-    authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (permissions.IsAuthenticated,)
+    # authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.AllowAny,)
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
     filterset_fields = {
