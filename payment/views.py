@@ -107,21 +107,20 @@ class StripeCustomerApiView(APIView):
     def post(self, request, format=None):
         try:
             email = request.data['email']
-            subscription_id = request.data['subscription_id']
+            subscription_id = request.data['subscription']
             if email and subscription_id:
                 subscription = Subscription.objects.get(id=subscription_id)
                 create_customer = stripe.Customer.create(email=email)
                 create_subscription = stripe.Subscription.create(
-                    customer=create_customer.data.id,
+                    customer=create_customer.id,
                     items=[
                         {"price": subscription.stripe_price_id},
                     ],
                     payment_behavior='default_incomplete',
                     expand=['latest_invoice.payment_intent'],
                 )
-                create_invoice = stripe.Invoice.create(customer=create_customer.id, subscription=create_subscription.id)
                 serializer = StripeCustomerSerializer(data=request.data)
-                if serializer.is_valid():
+                if serializer.is_valid(raise_exception=True):
                     serializer.save(customer=create_customer.id, strip_subscription=create_subscription.id,
                                     status=create_subscription.status)
 

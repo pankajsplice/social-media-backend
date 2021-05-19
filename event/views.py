@@ -243,8 +243,8 @@ class LikeViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
 
 # crud for subscription
 class SubscriptionViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
-    authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (permissions.IsAuthenticated,)
+    # authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.AllowAny,)
     serializer_class = SubscriptionSerializer
     queryset = Subscription.objects.all()
 
