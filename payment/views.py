@@ -6,6 +6,7 @@ from rest_framework.viewsets import ModelViewSet
 from payment.models import StripeCustomer
 from event.models import Subscription
 from payment.serializers import StripeCustomerSerializer
+from django.contrib.auth.models import User
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -107,10 +108,21 @@ class StripeCustomerApiView(APIView):
     def post(self, request, format=None):
         try:
             email = request.data['email']
+            name = User.objects.get(id=request.data['user'])
+            full_name = f'{name.first_name}  {name.last_name}'
+            city = request.data['city']
+            state = request.data['state']
+            country = request.data['country']
+            postal_code = request.data['postal_code']
+            address = request.data['address']
             subscription_id = request.data['subscription']
             if email and subscription_id:
                 subscription = Subscription.objects.get(id=subscription_id)
-                create_customer = stripe.Customer.create(email=email)
+                create_customer = stripe.Customer.create(
+                    email=email, name=full_name,
+                    address={"city": city, 'state': state, 'country': country, 'line1': address,
+                             'postal_code': postal_code},
+                                )
                 create_subscription = stripe.Subscription.create(
                     customer=create_customer.id,
                     items=[
