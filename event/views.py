@@ -6,10 +6,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from utils.custom_mixin import QuerySetFilterMixin
 from event.models import Event, Category, Venue, Comment, Like, Subscription,\
-    Follow, Message, Member, Group, EventGroup, EventSetting
+    Follow, Message, Member, Group, EventGroup, EventSetting, Notification
 from event.serializers import EventSerializer, CategorySerializer, VenueSerializer, \
     CommentSerializer, LikeSerializer, SubscriptionSerializer, FollowSerializer, MessageSerializer, MemberSerializer,\
-    GroupSerializer, EventGroupSerializer, EventSettingSerializer, GroupMemberSerializer
+    GroupSerializer, EventGroupSerializer, EventSettingSerializer, GroupMemberSerializer, NotificationSerializer
 
 from event.ticketmaster import GetEventList
 
@@ -298,3 +298,18 @@ class EventSettingViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = EventSettingSerializer
     queryset = EventSetting.objects.all()
+
+
+class NotificationViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Notification.objects.all().order_by('-id')
+    serializer_class = NotificationSerializer
+    authentication_classes = (authentication.TokenAuthentication, )
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        if not self.request.user.is_superuser:
+            queryset = super().get_queryset().filter(user=self.request.user)
+
+        return queryset

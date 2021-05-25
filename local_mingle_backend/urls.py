@@ -29,6 +29,7 @@ urlpatterns = [
     path('api/profile/', include('accounts.urls')),
     path('api/payment/', include('payment.urls')),
     path('api/registrations/', include('rest_auth.registration.urls')),
+    path('api/auth/', include('rest_social_auth.urls_token')),
     path('', TemplateView.as_view(template_name="index.html")),
     path('login/', TemplateView.as_view(template_name="account/user-login.html")),
     path('register/', TemplateView.as_view(template_name="account/user-register.html")),
