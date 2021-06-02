@@ -1,13 +1,14 @@
 from django.contrib import admin
 from event.models import Event, Venue, Category, Comment, Like, Subscription, Message, Follow, \
-    Member, Group, EventGroup, EventSetting
+    Member, Group, EventGroup, EventSetting, Notification
 from utils.download_csv import ExportCsvMixin
+from django_mptt_admin.admin import DjangoMpttAdmin
 
 
 class EventAdmin(admin.ModelAdmin, ExportCsvMixin):
     model = Event
     list_display = ['id', 'name', 'global_id', 'url', 'price_min', 'price_max', 'event_status', 'currency', 'category',
-                    'venue', 'timezone', 'time', 'date', 'user', 'description']
+                    'venue', 'timezone', 'time', 'date', 'user', 'source', 'description']
     actions = ["download_csv"]
 
 
@@ -18,7 +19,7 @@ class VenueAdmin(admin.ModelAdmin, ExportCsvMixin):
     actions = ["download_csv"]
 
 
-class CategoryAdmin(admin.ModelAdmin, ExportCsvMixin):
+class CategoryAdmin(DjangoMpttAdmin, ExportCsvMixin):
     model = Category
     list_display = ['id', 'name', 'parent']
     actions = ["download_csv"]
@@ -44,7 +45,7 @@ class SubscriptionAdmin(admin.ModelAdmin, ExportCsvMixin):
 
 class MessageAdmin(admin.ModelAdmin, ExportCsvMixin):
     model = Message
-    list_display = ['id', 'sender', 'receiver', 'msg']
+    list_display = ['id', 'sender', 'receiver', 'msg', 'timestamp']
     actions = ["download_csv"]
 
 
@@ -73,6 +74,11 @@ class EventSettingAdmin(admin.ModelAdmin, ExportCsvMixin):
     list_display = ['id', 'event', 'user', 'going']
 
 
+class EventNotification(admin.ModelAdmin, ExportCsvMixin):
+    model = Notification
+    list_display = ['id', 'event', 'user', 'notification_type', 'message', 'read_status', 'date_created']
+
+
 admin.site.register(Event, EventAdmin)
 admin.site.register(Venue, VenueAdmin)
 admin.site.register(Category, CategoryAdmin)
@@ -85,3 +91,4 @@ admin.site.register(Member, MemberAdmin)
 admin.site.register(Group, GroupAdmin)
 admin.site.register(EventGroup, EventGroupAdmin)
 admin.site.register(EventSetting, EventSettingAdmin)
+admin.site.register(Notification, EventNotification)

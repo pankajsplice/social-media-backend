@@ -1,5 +1,5 @@
 from event.models import Event, Category, Venue, Comment, Subscription, Like,\
-    Follow, Message, Member, Group, EventGroup, EventSetting
+    Follow, Message, Member, Group, EventGroup, EventSetting, Notification
 from utils.custom_mixin import QuerySetFilterMixin, CustomBaseSerializer
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
@@ -7,7 +7,7 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
-class EventSerializer(CustomBaseSerializer):
+class EventSerializer(serializers.ModelSerializer):
     like = serializers.SerializerMethodField()
     comment = serializers.SerializerMethodField()
     group = serializers.SerializerMethodField()
@@ -16,7 +16,7 @@ class EventSerializer(CustomBaseSerializer):
         model = Event
         fields = ('id', 'name', 'global_id', 'url', 'price_min', 'price_max', 'event_status', 'currency',
                   'image_json', 'event_image', 'category', 'venue', 'seatmap_url', 'timezone', 'time', 'date',
-                  'user', 'description', 'like', 'comment', 'group', 'created_by', 'updated_by', 'status',
+                  'user', 'source', 'description', 'like', 'comment', 'group', 'created_by', 'updated_by', 'status',
                   'date_created', 'date_updated')
 
     def get_like(self, obj):
@@ -135,4 +135,10 @@ class EventGroupSerializer(CustomBaseSerializer):
 class EventSettingSerializer(CustomBaseSerializer):
     class Meta:
         model = EventSetting
+        fields = '__all__'
+
+
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notification
         fields = '__all__'

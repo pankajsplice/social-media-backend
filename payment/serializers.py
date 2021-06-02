@@ -6,4 +6,4 @@ class StripeCustomerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = StripeCustomer
-        fields = ('user', 'email', 'subscription')
+        fields = ('user', 'email', 'subscription', 'status')

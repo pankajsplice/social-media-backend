@@ -60,7 +60,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserProfile
-        fields = ('mobile', 'type', 'profile_pic', 'location', 'profile_groups', 'profile_interest')
+        fields = ('mobile', 'type', 'profile_pic', 'location', 'enabled_msg', 'profile_groups', 'profile_interest')
 
 
 class UserDetailsSerializer(serializers.ModelSerializer):
@@ -92,3 +92,13 @@ class UserDetailsSerializer(serializers.ModelSerializer):
         model = User
         fields = ('pk', 'username', 'email', 'first_name', 'last_name', 'profile', 'last_login')
         read_only_fields = ('email', )
+
+
+class UserSerializer(serializers.ModelSerializer):
+    """
+
+    """
+
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name', 'email')

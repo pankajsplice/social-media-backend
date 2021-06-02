@@ -7,6 +7,8 @@ from payment.models import StripeCustomer
 from event.models import Subscription
 from payment.serializers import StripeCustomerSerializer
 from django.contrib.auth.models import User
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -145,3 +147,41 @@ class StripeCustomerApiView(APIView):
             pass
 
         return Response({'error': 'something went wrong', 'data': []})
+
+
+class StripeCustomerViewSets(ModelViewSet):
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, )
+    serializer_class = StripeCustomerSerializer
+    queryset = StripeCustomer.objects.all()
+
+    def get_queryset(self):
+        user_id = self.request.query_params.get("user_id", None)
+        if user_id is None:
+            queryset = StripeCustomer.objects.none()
+        else:
+            queryset = StripeCustomer.objects.filter(user=user_id)
+        return queryset
+
+
+class GetPaymentDetails(APIView):
+
+    def post(self, request, format=None):
+        payment_id = request.data['payment']
+        get_payment = stripe.PaymentIntent.retrieve(payment_id)
+        return Response({'data': get_payment})
+
+
+class CancelSubscription(APIView):
+    def post(self, request, format=None):
+        subscription_id = request.data['subscription']
+        if subscription_id:
+            stripe_customer = StripeCustomer.objects.get(subscription_id=subscription_id)
+            get_current_subscription_id = stripe_customer.strip_subscription
+            cancel_subscription = stripe.Subscription.delete(get_current_subscription_id)
+            subscription_instance = Subscription.objects.get(id=subscription_id)
+            subscription_instance.status = cancel_subscription.status
+            subscription_instance.save()
+            return Response({'data': cancel_subscription})
+        else:
+            return Response({'data': [], 'error': 'please provide subscription id'})

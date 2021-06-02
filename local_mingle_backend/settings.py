@@ -57,6 +57,10 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'import_export',
     'mptt',
+    'django_mptt_admin',
+    'social_django',
+    'rest_social_auth',
+    'sslserver',
 ]
 
 CUSTOM_APPS = [
@@ -179,8 +183,31 @@ STRIPE_SECRET_KEY = 'sk_test_51IsOlbSJfytDQt8mWqloyUXBfkeUPCXmqkHoPEnRa6wIeHuBfa
 # *** stripe config end ***
 
 
-# Database
-# https://docs.djangoproject.com/en/3.0/ref/settings/#databases
+# *** social auth settings start ***
+SOCIAL_AUTH_FACEBOOK_KEY = '751188928882132'
+SOCIAL_AUTH_FACEBOOK_SECRET = '741dd3e6c21db6c710da089b764e670d'
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email', ]
+SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
+    'fields': ','.join([
+        # 'public_profile',
+        'id', 'cover', 'name', 'first_name', 'last_name', 'age_range', 'link',
+        'gender', 'locale', 'picture', 'timezone', 'updated_time', 'verified',
+        # extra fields
+        'email',
+    ]),
+}
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = (
+    '90467052393-ud49796jibdqbcru8q38aia5vqfae5n5.apps.googleusercontent.com'
+
+
+)
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '92pW9KCL0mWKrYY4-9D0x2Nz'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['email', ]
+
+# *** social auth settings end ***
+
+
 try:
     from local_mingle_backend.settings_sgspl import *
     from local_mingle_backend.settings_local import *

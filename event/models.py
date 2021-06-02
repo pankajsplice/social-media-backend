@@ -31,6 +31,7 @@ class Event(ModelMixin):
     time = models.TimeField(help_text=_('Event Timing'), blank=True, null=True)
     date = models.DateField(help_text=_('Event Date'), blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
+    source = models.CharField(max_length=100, blank=True, null=True)
     description = models.TextField(help_text=_('Event Description'), null=True, blank=True)
 
     def __str__(self):
@@ -104,6 +105,14 @@ class Message(ModelMixin):
     sender = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='sender', null=True, help_text=_('sender'))
     receiver = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='receiver', null=True,  help_text=_('receiver'))
     msg = models.TextField(help_text=_('message'))
+    timestamp = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.msg
+
+    class Meta:
+        ordering = ('timestamp',)
 
 
 class Member(ModelMixin):
@@ -133,3 +142,13 @@ class EventSetting(ModelMixin):
     event = models.ForeignKey(Event, on_delete=models.SET_NULL, help_text=_('Event'), null=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, help_text=_('User'), null=True)
     going = models.BooleanField(default=False)
+
+
+class Notification(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_notifications')
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, blank=True, null=True)
+    notification_type = models.CharField(max_length=100, blank=True, null=True)
+    message = models.TextField(blank=True, null=True)
+    read_status = models.BooleanField(default=False)
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_updated = models.DateTimeField(auto_now=True)
