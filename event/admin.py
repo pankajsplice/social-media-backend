@@ -45,7 +45,7 @@ class SubscriptionAdmin(admin.ModelAdmin, ExportCsvMixin):
 
 class MessageAdmin(admin.ModelAdmin, ExportCsvMixin):
     model = Message
-    list_display = ['id', 'sender', 'receiver', 'msg']
+    list_display = ['id', 'sender', 'receiver', 'msg', 'timestamp']
     actions = ["download_csv"]
 
 

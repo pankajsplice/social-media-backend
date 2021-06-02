@@ -105,6 +105,14 @@ class Message(ModelMixin):
     sender = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='sender', null=True, help_text=_('sender'))
     receiver = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='receiver', null=True,  help_text=_('receiver'))
     msg = models.TextField(help_text=_('message'))
+    timestamp = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.msg
+
+    class Meta:
+        ordering = ('timestamp',)
 
 
 class Member(ModelMixin):

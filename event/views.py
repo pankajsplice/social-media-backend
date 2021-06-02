@@ -12,6 +12,10 @@ from event.serializers import EventSerializer, CategorySerializer, VenueSerializ
     GroupSerializer, EventGroupSerializer, EventSettingSerializer, GroupMemberSerializer, NotificationSerializer
 
 from event.ticketmaster import GetEventList
+from rest_framework.authentication import TokenAuthentication
+from django.db.models import Q
+from accounts.models import UserProfile
+from accounts.serializers import UserProfileSerializer, UserSerializer
 
 User = get_user_model()
 
@@ -313,3 +317,69 @@ class NotificationViewSet(viewsets.ReadOnlyModelViewSet):
             queryset = super().get_queryset().filter(user=self.request.user)
 
         return queryset
+
+
+class MessageUser(APIView):
+    authentication_classes = (TokenAuthentication,)
+
+    def get(self, request, id):
+        messages_query = Message.objects.filter(Q(sender=id) | Q(receiver=id)).order_by('-id')
+        print('messages_query', messages_query)
+        message_user = list(set([]))
+        for i in messages_query:
+            if (int(i.sender.id) != int(id)) or (int(i.receiver.id) != int(id)):
+                message_user.append(i.sender.id)
+                message_user.append(i.receiver.id)
+        recent_message_user = User.objects.filter(id__in=message_user)
+        data = []
+        for i in recent_message_user:
+            serializer = UserSerializer(i)
+            profile = UserProfile.objects.get(user=i.id)
+            serializer_profile = UserProfileSerializer(profile)
+            print(profile.profile_pic)
+            user = serializer.data
+            user['profile'] = serializer_profile.data
+            messages = Message.objects.filter(Q(sender__in=[i.id, request.user.id]), Q(receiver__in=[request.user.id, i.id])).order_by(
+                '-id').first()
+            serializer_message = MessageSerializer(messages)
+            if len(serializer_message.data['msg']) >= 1:
+                user['msg'] = serializer_message.data
+            data.append(user)
+        return Response(data)
+
+
+class MessageView(APIView):
+    authentication_classes = (TokenAuthentication,)
+
+    def get(self, request, user, friend):
+        messages1 = Message.objects.filter(sender=user, receiver=friend).order_by('id')
+        messages2 = Message.objects.filter(sender=friend, receiver=user).order_by('id')
+        print(messages1, messages2)
+        messages = []
+        if len(messages1) + len(messages2) >= 2:
+            for i in range(len(messages1) + len(messages2)):
+                try:
+                    serializer1 = MessageSerializer(messages1[i])
+                    messages.append(serializer1.data)
+                except:
+                    pass
+                try:
+                    serializer2 = MessageSerializer(messages2[i])
+                    messages.append(serializer2.data)
+                except:
+                    pass
+        else:
+            if len(messages1) >= 1:
+                serializer1 = MessageSerializer(messages1[0])
+                messages.append(serializer1.data)
+            if len(messages2) >= 1:
+                serializer2 = MessageSerializer(messages2[0])
+                messages.append(serializer2.data)
+        return Response(messages)
+
+    def post(self, request):
+        serializer = MessageSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
