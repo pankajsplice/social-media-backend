@@ -25,7 +25,7 @@ class EventViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
     # authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (permissions.AllowAny,)
     serializer_class = EventSerializer
-    queryset = Event.objects.all().distinct()
+    queryset = Event.objects.all()
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_fields = {'status': ['exact'],
                         'venue__name': ['iexact', 'istartswith'],
