@@ -3,6 +3,7 @@ from event.models import Event, Category, Venue, Comment, Subscription, Like,\
 from utils.custom_mixin import QuerySetFilterMixin, CustomBaseSerializer
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from accounts.models import UserProfile
 
 User = get_user_model()
 
@@ -11,11 +12,13 @@ class EventSerializer(serializers.ModelSerializer):
     like = serializers.SerializerMethodField()
     comment = serializers.SerializerMethodField()
     group = serializers.SerializerMethodField()
+    venue_detail = serializers.SerializerMethodField()
+    category_name = serializers.SerializerMethodField()
 
     class Meta:
         model = Event
         fields = ('id', 'name', 'global_id', 'url', 'price_min', 'price_max', 'event_status', 'currency',
-                  'image_json', 'event_image', 'category', 'venue', 'seatmap_url', 'timezone', 'time', 'date',
+                  'image_json', 'event_image', 'category', 'category_name', 'venue', 'venue_detail', 'seatmap_url', 'timezone', 'time', 'date',
                   'user', 'source', 'description', 'like', 'comment', 'group', 'created_by', 'updated_by', 'status',
                   'date_created', 'date_updated')
 
@@ -30,6 +33,16 @@ class EventSerializer(serializers.ModelSerializer):
     def get_group(self, obj):
         group = EventGroup.objects.filter(event_id=obj.id).count()
         return group
+
+    def get_venue_detail(self, obj):
+        ven = Venue.objects.get(id=obj.venue.id)
+        venue_detail = {'name': ven.name, 'city': ven.city, 'state': ven.state_name, 'longitude': ven.longitude,
+                        'latitude': ven.latitude, 'url': ven.url, 'country': ven.country_name, 'address': ven.address}
+        return venue_detail
+
+    def get_category_name(self, obj):
+        cat = Category.objects.get(id=obj.category.id)
+        return cat.name
 
 
 class CategorySerializer(CustomBaseSerializer):
@@ -133,9 +146,34 @@ class EventGroupSerializer(CustomBaseSerializer):
 
 
 class EventSettingSerializer(CustomBaseSerializer):
+    event_detail = serializers.SerializerMethodField()
+    user_detail = serializers.SerializerMethodField()
+
     class Meta:
         model = EventSetting
-        fields = '__all__'
+        fields = ('id', 'status', 'going', 'event', 'event_detail', 'user', 'user_detail', 'date_created',
+                  'date_updated', 'created_by', 'updated_by')
+
+    def get_event_detail(self, obj):
+        event = Event.objects.get(id=obj.event.id)
+        event_detail = {'name': event.name,  'event_status': event.event_status, 'date': event.date,
+                        'url': event.url, 'time': event.time, 'currency': event.currency, 'source': event.source}
+        return event_detail
+
+    def get_user_detail(self, obj):
+        user = User.objects.get(id=obj.user.id)
+        user_profile = UserProfile.objects.get(user=user)
+        if user_profile:
+            profile = user_profile.profile_pic
+            mobile = user_profile.mobile
+            if profile:
+                profile = profile.url
+        else:
+            profile = None
+            mobile = None
+        user_detail = {'name': f'{user.first_name} {user.last_name}', 'email': user.email, 'profile': profile,
+                       'mobile': mobile}
+        return user_detail
 
 
 class NotificationSerializer(serializers.ModelSerializer):
