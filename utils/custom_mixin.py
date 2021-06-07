@@ -115,6 +115,11 @@ class QuerySetFilterMixin(object):
             create_notification(**kwargs)
             serializer.save(created_by=self.request.user, updated_by=self.request.user)
 
+        else:
+            serializer.created_by = self.request.user
+            serializer.updated_by = self.request.user
+            serializer.save()
+
     def perform_update(self, serializer):
         if self.basename == 'event':
             user = self.request.data['created_by']
@@ -129,6 +134,10 @@ class QuerySetFilterMixin(object):
             create_notification(**kwargs)
 
             serializer.save(updated_by_id=int(self.request.data['updated_by']))
+
+        else:
+            serializer.updated_by = self.request.user
+            serializer.save()
 
 
 class CustomBaseSerializer(serializers.ModelSerializer):
