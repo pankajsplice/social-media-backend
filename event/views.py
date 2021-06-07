@@ -304,6 +304,9 @@ class EventSettingViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = EventSettingSerializer
     queryset = EventSetting.objects.all()
+    filterset_fields = {'event__name': ['iexact', 'istartswith'],
+                        'event': ['exact'],
+                        'going': ['exact']}
 
 
 class NotificationViewSet(viewsets.ReadOnlyModelViewSet):
