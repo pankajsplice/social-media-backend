@@ -17,8 +17,8 @@ router.register(r'events-subscription', SubscriptionViewSet)
 router.register(r'events-follow', FollowViewSet)
 router.register(r'events-message', MessageViewSet)
 router.register(r'member', MemberViewSet)
-router.register(r'group', GroupViewSet)
-router.register(r'group-member', GroupMemberViewSet)
+router.register(r'post-group-member', GroupViewSet)
+# router.register(r'get-group-member', GroupMemberViewSet)
 router.register(r'events-group', EventGroupViewSet)
 router.register(r'events-setting', EventSettingViewSet)
 router.register(r'notification', NotificationViewSet)
@@ -29,6 +29,7 @@ urlpatterns = [
     path('fetch-events/', FetchEventTicketMasterApiView.as_view(), name="fetch_events"),
     path('messages/<int:user>/<int:friend>', MessageView.as_view(), name='message-detail'),
     path('messages/', MessageView.as_view(), name='message-save'),
-    path('message/user/<int:id>', MessageUser.as_view())
+    path('message/user/<int:id>', MessageUser.as_view()),
+    path('get-group-member/', GroupMemberViewSet.as_view())
 
 ]

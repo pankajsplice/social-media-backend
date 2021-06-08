@@ -119,8 +119,8 @@ class Member(ModelMixin):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='member')
     invited = models.BooleanField(default=False)
 
-    def __del__(self):
-        return "{}".format(self.user)
+    def __str__(self):
+        return "{} {}".format(self.user.first_name, self.user.last_name)
 
 
 class Group(ModelMixin):

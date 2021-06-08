@@ -16,6 +16,7 @@ from rest_framework.authentication import TokenAuthentication
 from django.db.models import Q
 from accounts.models import UserProfile
 from accounts.serializers import UserProfileSerializer, UserSerializer
+from rest_framework.generics import ListAPIView
 
 User = get_user_model()
 
@@ -283,7 +284,7 @@ class GroupViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
     queryset = Group.objects.all()
 
 
-class GroupMemberViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
+class GroupMemberViewSet(ListAPIView):
     authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = GroupMemberSerializer
