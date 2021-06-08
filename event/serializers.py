@@ -111,11 +111,15 @@ class MemberSerializer(CustomBaseSerializer):
         return name
 
     def get_profile(self, obj):
-        profile = obj.user.profile.profile_pic
-        if profile:
-            profile = profile.url
-            return profile
-        else:
+        try:
+            get_profile = obj.user.profile
+            profile = get_profile.profile_pic
+            if profile:
+                profile = profile.url
+                return profile
+            else:
+                return None
+        except Exception as e:
             return None
 
 
