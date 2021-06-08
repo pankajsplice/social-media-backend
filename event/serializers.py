@@ -168,6 +168,8 @@ class EventSettingSerializer(CustomBaseSerializer):
             mobile = user_profile.mobile
             if profile:
                 profile = profile.url
+            else:
+                profile = None
         else:
             profile = None
             mobile = None
