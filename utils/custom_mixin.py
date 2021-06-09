@@ -1,7 +1,7 @@
 from django.db.models import Q
 from rest_framework import serializers
 from event.notifications import create_notification
-from event.models import Category, Event
+from event.models import Category, Event, Venue
 from django.contrib.auth.models import User
 
 
@@ -41,10 +41,27 @@ class QuerySetFilterMixin(object):
                 get_category = Category.objects.get(name='Prime Events')
                 event_category = self.request.data['category']
                 prime_category = create_manual_category(event_category, get_category)
+                venue_name = self.request.data['venue_name']
+                venue_global_id = self.request.data['venue_global_id']
+                venue_address = self.request.data['venue_address']
+                longitude = self.request.data['longitude']
+                latitude = self.request.data['latitude']
+                venue_id = None
+                try:
+                    venue_ins = Venue.objects.get(name=venue_name)
+                    venue_id = venue_ins.id
+
+                except:
+                    venue_ins = Venue(name=venue_name, global_id=venue_global_id, city='', address=venue_address,
+                                      state_code='', state_name='', postal_code='', country_code='', country_name='',
+                                      latitude=latitude, longitude=longitude)
+                    venue_ins.save()
+                    venue_id = venue_ins.pk
+
                 if prime_category:
                     event_instance = serializer.save(created_by_id=int(self.request.data['created_by']),
                                                      updated_by_id=int(self.request.data['created_by']),
-                                                     category_id=prime_category)
+                                                     category_id=prime_category, venue_id=venue_id)
                     if event_instance:
                         notification_type = self.basename
                         event = event_instance
