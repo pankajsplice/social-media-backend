@@ -6,10 +6,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from utils.custom_mixin import QuerySetFilterMixin
 from event.models import Event, Category, Venue, Comment, Like, Subscription,\
-    Follow, Message, Member, Group, EventGroup, EventSetting, Notification
+    Follow, Message, Member, Group, EventSetting, Notification
 from event.serializers import EventSerializer, CategorySerializer, VenueSerializer, \
     CommentSerializer, LikeSerializer, SubscriptionSerializer, FollowSerializer, MessageSerializer, MemberSerializer,\
-    GroupSerializer, EventGroupSerializer, EventSettingSerializer, GroupMemberSerializer, NotificationSerializer
+    PostGroupSerializer, GetGroupSerializer, EventSettingSerializer, NotificationSerializer
 
 from event.ticketmaster import GetEventList
 from rest_framework.authentication import TokenAuthentication
@@ -277,27 +277,19 @@ class MemberViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
     queryset = Member.objects.all()
 
 
-class GroupViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
+class PostGroupViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
     authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
-    serializer_class = GroupSerializer
+    serializer_class = PostGroupSerializer
     queryset = Group.objects.all()
 
 
-class GroupMemberViewSet(ListAPIView):
+class GetGroupList(ListAPIView):
     authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
-    serializer_class = GroupMemberSerializer
+    serializer_class = GetGroupSerializer
     queryset = Group.objects.all()
-    filterset_fields = ['id']
-
-
-class EventGroupViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
-    authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (permissions.IsAuthenticated,)
-    serializer_class = EventGroupSerializer
-    queryset = EventGroup.objects.all()
-    filterset_fields = ['event__id', 'group__id']
+    filterset_fields = ['id', 'event__id']
 
 
 class EventSettingViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):

@@ -1,6 +1,6 @@
 from django.contrib import admin
 from event.models import Event, Venue, Category, Comment, Like, Subscription, Message, Follow, \
-    Member, Group, EventGroup, EventSetting, Notification
+    Member, Group, EventSetting, Notification
 from utils.download_csv import ExportCsvMixin
 from django_mptt_admin.admin import DjangoMpttAdmin
 
@@ -61,12 +61,7 @@ class MemberAdmin(admin.ModelAdmin, ExportCsvMixin):
 
 class GroupAdmin(admin.ModelAdmin, ExportCsvMixin):
     model = Group
-    list_display = ['id', 'name', 'description']
-
-
-class EventGroupAdmin(admin.ModelAdmin, ExportCsvMixin):
-    model = EventGroup
-    list_display = ['id', 'event', 'group']
+    list_display = ['id', 'name', 'description', 'event']
 
 
 class EventSettingAdmin(admin.ModelAdmin, ExportCsvMixin):
@@ -89,6 +84,5 @@ admin.site.register(Follow, FollowAdmin)
 admin.site.register(Message, MessageAdmin)
 admin.site.register(Member, MemberAdmin)
 admin.site.register(Group, GroupAdmin)
-admin.site.register(EventGroup, EventGroupAdmin)
 admin.site.register(EventSetting, EventSettingAdmin)
 admin.site.register(Notification, EventNotification)
