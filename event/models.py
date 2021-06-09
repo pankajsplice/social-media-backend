@@ -126,7 +126,7 @@ class Member(ModelMixin):
 class Group(ModelMixin):
     name = models.CharField(max_length=255, help_text=_('Group Name'), unique=True)
     description = models.TextField(help_text=_('Group Description'))
-    event = models.ForeignKey(Event, on_delete=models.CASCADE, help_text=_('Event'))
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, help_text=_('Event'), blank=True, null=True)
     member = models.ManyToManyField(Member, blank=True, null=True)
     limit = models.IntegerField(blank=True, null=True)
 
