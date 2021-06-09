@@ -144,7 +144,9 @@ class GetGroupSerializer(CustomBaseSerializer):
         return member
 
     def get_event_name(self, obj):
-        event_name = obj.event.name
+        event_name = ''
+        if obj.event:
+            event_name = obj.event.name
         return event_name
 
 

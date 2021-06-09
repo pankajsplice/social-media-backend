@@ -107,7 +107,7 @@ class QuerySetFilterMixin(object):
             create_notification(**kwargs)
             serializer.save(created_by=self.request.user, updated_by=self.request.user)
 
-        if self.basename == 'event_group':
+        if self.basename == 'group':
             user = self.request.user
             notification_type = self.basename
             event = self.request.data['event']
