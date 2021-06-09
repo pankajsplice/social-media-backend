@@ -3,7 +3,7 @@ from rest_framework import routers
 from django.urls import path, include
 from event.views import EventViewSet, CategoryViewSet, VenueViewSet, FetchEventTicketMasterApiView, CommentViewSet, \
     LikeViewSet, SubscriptionViewSet, FollowViewSet, MessageViewSet, MemberViewSet, \
-    GroupViewSet, EventGroupViewSet, EventSettingViewSet, GroupMemberViewSet, NotificationViewSet, MessageView,\
+    PostGroupViewSet, GetGroupList, EventSettingViewSet, NotificationViewSet, MessageView,\
     MessageUser
 
 router = routers.DefaultRouter()
@@ -17,9 +17,7 @@ router.register(r'events-subscription', SubscriptionViewSet)
 router.register(r'events-follow', FollowViewSet)
 router.register(r'events-message', MessageViewSet)
 router.register(r'member', MemberViewSet)
-router.register(r'post-group-member', GroupViewSet)
-# router.register(r'get-group-member', GroupMemberViewSet)
-router.register(r'events-group', EventGroupViewSet)
+router.register(r'post-group', PostGroupViewSet)
 router.register(r'events-setting', EventSettingViewSet)
 router.register(r'notification', NotificationViewSet)
 
@@ -30,6 +28,6 @@ urlpatterns = [
     path('messages/<int:user>/<int:friend>', MessageView.as_view(), name='message-detail'),
     path('messages/', MessageView.as_view(), name='message-save'),
     path('message/user/<int:id>', MessageUser.as_view()),
-    path('get-group-member/', GroupMemberViewSet.as_view())
+    path('get-group/', GetGroupList.as_view())
 
 ]

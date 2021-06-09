@@ -1,5 +1,5 @@
 from event.models import Event, Category, Venue, Comment, Subscription, Like,\
-    Follow, Message, Member, Group, EventGroup, EventSetting, Notification
+    Follow, Message, Member, Group, EventSetting, Notification
 from utils.custom_mixin import QuerySetFilterMixin, CustomBaseSerializer
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
@@ -123,30 +123,29 @@ class MemberSerializer(CustomBaseSerializer):
             return None
 
 
-class GroupSerializer(CustomBaseSerializer):
+class PostGroupSerializer(CustomBaseSerializer):
     class Meta:
         model = Group
         fields = '__all__'
 
 
-class GroupMemberSerializer(CustomBaseSerializer):
+class GetGroupSerializer(CustomBaseSerializer):
     member = MemberSerializer(read_only=True, many=True)
     total_member = serializers.SerializerMethodField()
+    event_name = serializers.SerializerMethodField()
 
     class Meta:
         model = Group
-        fields = ('id', 'name', 'description', 'limit', 'member', 'total_member', 'created_by', 'updated_by',
+        fields = ('id', 'name', 'description', 'limit', 'member', 'event', 'event_name', 'total_member', 'created_by', 'updated_by',
                   'date_created', 'date_updated')
 
     def get_total_member(self, obj):
         member = obj.member.all().count()
         return member
 
-
-class EventGroupSerializer(CustomBaseSerializer):
-    class Meta:
-        model = EventGroup
-        fields = '__all__'
+    def get_event_name(self, obj):
+        event_name = obj.event.name
+        return event_name
 
 
 class EventSettingSerializer(CustomBaseSerializer):
