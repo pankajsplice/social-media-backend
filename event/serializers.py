@@ -31,7 +31,7 @@ class EventSerializer(serializers.ModelSerializer):
         return comment
 
     def get_group(self, obj):
-        group = EventGroup.objects.filter(event_id=obj.id).count()
+        group = Group.objects.filter(event_id=obj.id).count()
         return group
 
     def get_venue_detail(self, obj):
