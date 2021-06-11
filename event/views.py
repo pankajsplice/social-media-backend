@@ -237,7 +237,7 @@ class CommentViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = CommentSerializer
     queryset = Comment.objects.all()
-    filterset_fields = ['event__id']
+    filterset_fields = ['event__id', 'created_by__id']
 
 
 # crud for like
@@ -246,6 +246,7 @@ class LikeViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = LikeSerializer
     queryset = Like.objects.all()
+    filterset_fields = ['event__id', 'created_by__id']
 
 
 # crud for subscription
@@ -299,7 +300,8 @@ class EventSettingViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
     queryset = EventSetting.objects.all()
     filterset_fields = {'event__name': ['iexact', 'istartswith'],
                         'event': ['exact'],
-                        'going': ['exact']}
+                        'going': ['exact'],
+                        'user__id': ['exact']}
 
 
 class NotificationViewSet(viewsets.ReadOnlyModelViewSet):
