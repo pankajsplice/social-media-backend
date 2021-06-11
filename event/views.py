@@ -37,6 +37,7 @@ class EventViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
                         'category__parent_id': ['exact'],
                         'category_id': ['exact'],
                         'source': ['iexact'],
+                        'id': ['exact'],
                         }
 
 
