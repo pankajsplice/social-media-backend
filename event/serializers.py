@@ -89,8 +89,13 @@ class CommentSerializer(CustomBaseSerializer):
 
     def get_event_detail(self, obj):
         event = Event.objects.get(id=obj.event.id)
+        if event.event_image:
+            ev_img = event.event_image.url
+        else:
+            ev_img = None
         event_detail = {'name': event.name,  'event_status': event.event_status, 'date': event.date,
-                        'url': event.url, 'time': event.time, 'currency': event.currency, 'source': event.source}
+                        'url': event.url, 'time': event.time, 'currency': event.currency, 'source': event.source,
+                        'event_image': ev_img, 'image_json': event.image_json}
         return event_detail
 
 
@@ -125,8 +130,13 @@ class LikeSerializer(CustomBaseSerializer):
 
     def get_event_detail(self, obj):
         event = Event.objects.get(id=obj.event.id)
+        if event.event_image:
+            ev_img = event.event_image.url
+        else:
+            ev_img = None
         event_detail = {'name': event.name, 'event_status': event.event_status, 'date': event.date,
-                        'url': event.url, 'time': event.time, 'currency': event.currency, 'source': event.source}
+                        'url': event.url, 'time': event.time, 'currency': event.currency, 'source': event.source,
+                        'event_image': ev_img, 'image_json': event.image_json}
         return event_detail
 
 
@@ -186,8 +196,13 @@ class EventSettingSerializer(CustomBaseSerializer):
 
     def get_event_detail(self, obj):
         event = Event.objects.get(id=obj.event.id)
+        if event.event_image:
+            ev_img = event.event_image.url
+        else:
+            ev_img = None
         event_detail = {'name': event.name,  'event_status': event.event_status, 'date': event.date,
-                        'url': event.url, 'time': event.time, 'currency': event.currency, 'source': event.source}
+                        'url': event.url, 'time': event.time, 'currency': event.currency, 'source': event.source,
+                        'event_image': ev_img, 'image_json': event.image_json}
         return event_detail
 
     def get_user_detail(self, obj):
