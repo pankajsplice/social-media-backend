@@ -115,19 +115,11 @@ class Message(ModelMixin):
         ordering = ('timestamp',)
 
 
-class Member(ModelMixin):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='member')
-    invited = models.BooleanField(default=False)
-
-    def __str__(self):
-        return "{} {}".format(self.user.first_name, self.user.last_name)
-
-
 class Group(ModelMixin):
     name = models.CharField(max_length=255, help_text=_('Group Name'), unique=True)
     description = models.TextField(help_text=_('Group Description'))
     event = models.ForeignKey(Event, on_delete=models.CASCADE, help_text=_('Event'), blank=True, null=True)
-    member = models.ManyToManyField(Member, blank=True, null=True)
+    member = models.ManyToManyField(User, blank=True, null=True, related_name='member')
     limit = models.IntegerField(blank=True, null=True)
 
     def __str__(self):

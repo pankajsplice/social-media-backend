@@ -6,9 +6,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from utils.custom_mixin import QuerySetFilterMixin
 from event.models import Event, Category, Venue, Comment, Like, Subscription,\
-    Follow, Message, Member, Group, EventSetting, Notification
+    Follow, Message, Group, EventSetting, Notification
 from event.serializers import EventSerializer, CategorySerializer, VenueSerializer, \
-    CommentSerializer, LikeSerializer, SubscriptionSerializer, FollowSerializer, MessageSerializer, MemberSerializer,\
+    CommentSerializer, LikeSerializer, SubscriptionSerializer, FollowSerializer, MessageSerializer,\
     PostGroupSerializer, GetGroupSerializer, EventSettingSerializer, NotificationSerializer
 
 from event.ticketmaster import GetEventList
@@ -269,13 +269,6 @@ class MessageViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = MessageSerializer
     queryset = Message.objects.all()
-
-
-class MemberViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
-    authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (permissions.IsAuthenticated,)
-    serializer_class = MemberSerializer
-    queryset = Member.objects.all()
 
 
 class PostGroupViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
