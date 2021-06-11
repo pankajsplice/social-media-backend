@@ -1,9 +1,10 @@
 from event.models import Event, Category, Venue, Comment, Subscription, Like,\
-    Follow, Message, Member, Group, EventSetting, Notification
+    Follow, Message, Group, EventSetting, Notification
 from utils.custom_mixin import QuerySetFilterMixin, CustomBaseSerializer
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from accounts.models import UserProfile
+from accounts.serializers import UserSerializer
 
 User = get_user_model()
 
@@ -58,26 +59,75 @@ class VenueSerializer(CustomBaseSerializer):
 
 
 class CommentSerializer(CustomBaseSerializer):
-    username = serializers.SerializerMethodField()
+    user_detail = serializers.SerializerMethodField()
+    event_detail = serializers.SerializerMethodField()
 
     class Meta:
         model = Comment
-        fields = ('id', 'event', 'msg', 'verified', 'created_by', 'updated_by', 'status', 'username',
+        fields = ('id', 'event', 'event_detail', 'msg', 'verified', 'created_by', 'updated_by', 'status', 'user_detail',
                   'date_created', 'date_updated')
 
-    def get_username(self, obj):
+    def get_user_detail(self, obj):
         if obj.created_by:
-            user = User.objects.filter(id=obj.created_by.pk).get()
-            username = "{} {}".format(user.first_name, user.last_name)
+            user = User.objects.get(id=obj.created_by.pk)
+            user_profile = UserProfile.objects.get(user=user)
+            if user_profile:
+                profile = user_profile.profile_pic
+                mobile = user_profile.mobile
+                if profile:
+                    profile = profile.url
+                else:
+                    profile = None
+            else:
+                profile = None
+                mobile = None
+            user_detail = {'name': f'{user.first_name} {user.last_name}', 'email': user.email, 'profile': profile,
+                           'mobile': mobile}
+            return user_detail
         else:
-            username = None
-        return username
+            return None
+
+    def get_event_detail(self, obj):
+        event = Event.objects.get(id=obj.event.id)
+        event_detail = {'name': event.name,  'event_status': event.event_status, 'date': event.date,
+                        'url': event.url, 'time': event.time, 'currency': event.currency, 'source': event.source}
+        return event_detail
 
 
 class LikeSerializer(CustomBaseSerializer):
+    event_detail = serializers.SerializerMethodField()
+    user_detail = serializers.SerializerMethodField()
+
     class Meta:
         model = Like
-        fields = '__all__'
+        fields = ('id', 'status', 'count', 'event', 'event_detail', 'created_by', 'updated_by', 'user_detail',
+                  'date_created', 'date_updated')
+
+    def get_user_detail(self, obj):
+        if obj.created_by:
+            user = User.objects.get(id=obj.created_by.pk)
+            user_profile = UserProfile.objects.get(user=user)
+            if user_profile:
+                profile = user_profile.profile_pic
+                mobile = user_profile.mobile
+                if profile:
+                    profile = profile.url
+                else:
+                    profile = None
+            else:
+                profile = None
+                mobile = None
+            user_detail = {'name': f'{user.first_name} {user.last_name}', 'email': user.email, 'profile': profile,
+                           'mobile': mobile}
+            return user_detail
+        else:
+            return None
+
+    def get_event_detail(self, obj):
+        event = Event.objects.get(id=obj.event.id)
+        event_detail = {'name': event.name, 'event_status': event.event_status, 'date': event.date,
+                        'url': event.url, 'time': event.time, 'currency': event.currency, 'source': event.source}
+        return event_detail
 
 
 class SubscriptionSerializer(CustomBaseSerializer):
@@ -98,31 +148,6 @@ class MessageSerializer(CustomBaseSerializer):
         fields = '__all__'
 
 
-class MemberSerializer(CustomBaseSerializer):
-    name = serializers.SerializerMethodField()
-    profile = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Member
-        fields = ('id', 'user', 'name', 'profile', 'invited', 'created_by', 'updated_by', 'date_created', 'date_updated')
-
-    def get_name(self, obj):
-        name = "{} {}".format(obj.user.first_name, obj.user.last_name)
-        return name
-
-    def get_profile(self, obj):
-        try:
-            get_profile = obj.user.profile
-            profile = get_profile.profile_pic
-            if profile:
-                profile = profile.url
-                return profile
-            else:
-                return None
-        except Exception as e:
-            return None
-
-
 class PostGroupSerializer(CustomBaseSerializer):
     class Meta:
         model = Group
@@ -130,14 +155,14 @@ class PostGroupSerializer(CustomBaseSerializer):
 
 
 class GetGroupSerializer(CustomBaseSerializer):
-    member = MemberSerializer(read_only=True, many=True)
+    member = UserSerializer(read_only=True, many=True)
     total_member = serializers.SerializerMethodField()
     event_name = serializers.SerializerMethodField()
 
     class Meta:
         model = Group
-        fields = ('id', 'name', 'description', 'limit', 'member', 'event', 'event_name', 'total_member', 'created_by', 'updated_by',
-                  'date_created', 'date_updated')
+        fields = ('id', 'name', 'description', 'limit', 'member', 'event', 'event_name', 'total_member', 'created_by',
+                  'updated_by', 'date_created', 'date_updated')
 
     def get_total_member(self, obj):
         member = obj.member.all().count()
