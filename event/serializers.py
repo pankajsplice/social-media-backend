@@ -1,5 +1,5 @@
 from event.models import Event, Category, Venue, Comment, Subscription, Like,\
-    Follow, Message, Group, EventSetting, Notification
+    Follow, Message, Group, EventSetting, Notification, GroupMessage
 from utils.custom_mixin import QuerySetFilterMixin, CustomBaseSerializer
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
@@ -227,3 +227,37 @@ class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
         fields = '__all__'
+
+
+class GroupMessageSerializer(CustomBaseSerializer):
+    user_detail = serializers.SerializerMethodField()
+    group_detail = serializers.SerializerMethodField()
+
+    class Meta:
+        model = GroupMessage
+        fields = ('id', 'sender', 'user_detail', 'receiver', 'group_detail', 'msg', 'timestamp', 'is_read')
+
+    def get_group_detail(self, obj):
+        try:
+            name = obj.receiver.name
+        except:
+            name = ''
+        return name
+
+    def get_user_detail(self, obj):
+        user = User.objects.get(id=obj.sender.id)
+        user_profile = UserProfile.objects.get(user=user)
+        if user_profile:
+            profile = user_profile.profile_pic
+            mobile = user_profile.mobile
+            if profile:
+                profile = profile.url
+            else:
+                profile = None
+        else:
+            profile = None
+            mobile = None
+        user_detail = {'name': f'{user.first_name} {user.last_name}', 'email': user.email, 'profile': profile,
+                       'mobile': mobile}
+        return user_detail
+

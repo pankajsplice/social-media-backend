@@ -6,5 +6,6 @@ def create_notification(**kwargs):
             user=kwargs['user'],
             notification_type=kwargs['notification_type'],
             message=kwargs['message'],
-            event=kwargs['event']
+            event=kwargs['event'],
+            group=kwargs['group']
         )

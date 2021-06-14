@@ -207,6 +207,9 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['email', ]
 
 # *** social auth settings end ***
 
+TWILIO_ACCOUNT_SID = 'ACbfe0cd41ed4784bd87a52c2bc82afeaa'
+TWILIO_AUTH_TOKEN = '7e281b8730edd965bb151031d95ad121'
+
 
 try:
     from local_mingle_backend.settings_sgspl import *

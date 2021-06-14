@@ -6,17 +6,20 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from utils.custom_mixin import QuerySetFilterMixin
 from event.models import Event, Category, Venue, Comment, Like, Subscription,\
-    Follow, Message, Group, EventSetting, Notification
+    Follow, Message, Group, EventSetting, Notification, GroupMessage
 from event.serializers import EventSerializer, CategorySerializer, VenueSerializer, \
     CommentSerializer, LikeSerializer, SubscriptionSerializer, FollowSerializer, MessageSerializer,\
-    PostGroupSerializer, GetGroupSerializer, EventSettingSerializer, NotificationSerializer
+    PostGroupSerializer, GetGroupSerializer, EventSettingSerializer, NotificationSerializer, GroupMessageSerializer
 
 from event.ticketmaster import GetEventList
 from rest_framework.authentication import TokenAuthentication
 from django.db.models import Q
 from accounts.models import UserProfile
 from accounts.serializers import UserProfileSerializer, UserSerializer
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, ListCreateAPIView
+from event.notifications import create_notification
+from django.core.mail import send_mail
+from local_mingle_backend.settings import DEFAULT_FROM_EMAIL, TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN
 
 User = get_user_model()
 
@@ -377,3 +380,93 @@ class MessageView(APIView):
             serializer.save()
             return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)
+
+
+class GroupInvitationApi(APIView):
+
+    def post(self, request, format=None):
+        get_email = request.data.get('email', '')
+        mobile = request.data.get('mobile', '')
+        group = request.data.get('group', '')
+        if group != '':
+            gp = Group.objects.get(id=group)
+            try:
+                event = Event.objects.get(id=gp.event_id)
+            except:
+                event = ''
+            if get_email != '':
+                user = User.objects.get(email=get_email)
+                if user:
+                    email_message = 'You are invited to join the group' f' {gp.name} ' 'for the event' f' {event.name}'
+                    notification_type = 'group_invitation'
+                    get_user_event = Event.objects.get(id=gp.event_id)
+                    message = 'You have got an invitation to join the group' f' {gp.name}'
+
+                    # creating notification
+                    kwargs = {'user': user, 'notification_type': notification_type, 'message': message,
+                              'event': get_user_event, 'group': gp}
+                    create_notification(**kwargs)
+                else:
+                    email_message = 'You are invited to join Local-mingle application. Here is the link you can install it ' \
+                              'and register for free. '
+                try:
+                    send_mail(subject='Invitation Link', message=email_message, from_email=DEFAULT_FROM_EMAIL,
+                              recipient_list=[get_email], fail_silently=True)
+                    return Response({'success': 'Email sent'})
+
+                except Exception as e:
+                    return Response({'error': 'Email can not sent'})
+
+            if mobile != '':
+                user = User.objects.get(email=get_email)
+                if user:
+                    sms = 'You are invited to join the group' f' {gp.name} ' 'for the event' f' {event.name}'
+                    notification_type = 'group_invitation'
+                    get_user_event = Event.objects.get(id=gp.event_id)
+                    message = 'You have got an invitation to join the group' f' {gp.name}'
+
+                    # creating notification
+                    kwargs = {'user': user, 'notification_type': notification_type, 'message': message,
+                              'event': get_user_event, 'group': gp}
+                    create_notification(**kwargs)
+                else:
+                    sms = 'You are invited to join Local-mingle application. Here is the link you can install it ' \
+                              'and register for free. '
+
+                import os
+                from twilio.rest import Client
+
+                # Find your Account SID and Auth Token at twilio.com/console
+                # and set the environment variables. See http://twil.io/secure
+                account_sid = TWILIO_ACCOUNT_SID
+                auth_token = TWILIO_AUTH_TOKEN
+                client = Client(account_sid, auth_token)
+                try:
+                    message = client.messages.create(body=sms,
+                                                     from_='+13237451893',
+                                                     to='+91'+mobile)
+                    print(message.sid)
+                    return Response({'success': 'SMS sent'})
+
+                except Exception as e:
+                    return Response({'error': 'SMS can not sent'})
+                    pass
+
+        else:
+            return Response({'error': 'Group can not be blank'})
+
+
+class GroupMessageListCreateView(ListCreateAPIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = GroupMessageSerializer
+    queryset = GroupMessage.objects.all()
+
+    def get_queryset(self):
+        try:
+            group_id = self.request.query_params['group_id']
+            queryset = GroupMessage.objects.filter(Q(receiver=group_id)).order_by('-id')
+        except:
+            return self.queryset
+
+        return queryset

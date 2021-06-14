@@ -167,6 +167,12 @@ class StripeCustomerViewSets(ModelViewSet):
 class GetPaymentDetails(APIView):
 
     def post(self, request, format=None):
+        payment_intent_id = request.data['paymentIntentId']
+        number = request.data['number']
+        exp_month = request.data['expMonth']
+        exp_year = request.data['expYear']
+        cvc = request.data['cvc']
+
         payment_id = request.data['payment']
         get_payment = stripe.PaymentIntent.retrieve(payment_id)
         return Response({'data': get_payment})
