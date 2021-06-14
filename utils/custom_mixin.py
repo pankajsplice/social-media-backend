@@ -68,7 +68,8 @@ class QuerySetFilterMixin(object):
                         user = event_instance.created_by
                         message = 'Your event has been created.'
                         # creating notification
-                        kwargs = {'user': user, 'notification_type': notification_type, 'message': message, 'event': event}
+                        kwargs = {'user': user, 'notification_type': notification_type, 'message': message,
+                                  'event': event, 'group': ''}
                         create_notification(**kwargs)
 
         if self.basename == 'like':
@@ -79,7 +80,8 @@ class QuerySetFilterMixin(object):
             message = 'You have get a like on your event'
 
             # creating notification
-            kwargs = {'user': user, 'notification_type': notification_type, 'message': message, 'event': get_user_event}
+            kwargs = {'user': user, 'notification_type': notification_type, 'message': message, 'event': get_user_event,
+                      'group': ''}
             create_notification(**kwargs)
             serializer.save(created_by=self.request.user, updated_by=self.request.user)
 
@@ -91,7 +93,8 @@ class QuerySetFilterMixin(object):
             message = 'A new person is commented on your event'
 
             # creating notification
-            kwargs = {'user': user, 'notification_type': notification_type, 'message': message, 'event': get_user_event}
+            kwargs = {'user': user, 'notification_type': notification_type, 'message': message, 'event': get_user_event,
+                      'group': ''}
             create_notification(**kwargs)
             serializer.save(created_by=self.request.user, updated_by=self.request.user)
 
@@ -103,7 +106,8 @@ class QuerySetFilterMixin(object):
             message = 'A new person is followed your event'
 
             # creating notification
-            kwargs = {'user': user, 'notification_type': notification_type, 'message': message, 'event': get_user_event}
+            kwargs = {'user': user, 'notification_type': notification_type, 'message': message, 'event': get_user_event,
+                      'group': ''}
             create_notification(**kwargs)
             serializer.save(created_by=self.request.user, updated_by=self.request.user)
 
@@ -115,7 +119,8 @@ class QuerySetFilterMixin(object):
             message = 'Your group is created'
 
             # creating notification
-            kwargs = {'user': user, 'notification_type': notification_type, 'message': message, 'event': event_obj}
+            kwargs = {'user': user, 'notification_type': notification_type, 'message': message, 'event': event_obj,
+                      'group': ''}
             create_notification(**kwargs)
             serializer.save(created_by=self.request.user, updated_by=self.request.user)
 
@@ -128,7 +133,8 @@ class QuerySetFilterMixin(object):
             sender = self.request.data['sender']
             message = 'You have received a new message '
             # creating notification
-            kwargs = {'user': user, 'notification_type': notification_type, 'message': message, 'event': get_user_event}
+            kwargs = {'user': user, 'notification_type': notification_type, 'message': message, 'event': get_user_event,
+                      'group': ''}
             create_notification(**kwargs)
             serializer.save(created_by=self.request.user, updated_by=self.request.user)
 
@@ -147,7 +153,8 @@ class QuerySetFilterMixin(object):
             event_object = Event.objects.get(id=int(event))
 
             # creating notification
-            kwargs = {'user': get_user, 'notification_type': notification_type, 'message': message, 'event': event_object}
+            kwargs = {'user': get_user, 'notification_type': notification_type, 'message': message,
+                      'event': event_object, 'group': ''}
             create_notification(**kwargs)
 
             serializer.save(updated_by_id=int(self.request.data['updated_by']))
