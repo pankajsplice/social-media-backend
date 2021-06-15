@@ -3,7 +3,7 @@ from django.db.models import DateTimeField
 from django.utils.timezone import now
 from rest_auth.registration.serializers import RegisterSerializer as DefaultRegisterSerializer
 from rest_framework import serializers
-from accounts.models import STAFF_TYPE
+from accounts.models import STAFF_TYPE, SocialAccount
 from accounts.models import UserProfile
 from django.conf import settings
 
@@ -106,3 +106,9 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'first_name', 'last_name', 'email')
+
+
+class SocialAccountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SocialAccount
+        fields = '__all__'
