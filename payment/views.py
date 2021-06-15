@@ -164,15 +164,39 @@ class StripeCustomerViewSets(ModelViewSet):
         return queryset
 
 
-class GetPaymentDetails(APIView):
-
+class ConfirmPaymentIntent(APIView):
     def post(self, request, format=None):
-        payment_intent_id = request.data['paymentIntentId']
+        payment_intent_id = request.data['payment_intent_id']
         number = request.data['number']
         exp_month = request.data['expMonth']
         exp_year = request.data['expYear']
         cvc = request.data['cvc']
+        payment_method = stripe.PaymentMethod.create(
+            type="card",
+            card={
+                "number": number,
+                "exp_month": exp_month,
+                "exp_year": exp_year,
+                "cvc": cvc,
+            },
+        )
+        if payment_method:
+            payment_method_id = payment_method.id
 
+            # To create a PaymentIntent for confirmation
+
+            confirm_payment_intent = stripe.PaymentIntent.confirm(
+                                        payment_intent_id,
+                                        payment_method=payment_method_id)
+            return Response({'data': confirm_payment_intent})
+
+        else:
+            return Response({'data': [], 'error': "Payment can not be proceeded"})
+
+
+class GetPaymentDetails(APIView):
+
+    def post(self, request, format=None):
         payment_id = request.data['payment']
         get_payment = stripe.PaymentIntent.retrieve(payment_id)
         return Response({'data': get_payment})
