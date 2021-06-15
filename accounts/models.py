@@ -43,3 +43,16 @@ class UserProfile(models.Model):
     profile_groups = models.BooleanField(default=False, help_text=_('Show Group on Profile'))
     profile_interest = models.BooleanField(default=False, help_text=_('Show interest on Profile'))
 
+
+class SocialAccount(models.Model):
+    email = models.CharField(max_length=128, null=True, blank=True)
+    mobile = models.CharField(max_length=100, null=True, blank=True)
+    token = models.TextField(null=True, blank=True)
+    providers = models.CharField(max_length=100, blank=True, null=True)
+    is_social_login = models.BooleanField(default=False)
+    social_picture = models.CharField(max_length=500, null=True, blank=True)
+    date_created = models.DateTimeField(auto_now_add=True, auto_now=False)
+    date_updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.email
