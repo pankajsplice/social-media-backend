@@ -467,6 +467,10 @@ class GroupMessageListCreateView(ListCreateAPIView):
             group_id = self.request.query_params['group_id']
             queryset = GroupMessage.objects.filter(Q(receiver=group_id)).order_by('-id')
         except:
-            return self.queryset
+            if self.request.user:
+                user_id = self.request.user.id
+                queryset = GroupMessage.objects.filter(Q(sender=user_id)).order_by('-id')
+            else:
+                queryset = self.queryset
 
         return queryset
