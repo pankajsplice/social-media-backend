@@ -15,14 +15,14 @@ class EventSerializer(serializers.ModelSerializer):
     group = serializers.SerializerMethodField()
     venue_detail = serializers.SerializerMethodField()
     category_name = serializers.SerializerMethodField()
-    recurring_detail = serializers.SerializerMethodField()
+    # recurring_detail = serializers.SerializerMethodField()
 
     class Meta:
         model = Event
         fields = ('id', 'name', 'global_id', 'url', 'price_min', 'price_max', 'event_status', 'currency',
                   'image_json', 'event_image', 'category', 'category_name', 'venue', 'venue_detail', 'seatmap_url', 'timezone', 'time', 'date',
                   'user', 'source', 'description', 'like', 'comment', 'group', 'created_by', 'updated_by', 'status',
-                  'date_created', 'date_updated', 'recurring', 'recurring_detail')
+                  'date_created', 'date_updated', 'recurring')
 
     def get_like(self, obj):
         like = Like.objects.filter(event_id=obj.id).count()
@@ -46,22 +46,21 @@ class EventSerializer(serializers.ModelSerializer):
         cat = Category.objects.get(id=obj.category.id)
         return cat.name
 
-    def get_recurring_detail(self, obj):
-        recurring_detail = []
-        if obj.recurring:
-            event_id = obj.id
-            event_time = obj.time
-            event_date = obj.date
-            recurring_detail.append({'time': event_time, 'data': event_date})
-            recurring_event = RecurringEvent.objects.filter(event_id=event_id)
-            for event in recurring_event:
-                event_time = event.time
-                event_date = event.date
-                recurring_detail.append({'time': event_time, 'data': event_date})
-            return recurring_detail
-        else:
-            return recurring_detail
-
+    # def get_recurring_detail(self, obj):
+    #     recurring_detail = []
+    #     if obj.recurring:
+    #         event_id = obj.id
+    #         event_time = obj.time
+    #         event_date = obj.date
+    #         recurring_detail.append({'time': event_time, 'data': event_date})
+    #         recurring_event = RecurringEvent.objects.filter(event_id=event_id)
+    #         for event in recurring_event:
+    #             event_time = event.time
+    #             event_date = event.date
+    #             recurring_detail.append({'time': event_time, 'data': event_date})
+    #         return recurring_detail
+    #     else:
+    #         return recurring_detail
 
 
 class CategorySerializer(CustomBaseSerializer):
@@ -279,3 +278,8 @@ class GroupMessageSerializer(CustomBaseSerializer):
                        'mobile': mobile}
         return user_detail
 
+
+class RecurringEventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RecurringEvent
+        fields = '__all__'
