@@ -8,8 +8,9 @@ from utils.custom_mixin import QuerySetFilterMixin
 from event.models import Event, Category, Venue, Comment, Like, Subscription,\
     Follow, Message, Group, EventSetting, Notification, GroupMessage, RecurringEvent
 from event.serializers import EventSerializer, CategorySerializer, VenueSerializer, \
-    CommentSerializer, LikeSerializer, SubscriptionSerializer, FollowSerializer, MessageSerializer,\
-    PostGroupSerializer, GetGroupSerializer, EventSettingSerializer, NotificationSerializer, GroupMessageSerializer
+    CommentSerializer, LikeSerializer, SubscriptionSerializer, FollowSerializer, MessageSerializer, \
+    PostGroupSerializer, GetGroupSerializer, EventSettingSerializer, NotificationSerializer, GroupMessageSerializer, \
+    RecurringEventSerializer
 
 from event.ticketmaster import GetEventList
 from rest_framework.authentication import TokenAuthentication
@@ -530,3 +531,11 @@ class RecurringEventChangeApiView(APIView):
 
             return Response({"success": True})
 
+
+class RecurringEventViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
+    # authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.AllowAny,)
+    serializer_class = RecurringEventSerializer
+    queryset = RecurringEvent.objects.all()
+    filterset_fields = {'event': ['exact'],
+                        'event__id': ['exact']}
