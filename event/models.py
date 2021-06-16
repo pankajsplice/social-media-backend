@@ -32,6 +32,7 @@ class Event(ModelMixin):
     date = models.DateField(help_text=_('Event Date'), blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
     source = models.CharField(max_length=100, blank=True, null=True)
+    recurring = models.BooleanField(default=False)
     description = models.TextField(help_text=_('Event Description'), null=True, blank=True)
 
     def __str__(self):
@@ -155,3 +156,9 @@ class GroupMessage(ModelMixin):
 
     class Meta:
         ordering = ('timestamp',)
+
+
+class RecurringEvent(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, )
+    time = models.TimeField(help_text=_('Event Timing'), blank=True, null=True)
+    date = models.DateField(help_text=_('Event Date'), blank=True, null=True)
