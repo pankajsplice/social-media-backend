@@ -538,4 +538,5 @@ class RecurringEventViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
     serializer_class = RecurringEventSerializer
     queryset = RecurringEvent.objects.all()
     filterset_fields = {'event': ['exact'],
-                        'event__id': ['exact']}
+                        'event__id': ['exact'],
+                        'date': ['gte', 'lte', 'exact'],}
