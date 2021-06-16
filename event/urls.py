@@ -4,7 +4,7 @@ from django.urls import path, include
 from event.views import EventViewSet, CategoryViewSet, VenueViewSet, FetchEventTicketMasterApiView, CommentViewSet, \
     LikeViewSet, SubscriptionViewSet, FollowViewSet, MessageViewSet, \
     PostGroupViewSet, GetGroupList, EventSettingViewSet, NotificationViewSet, MessageView,\
-    MessageUser, GroupInvitationApi, GroupMessageListCreateView
+    MessageUser, GroupInvitationApi, GroupMessageListCreateView, RecurringEventChangeApiView
 
 router = routers.DefaultRouter()
 
@@ -30,5 +30,6 @@ urlpatterns = [
     path('group-messages/', GroupMessageListCreateView.as_view(), name='group-message-save'),
     path('get-group/', GetGroupList.as_view()),
     path('group-invitation/', GroupInvitationApi.as_view(), name='group-invitation'),
+    path('recurring-event-change/', RecurringEventChangeApiView.as_view(), name='recurring-event-change'),
 
 ]

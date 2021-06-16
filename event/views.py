@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from utils.custom_mixin import QuerySetFilterMixin
 from event.models import Event, Category, Venue, Comment, Like, Subscription,\
-    Follow, Message, Group, EventSetting, Notification, GroupMessage
+    Follow, Message, Group, EventSetting, Notification, GroupMessage, RecurringEvent
 from event.serializers import EventSerializer, CategorySerializer, VenueSerializer, \
     CommentSerializer, LikeSerializer, SubscriptionSerializer, FollowSerializer, MessageSerializer,\
     PostGroupSerializer, GetGroupSerializer, EventSettingSerializer, NotificationSerializer, GroupMessageSerializer
@@ -215,8 +215,21 @@ class FetchEventTicketMasterApiView(APIView):
                         global_event_json = event.json
                         # check if events already exists
                         event_availability = Event.objects.filter(global_id=global_event_json['id'])
+
+                        # check for recurring events exists
+                        event_recurring = Event.objects.filter(name=global_event_json['name'])
                         if event_availability.exists():
                             pass
+                        elif event_recurring.exists():
+                            event_obj = Event.objects.get(name=global_event_json['name'])
+                            if event_obj.event_status == event.status and event_obj.venue.id == venue_id:
+                                event_recurring.update(recurring=True)
+                                if event_obj.recurring:
+                                    recurring_event = Event(event_id=event_obj.id, time=event.local_start_time,
+                                                            date=event.local_start_date,)
+                                    recurring_event.save()
+                            else:
+                                pass
                         else:
                             try:
                                 timezone = event.json['dates']['timezone']
@@ -227,7 +240,7 @@ class FetchEventTicketMasterApiView(APIView):
                                                    event_status=event.status, currency=currency, image_json=global_event_json['images'],
                                                    category_id=category_id, venue_id=venue_id, seatmap_url='',
                                                    timezone=timezone, time=event.local_start_time,
-                                                   date=event.local_start_date, description='')
+                                                   date=event.local_start_date, description='', recurring=False)
                             event_instance.save()
                     else:
                         print(event)
@@ -474,3 +487,46 @@ class GroupMessageListCreateView(ListCreateAPIView):
                 queryset = self.queryset
 
         return queryset
+
+
+class RecurringEventChangeApiView(APIView):
+
+    def get(self, request):
+        event_availability = Event.objects.all()
+
+        if event_availability.exists():
+            for event in event_availability:
+                event_recurring = Event.objects.filter(name=event.name, event_status=event.event_status, venue=event.venue)
+                event_count = event_recurring.count()
+
+                if event_count > 1:
+                    for ev in event_recurring:
+                        same_event = Event.objects.filter(global_id=ev.global_id, venue=ev.venue)
+                        same_event_count = same_event.count()
+
+                        if same_event_count > 1:
+                            for i, sm_event in enumerate(same_event):
+                                j = same_event_count - 2
+                                if i <= j:
+                                    sm_event.delete()
+
+                    base_id = None
+                    event_recurring = Event.objects.filter(name=event.name, event_status=event.event_status, venue=event.venue)
+                    event_count = event_recurring.count()
+                    if event_count > 1:
+                        for i, event_rec in enumerate(event_recurring):
+                            if i == 0:
+                                event_rec.recurring = True
+                                base_id = event_rec.id
+                                event_rec.save()
+                            else:
+                                recurring_event = RecurringEvent(event_id=base_id, time=event_rec.time,
+                                                                 date=event_rec.date)
+                                recurring_event.save()
+                                event_rec.delete()
+
+                else:
+                    pass
+
+            return Response({"success": True})
+
