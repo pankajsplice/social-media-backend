@@ -202,7 +202,8 @@ class GetGroupSerializer(CustomBaseSerializer):
         return event_name
 
 
-class EventSettingSerializer(CustomBaseSerializer):
+class EventSettingSerializer(serializers.ModelSerializer):
+    recurring_event = serializers.PrimaryKeyRelatedField(html_cutoff=10, queryset=RecurringEvent.objects.all())
     event_detail = serializers.SerializerMethodField()
     user_detail = serializers.SerializerMethodField()
     recurring_event_detail = serializers.SerializerMethodField()
