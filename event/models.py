@@ -130,6 +130,7 @@ class Group(ModelMixin):
 class EventSetting(ModelMixin):
     event = models.ForeignKey(Event, on_delete=models.SET_NULL, help_text=_('Event'), null=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, help_text=_('User'), null=True)
+    recurring_event = models.ForeignKey('RecurringEvent', on_delete=models.SET_NULL, help_text=_('Recurring Date and Time'), null=True)
     going = models.BooleanField(default=False)
 
 
@@ -162,3 +163,6 @@ class RecurringEvent(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE, )
     time = models.TimeField(help_text=_('Event Timing'), blank=True, null=True)
     date = models.DateField(help_text=_('Event Date'), blank=True, null=True)
+
+    def __str__(self):
+        return "{} for {}".format(str(self.date), self.event)

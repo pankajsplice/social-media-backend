@@ -205,11 +205,12 @@ class GetGroupSerializer(CustomBaseSerializer):
 class EventSettingSerializer(CustomBaseSerializer):
     event_detail = serializers.SerializerMethodField()
     user_detail = serializers.SerializerMethodField()
+    recurring_event_detail = serializers.SerializerMethodField()
 
     class Meta:
         model = EventSetting
-        fields = ('id', 'status', 'going', 'event', 'event_detail', 'user', 'user_detail', 'date_created',
-                  'date_updated', 'created_by', 'updated_by')
+        fields = ('id', 'status', 'going', 'event', 'event_detail', 'user', 'user_detail', 'recurring_event',
+                  'recurring_event_detail', 'date_created', 'date_updated', 'created_by', 'updated_by')
 
     def get_event_detail(self, obj):
         event = Event.objects.get(id=obj.event.id)
@@ -238,6 +239,15 @@ class EventSettingSerializer(CustomBaseSerializer):
         user_detail = {'name': f'{user.first_name} {user.last_name}', 'email': user.email, 'profile': profile,
                        'mobile': mobile}
         return user_detail
+
+    def get_recurring_event_detail(self, obj):
+        if obj.recurring_event:
+            date = obj.recurring_event.date
+            recurring_event_detail = {'event': obj.recurring_event.event_id, 'date': obj.recurring_event.date,
+                                      'time': obj.recurring_event.time}
+            return recurring_event_detail
+        else:
+            return None
 
 
 class NotificationSerializer(serializers.ModelSerializer):

@@ -26,3 +26,4 @@ django-mptt-admin==2.1.0
 django-sslserver==0.22
 social-auth-core==4.0.2
 twilio==6.59.1
+fcm-django==0.3.10
