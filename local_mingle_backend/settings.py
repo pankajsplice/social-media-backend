@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'social_django',
     'rest_social_auth',
     'sslserver',
+    'fcm_django',
 ]
 
 CUSTOM_APPS = [
@@ -210,6 +211,14 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['email', ]
 TWILIO_ACCOUNT_SID = 'ACbfe0cd41ed4784bd87a52c2bc82afeaa'
 TWILIO_AUTH_TOKEN = '7e281b8730edd965bb151031d95ad121'
 
+
+# *** fcm-django settings start ***
+
+FCM_DJANGO_SETTINGS = {
+        "FCM_SERVER_KEY": "AAAAn4zIwB4:APA91bH2LGJJcCqzhuQXaKOq26tog5GissVWJybqxKrlv98yIu-sLfzWY6wm2BHt48-89XUPHa_yKSGVsLV0mAdI32oWO5I9r8tcrOWWSDdCpDchLk9hJyl6whTeVy6ESySM79McNJP7"
+}
+
+# *** fcm-django settings end ***
 
 try:
     from local_mingle_backend.settings_sgspl import *
