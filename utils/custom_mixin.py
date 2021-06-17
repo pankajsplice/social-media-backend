@@ -93,9 +93,10 @@ class QuerySetFilterMixin(object):
             message = 'A new person is commented on your event'
 
             # creating notification
-            kwargs = {'user': user, 'notification_type': notification_type, 'message': message, 'event': get_user_event,
-                      'group': ''}
-            create_notification(**kwargs)
+            if user:
+                kwargs = {'user': user, 'notification_type': notification_type, 'message': message, 'event': get_user_event,
+                          'group': ''}
+                create_notification(**kwargs)
             serializer.save(created_by=self.request.user, updated_by=self.request.user)
 
         if self.basename == 'follow':
