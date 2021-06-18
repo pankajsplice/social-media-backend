@@ -56,3 +56,10 @@ class SocialAccount(models.Model):
 
     def __str__(self):
         return self.email
+
+
+class Otp(models.Model):
+    email = models.CharField(max_length=50, blank=True, null=True)
+    mobile = models.CharField(max_length=15, blank=True, null=True)
+    otp = models.IntegerField(blank=True)
+    verify = models.BooleanField(default=False)
