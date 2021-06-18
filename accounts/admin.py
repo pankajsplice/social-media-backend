@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 
-from .models import UserProfile
+from .models import UserProfile, Otp, SocialAccount
 from django.contrib.auth.admin import UserAdmin as UAdmin
 from utils.download_csv import ExportCsvMixin
 
@@ -33,6 +33,19 @@ class UserAdmin(UAdmin, ExportCsvMixin):
         return instance.profile.mobile
     get_mobile.short_description = 'mobile'
 
+
+class OtpAdmin(admin.ModelAdmin):
+    model = Otp
+    list_display = ['id', 'email', 'mobile', 'otp', 'verify']
+
+
+class SocialAccountAdmin(admin.ModelAdmin):
+    model = SocialAccount
+    list_display = ['id', 'email', 'mobile', 'token', 'providers', 'is_social_login', 'date_created']
+
+
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 admin.site.register(UserProfile, CustomUserAdmin)
+admin.site.register(Otp, OtpAdmin)
+admin.site.register(SocialAccount, SocialAccountAdmin)
