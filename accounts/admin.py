@@ -36,12 +36,12 @@ class UserAdmin(UAdmin, ExportCsvMixin):
 
 class OtpAdmin(admin.ModelAdmin):
     model = Otp
-    list_display = ('email', 'mobile', 'otp', 'verify')
+    list_display = ['id', 'email', 'mobile', 'otp', 'verify']
 
 
 class SocialAccountAdmin(admin.ModelAdmin):
     model = SocialAccount
-    list_display = ('email', 'mobile', 'token', 'providers', 'is_social_login', 'date_created')
+    list_display = ['id', 'email', 'mobile', 'token', 'providers', 'is_social_login', 'date_created']
 
 
 admin.site.unregister(User)
