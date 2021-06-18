@@ -166,3 +166,22 @@ class RecurringEvent(models.Model):
 
     def __str__(self):
         return "{} for {}".format(str(self.date), self.event)
+
+
+GROUP_INVITATION_STATUS = (
+    ('invited', 'Invited'),
+    ('accepted', 'Accepted'),
+    ('rejected', 'Rejected'),
+)
+
+
+class GroupInvitation(models.Model):
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, blank=True, null=True)
+    invited_by = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name='invited_by')
+    invited_to = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name='invited_to')
+    status = models.CharField(max_length=10, choices=GROUP_INVITATION_STATUS)
+    date_created = models.DateTimeField(auto_now_add=True, auto_now=False)
+    date_updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.status

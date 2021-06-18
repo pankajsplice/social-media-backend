@@ -4,7 +4,8 @@ from django.urls import path, include
 from event.views import EventViewSet, CategoryViewSet, VenueViewSet, FetchEventTicketMasterApiView, CommentViewSet, \
     LikeViewSet, SubscriptionViewSet, FollowViewSet, MessageViewSet, \
     PostGroupViewSet, GetGroupList, EventSettingViewSet, NotificationViewSet, MessageView,\
-    MessageUser, GroupInvitationApi, GroupMessageListCreateView, RecurringEventChangeApiView, RecurringEventViewSet
+    MessageUser, GroupInvitationApi, GroupMessageListCreateView, RecurringEventChangeApiView, RecurringEventViewSet,\
+    GroupInvitationViewset
 from fcm_django.api.rest_framework import FCMDeviceCreateOnlyViewSet
 
 router = routers.DefaultRouter()
@@ -22,6 +23,7 @@ router.register(r'events-setting', EventSettingViewSet)
 router.register(r'notification', NotificationViewSet)
 router.register(r'push-notifications', FCMDeviceCreateOnlyViewSet)
 router.register(r'recurring-events', RecurringEventViewSet)
+router.register(r'group-invitation-setting', GroupInvitationViewset)
 
 
 urlpatterns = [

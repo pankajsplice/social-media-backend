@@ -6,11 +6,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from utils.custom_mixin import QuerySetFilterMixin
 from event.models import Event, Category, Venue, Comment, Like, Subscription,\
-    Follow, Message, Group, EventSetting, Notification, GroupMessage, RecurringEvent
+    Follow, Message, Group, EventSetting, Notification, GroupMessage, RecurringEvent, GroupInvitation
 from event.serializers import EventSerializer, CategorySerializer, VenueSerializer, \
     CommentSerializer, LikeSerializer, SubscriptionSerializer, FollowSerializer, MessageSerializer, \
     PostGroupSerializer, GetGroupSerializer, EventSettingSerializer, NotificationSerializer, GroupMessageSerializer, \
-    RecurringEventSerializer
+    RecurringEventSerializer, GroupInvitationSerializer
 
 from event.ticketmaster import GetEventList
 from rest_framework.authentication import TokenAuthentication
@@ -541,3 +541,13 @@ class RecurringEventViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
                         'event__id': ['exact'],
                         'date': ['gte', 'lte', 'exact']}
 
+
+class GroupInvitationViewset(viewsets.ModelViewSet):
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = GroupInvitationSerializer
+    queryset = GroupInvitation.objects.all()
+    filterset_fields = {'group': ['exact'],
+                        'group__id': ['exact'],
+                        'status': ['exact']
+                        }
