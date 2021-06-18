@@ -3,9 +3,9 @@ from django.db.models import DateTimeField
 from django.utils.timezone import now
 from rest_auth.registration.serializers import RegisterSerializer as DefaultRegisterSerializer
 from rest_framework import serializers
-from accounts.models import STAFF_TYPE, SocialAccount
-from accounts.models import UserProfile
+from accounts.models import UserProfile, STAFF_TYPE, SocialAccount, Otp
 from django.conf import settings
+from django.contrib.auth.forms import SetPasswordForm
 
 User = get_user_model()
 
@@ -112,3 +112,42 @@ class SocialAccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = SocialAccount
         fields = '__all__'
+
+
+class OtpSerializer(serializers.ModelSerializer):
+    """
+
+    """
+    class Meta:
+        model = Otp
+        fields = '__all__'
+
+
+class PasswordResetOtpSerializer(serializers.Serializer):
+    """
+    Serializer for requesting a password reset otp.
+    """
+    new_password1 = serializers.CharField(max_length=128)
+    new_password2 = serializers.CharField(max_length=128)
+    email = serializers.CharField()
+
+    set_password_form_class = SetPasswordForm
+
+    def custom_validation(self, attrs):
+        pass
+
+    def validate(self, attrs):
+        self._errors = {}
+        self.user = User._default_manager.get(email=attrs['email'])
+        self.custom_validation(attrs)
+        # Construct SetPasswordForm instance
+        self.set_password_form = self.set_password_form_class(
+            user=self.user, data=attrs
+        )
+        if not self.set_password_form.is_valid():
+            raise serializers.ValidationError(self.set_password_form.errors)
+
+        return attrs
+
+    def save(self):
+        return self.set_password_form.save()
