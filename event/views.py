@@ -303,6 +303,13 @@ class GetGroupList(ListAPIView):
     queryset = Group.objects.all()
     filterset_fields = ['id', 'event__id']
 
+    def get_queryset(self):
+        if self.request.user:
+            queryset = Group.objects.filter(Q(member=self.request.user) | Q(created_by=self.request.user))
+            return queryset
+        else:
+            return self.queryset
+
 
 class EventSettingViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
     authentication_classes = (authentication.TokenAuthentication,)
