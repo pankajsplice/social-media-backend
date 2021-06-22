@@ -16,7 +16,8 @@ class CustomUserAdmin(admin.ModelAdmin, ExportCsvMixin):
     """
 
     model = UserProfile
-    list_display = ['user', 'mobile']
+    list_display = ['user', 'mobile', 'gender', 'profile_pic', 'enabled_msg', 'public_profile', 'location',
+                    'profile_groups', 'dob']
     actions = ['export_as_csv']
 
 
@@ -46,6 +47,6 @@ class SocialAccountAdmin(admin.ModelAdmin):
 
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
-admin.site.register(UserProfile, CustomUserAdmin)
+# admin.site.register(UserProfile, CustomUserAdmin)
 admin.site.register(Otp, OtpAdmin)
 admin.site.register(SocialAccount, SocialAccountAdmin)

@@ -362,25 +362,27 @@ class GroupInvitationSerializer(serializers.ModelSerializer):
 
     def get_invited_to_detail(self, obj):
         if obj.invited_to:
-            user = User.objects.get(id=obj.invited_to.id)
             try:
-                user_profile = UserProfile.objects.get(user=user)
-                if user_profile:
-                    profile = user_profile.profile_pic
-                    mobile = user_profile.mobile
-                    if profile:
-                        profile = profile.url
+                user = User.objects.get(email=obj.invited_to)
+                try:
+                    user_profile = UserProfile.objects.get(user=user)
+                    if user_profile:
+                        profile = user_profile.profile_pic
+                        mobile = user_profile.mobile
+                        if profile:
+                            profile = profile.url
+                        else:
+                            profile = None
                     else:
                         profile = None
-                else:
-                    profile = None
-                    mobile = None
-                user_detail = {'name': f'{user.first_name} {user.last_name}', 'email': user.email, 'profile': profile,
-                               'mobile': mobile}
-                return user_detail
+                        mobile = None
+                    user_detail = {'name': f'{user.first_name} {user.last_name}', 'email': user.email, 'profile': profile,
+                                   'mobile': mobile}
+                    return user_detail
+                except:
+                    user_detail = {'name': f'{user.first_name} {user.last_name}', 'email': user.email}
+                    return user_detail
             except:
-                user_detail = {'name': f'{user.first_name} {user.last_name}', 'email': user.email}
-                return user_detail
-
+                return None
         else:
             return None
