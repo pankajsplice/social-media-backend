@@ -178,7 +178,7 @@ GROUP_INVITATION_STATUS = (
 class GroupInvitation(models.Model):
     group = models.ForeignKey(Group, on_delete=models.CASCADE, blank=True, null=True)
     invited_by = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name='invited_by')
-    invited_to = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name='invited_to')
+    invited_to = models.CharField(max_length=100, blank=True, null=True)
     status = models.CharField(max_length=10, choices=GROUP_INVITATION_STATUS)
     date_created = models.DateTimeField(auto_now_add=True, auto_now=False)
     date_updated = models.DateTimeField(auto_now=True)

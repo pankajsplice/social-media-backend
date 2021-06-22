@@ -42,6 +42,7 @@ class UserProfile(models.Model):
     location = models.CharField(max_length=255, blank=True, null=True)
     profile_groups = models.BooleanField(default=False, help_text=_('Show Group on Profile'))
     profile_interest = models.BooleanField(default=False, help_text=_('Show interest on Profile'))
+    dob = models.DateField(blank=True, null=True)
 
 
 class SocialAccount(models.Model):

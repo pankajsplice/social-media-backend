@@ -61,7 +61,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
         fields = ('mobile', 'type', 'profile_pic', 'location', 'enabled_msg', 'public_profile', 'invited',
-                  'profile_groups', 'profile_interest')
+                  'profile_groups', 'profile_interest', 'dob')
 
 
 class UserDetailsSerializer(serializers.ModelSerializer):
@@ -88,6 +88,7 @@ class UserDetailsSerializer(serializers.ModelSerializer):
             profile_obj.invited = profile.get('invited', profile_obj.invited)
             profile_obj.profile_groups = profile.get('profile_groups', profile_obj.profile_groups)
             profile_obj.profile_interest = profile.get('profile_interest', profile_obj.profile_interest)
+            profile_obj.dob = profile.get('dob', profile_obj.dob)
 
             profile_obj.save()
         return instance
