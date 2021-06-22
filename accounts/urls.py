@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import routers
 from django.urls import path, include
 from accounts.views import SocialLoginView, UserTokenDetailView, SocialAccountLoginView, SocialAccountLogoutView,\
-    PasswordResetOtpView, SendOtpApiView, VerifyOtpApiView
+    PasswordResetOtpView, SendOtpApiView, VerifyOtpApiView, UserPrivateMessageStatus
 
 router = routers.DefaultRouter()
 User = get_user_model()
@@ -21,5 +21,6 @@ urlpatterns = [
     path('send-otp/', SendOtpApiView.as_view(), name="send-otp"),
     path('verify-otp/', VerifyOtpApiView.as_view(), name="verify-otp"),
     path('password-reset/', PasswordResetOtpView.as_view(), name="password-reset"),
+    path('private-msg-status/', UserPrivateMessageStatus.as_view(), name="private-msg-status"),
 
 ]

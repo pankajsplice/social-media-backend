@@ -15,6 +15,7 @@ class EventSerializer(serializers.ModelSerializer):
     group = serializers.SerializerMethodField()
     venue_detail = serializers.SerializerMethodField()
     category_name = serializers.SerializerMethodField()
+    date = serializers.DateField(input_formats=['%d-%m-%Y', ])
     # recurring_detail = serializers.SerializerMethodField()
 
     class Meta:
@@ -179,9 +180,61 @@ class FollowSerializer(CustomBaseSerializer):
 
 
 class MessageSerializer(CustomBaseSerializer):
+
+    sender_detail = serializers.SerializerMethodField()
+    receiver_detail = serializers.SerializerMethodField()
+
     class Meta:
         model = Message
-        fields = '__all__'
+        fields = ('id', 'sender', 'sender_detail', 'receiver', 'receiver_detail', 'msg', 'date_created', 'date_updated', 'status')
+
+    def get_sender_detail(self, obj):
+        if obj.sender:
+            user = User.objects.get(id=obj.sender.id)
+            try:
+                user_profile = UserProfile.objects.get(user=user)
+                if user_profile:
+                    profile = user_profile.profile_pic
+                    mobile = user_profile.mobile
+                    if profile:
+                        profile = profile.url
+                    else:
+                        profile = None
+                else:
+                    profile = None
+                    mobile = None
+                user_detail = {'name': f'{user.first_name} {user.last_name}', 'email': user.email, 'profile': profile,
+                               'mobile': mobile}
+                return user_detail
+            except:
+                user_detail = {'name': f'{user.first_name} {user.last_name}', 'email': user.email}
+                return user_detail
+        else:
+            return None
+
+    def get_receiver_detail(self, obj):
+        if obj.receiver:
+            user = User.objects.get(id=obj.receiver.id)
+            try:
+                user_profile = UserProfile.objects.get(user=user)
+                if user_profile:
+                    profile = user_profile.profile_pic
+                    mobile = user_profile.mobile
+                    if profile:
+                        profile = profile.url
+                    else:
+                        profile = None
+                else:
+                    profile = None
+                    mobile = None
+                user_detail = {'name': f'{user.first_name} {user.last_name}', 'email': user.email, 'profile': profile,
+                               'mobile': mobile}
+                return user_detail
+            except:
+                user_detail = {'name': f'{user.first_name} {user.last_name}', 'email': user.email}
+                return user_detail
+        else:
+            return None
 
 
 class PostGroupSerializer(CustomBaseSerializer):

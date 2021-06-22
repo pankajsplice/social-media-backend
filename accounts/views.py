@@ -17,6 +17,7 @@ from twilio.rest import Client
 from django.views.decorators.debug import sensitive_post_parameters
 from django.utils.decorators import method_decorator
 from accounts.models import Otp
+from accounts.models import UserProfile
 
 User = get_user_model()
 
@@ -177,3 +178,19 @@ class PasswordResetOtpView(GenericAPIView):
         return Response(
             {"detail": "Password has been reset with the new password."}
         )
+
+
+class UserPrivateMessageStatus(APIView):
+
+    def post(self, request):
+        user = request.data.get('user')
+        if user:
+            get_user = User.objects.get(id=user)
+            user_profile = UserProfile.objects.get(user=user)
+            if user_profile.enabled_msg:
+                return Response({'private_message': 'enabled'}, status=200)
+            else:
+                return Response({'private_message': 'disabled'}, status=400)
+        else:
+            return Response({'error': 'Please add user as input'}, status=400)
+
