@@ -38,10 +38,12 @@ class EventSerializer(serializers.ModelSerializer):
         return group
 
     def get_venue_detail(self, obj):
-        ven = Venue.objects.get(id=obj.venue.id)
-        venue_detail = {'name': ven.name, 'city': ven.city, 'state': ven.state_name, 'longitude': ven.longitude,
-                        'latitude': ven.latitude, 'url': ven.url, 'country': ven.country_name, 'address': ven.address}
-        return venue_detail
+        if obj.venue:
+            ven = Venue.objects.get(id=obj.venue.id)
+            venue_detail = {'name': ven.name, 'city': ven.city, 'state': ven.state_name, 'longitude': ven.longitude,
+                            'latitude': ven.latitude, 'url': ven.url, 'country': ven.country_name, 'address': ven.address}
+            return venue_detail
+        return None
 
     def get_category_name(self, obj):
         cat = Category.objects.get(id=obj.category.id)
@@ -250,7 +252,7 @@ class GetGroupSerializer(CustomBaseSerializer):
 
     class Meta:
         model = Group
-        fields = ('id', 'name', 'description', 'limit', 'member', 'event', 'event_name', 'total_member', 'created_by',
+        fields = ('id', 'name', 'icon', 'description', 'limit', 'member', 'event', 'event_name', 'total_member', 'created_by',
                   'updated_by', 'date_created', 'date_updated')
 
     def get_total_member(self, obj):
@@ -337,9 +339,15 @@ class GroupMessageSerializer(CustomBaseSerializer):
     def get_group_detail(self, obj):
         try:
             name = obj.receiver.name
+            icon = obj.receiver.icon
+            if icon:
+                icon = icon.url
+            else:
+                icon = None
+            return {"id": obj.receiver.id, "name": name, "group_icon": icon}
         except:
-            name = ''
-        return name
+            name = obj.receiver.name
+            return {"id": obj.receiver.id, "name": name, "group_icon": None}
 
     def get_user_detail(self, obj):
         if obj.sender:
@@ -384,10 +392,16 @@ class GroupInvitationSerializer(serializers.ModelSerializer):
 
     def get_group_detail(self, obj):
         try:
-            name = obj.group.name
+            name = obj.receiver.name
+            icon = obj.receiver.icon
+            if icon:
+                icon = icon.url
+            else:
+                icon = None
+            return {"id": obj.receiver.id, "name": name, "group_icon": icon}
         except:
-            name = ''
-        return name
+            name = obj.receiver.name
+            return {"id": obj.receiver.id, "name": name, "group_icon": None}
 
     def get_invited_by_detail(self, obj):
         if obj.invited_by:
