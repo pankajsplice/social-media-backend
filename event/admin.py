@@ -56,7 +56,7 @@ class FollowAdmin(admin.ModelAdmin, ExportCsvMixin):
 
 class GroupAdmin(admin.ModelAdmin, ExportCsvMixin):
     model = Group
-    list_display = ['id', 'name', 'description', 'event', 'created_by']
+    list_display = ['id', 'name', 'icon', 'description', 'event', 'created_by']
 
 
 class EventSettingAdmin(admin.ModelAdmin, ExportCsvMixin):

@@ -118,6 +118,7 @@ class Message(ModelMixin):
 
 class Group(ModelMixin):
     name = models.CharField(max_length=255, help_text=_('Group Name'), unique=True)
+    icon = models.ImageField(blank=True, null=True, help_text=_('Group Image'))
     description = models.TextField(help_text=_('Group Description'))
     event = models.ForeignKey(Event, on_delete=models.CASCADE, help_text=_('Event'), blank=True, null=True)
     member = models.ManyToManyField(User, blank=True, null=True, related_name='member')
