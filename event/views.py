@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.template.loader import render_to_string
 from django_filters import rest_framework as filters
 from rest_framework import authentication, permissions
 from rest_framework import viewsets
@@ -19,7 +20,7 @@ from accounts.models import UserProfile
 from accounts.serializers import UserProfileSerializer, UserSerializer
 from rest_framework.generics import ListAPIView, ListCreateAPIView
 from event.notifications import create_notification
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMultiAlternatives
 from local_mingle_backend.settings import DEFAULT_FROM_EMAIL, TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN
 from event.location_filter import get_location
 from rest_framework.pagination import PageNumberPagination
@@ -422,20 +423,41 @@ class GroupInvitationApi(APIView):
                 user = User.objects.get(email=get_email)
                 if user:
                     email_message = 'You are invited to join the group' f' {gp.name} ' 'for the event' f' {event.name}'
+
+                    subject = 'LocalMingle Group Invitation'
+                    text_content = ''
+                    html_content = render_to_string('mail/otp.html', {
+                        "message": email_message,
+                        "user": f"{user.first_name} {user.last_name}",
+                    })
+                    msg = EmailMultiAlternatives(subject, text_content, DEFAULT_FROM_EMAIL, [get_email])
+                    msg.attach_alternative(html_content, "text/html")
+
+                    # creating notification start
                     notification_type = 'group_invitation'
                     get_user_event = Event.objects.get(id=gp.event_id)
                     message = 'You have got an invitation to join the group' f' {gp.name}'
-
-                    # creating notification
                     kwargs = {'user': user, 'notification_type': notification_type, 'message': message,
                               'event': get_user_event, 'group': gp}
                     create_notification(**kwargs)
+                    # creating notification end
+
                 else:
-                    email_message = 'You are invited to join Local-mingle application. Here is the link you can install it ' \
-                              'and register for free. '
+                    subject = 'LocalMingle Group Invitation'
+                    text_content = ''
+                    email_message = 'You are invited to join Local-mingle application. Here is the link you can ' \
+                                    'install it and register for free. '
+                    html_content = render_to_string('mail/group_invitation.html', {
+                        "message": email_message,
+                        "user": get_email,
+                    })
+                    msg = EmailMultiAlternatives(subject, text_content, DEFAULT_FROM_EMAIL, [get_email])
+                    msg.attach_alternative(html_content, "text/html")
+
                 try:
-                    send_mail(subject='Invitation Link', message=email_message, from_email=DEFAULT_FROM_EMAIL,
-                              recipient_list=[get_email], fail_silently=True)
+                    # send_mail(subject='Invitation Link', message=email_message, from_email=DEFAULT_FROM_EMAIL,
+                    #           recipient_list=[get_email], fail_silently=True)
+                    msg.send()
                     return Response({'success': 'Email sent'})
 
                 except Exception as e:
@@ -564,6 +586,7 @@ class GroupInvitationViewset(viewsets.ModelViewSet):
 
 
 class EventLatLongApiView(APIView, PageNumberPagination):
+    permission_classes = (permissions.AllowAny,)
 
     def get(self, request):
         lat = request.query_params.get('lat', '')

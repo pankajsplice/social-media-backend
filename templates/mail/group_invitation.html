@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<body>
+
+<style type="text/css">
+  body { background-color: #ffffff; }
+</style>
+<table style="width:600px;" border="0" align="center" cellspacing="0">
+  <tr>
+   <td style="padding: 15px 0; background:#fbfbfb;" align="center">
+      <a href="https://localmingle.net/"><img src="https://localmingle.net/static/img/logo-icon.png" style="display: block;"></a></td>
+
+  </tr>
+
+
+ <tr>
+   <td style="padding: 40px 20px; background: #ffffff;">
+     <h2 style=" color: #333; font-family: Helvetica,Arial,sans-serif; font-size:28px; font-weight: 600; text-align: center;">LocalMingle Group Invitation</h2>
+     <h4 style="font-family: Helvetica,Arial,sans-serif; font-size:16px; font-weight: 600;"></h4>
+     <p style="font-family: Helvetica,Arial,sans-serif; font-size:12px; text-align: center; line-height: 24px; padding: 30px 50px;"> Hello {{ user }}, {{ message }}. </p>
+
+{#      <p style="margin-top: 60px; text-align: center;">#}
+{#        <a href="" style=" color: #fff; font-family: Helvetica,Arial,sans-serif; font-size:14px; background: #d3310e;  padding: 20px 60px; text-align: center; text-decoration: none;">Reset Your Password</a></p>#}
+   </td>
+ </tr>
+
+
+
+        <tr>
+          <td style=" background: #00468f;  padding: 30px 0 0 0;">
+
+          <table align="center">
+            <tr>
+              <td align="center" style="text-align: center;">
+                <table align="center">
+                  <tr>
+                    <td><a href=""><img src="{% static 'images/facebook.png' %}" width="35"></a></td>
+                    <td style="margin: 0 10px; padding: 0 20px;">
+                      <a href=""><img src="{% static 'images/linkedin.png' %}" width="35"></a></td>
+                    <td><a href=""><img src= "{% static 'images/twitter.png' %}" width="35"></a></td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+              <tr>
+              <td><p style="font-family: Helvetica,Arial,sans-serif; font-size:12px;
+            color: #fff; text-align: center; line-height: 25px; ">©2002 Local Mingle Group, #342, B - Wings, New York, NY 10023</p></td>
+              <td><p style="font-family: Helvetica,Arial,sans-serif; font-size:12px;
+            color: #fff; text-align: center; line-height: 25px; ">support@local-mingle.net</p></td>
+            </tr>
+          </table>
+          </td>
+
+        </tr>
+
+
+
+</table>
+
+</body>
+</html>
