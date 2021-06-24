@@ -21,6 +21,8 @@ from rest_framework.generics import ListAPIView, ListCreateAPIView
 from event.notifications import create_notification
 from django.core.mail import send_mail
 from local_mingle_backend.settings import DEFAULT_FROM_EMAIL, TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN
+from event.location_filter import get_location
+from rest_framework.pagination import PageNumberPagination
 
 User = get_user_model()
 
@@ -559,3 +561,20 @@ class GroupInvitationViewset(viewsets.ModelViewSet):
                         'group__id': ['exact'],
                         'status': ['exact']
                         }
+
+
+class EventLatLongApiView(APIView, PageNumberPagination):
+
+    def get(self, request):
+        lat = request.query_params.get('lat', '')
+        long = request.query_params.get('long', '')
+        if lat != '' and long != '':
+            res = get_location(lat, long)
+            queryset = res
+            page = self.paginate_queryset(queryset, request)
+            serializer = VenueSerializer(
+                page, context=queryset, many=True
+            )
+            return self.get_paginated_response(serializer.data)
+        else:
+            return Response({'error': 'Please add lat and long in params'})
