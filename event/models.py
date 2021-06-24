@@ -131,7 +131,8 @@ class Group(ModelMixin):
 class EventSetting(ModelMixin):
     event = models.ForeignKey(Event, on_delete=models.SET_NULL, help_text=_('Event'), null=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, help_text=_('User'), null=True)
-    recurring_event = models.ForeignKey('RecurringEvent', on_delete=models.SET_NULL, help_text=_('Recurring Date and Time'), null=True)
+    recurring_event = models.ForeignKey('RecurringEvent', on_delete=models.SET_NULL,
+                                        help_text=_('Recurring Date and Time'), blank=True, null=True)
     going = models.BooleanField(default=False)
 
 
