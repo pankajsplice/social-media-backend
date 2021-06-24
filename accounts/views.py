@@ -1,3 +1,4 @@
+from django.template.loader import render_to_string
 from django.views.generic import TemplateView
 from rest_framework import generics
 from rest_framework.generics import GenericAPIView
@@ -11,7 +12,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 import random
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMultiAlternatives
 from local_mingle_backend.settings import DEFAULT_FROM_EMAIL, TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN
 from twilio.rest import Client
 from django.views.decorators.debug import sensitive_post_parameters
@@ -84,10 +85,19 @@ class SendOtpApiView(APIView):
             serializer.is_valid(raise_exception=True)
             serializer.save(otp=otp)
             subject = 'LocalMingle Forgot Password Otp'
-            message = f"Hello {user.first_name} {user.last_name} \n Your Forgot Password Otp is {otp}"
+            text_content = 'LocalMingleR Forgot Password Otp'
+            # message = f"Hello {user.first_name} {user.last_name} \n Your Forgot Password Otp is {otp}"
+            html_content = render_to_string('mail/otp.html', {
+                "user": f"{user.first_name} {user.last_name}",
+                "otp": otp,
+            })
+            msg = EmailMultiAlternatives(subject, text_content, DEFAULT_FROM_EMAIL, [email])
+            msg.attach_alternative(html_content, "text/html")
+
             try:
-                send_mail(subject=subject, message=message, from_email=DEFAULT_FROM_EMAIL, recipient_list=[email],
-                          fail_silently=True)
+                msg.send()
+                # send_mail(subject=subject, message=message, from_email=DEFAULT_FROM_EMAIL, recipient_list=[email],
+                #           fail_silently=True)
             except:
                 return Response({'message': 'Email not send'}, status=status.HTTP_400_BAD_REQUEST)
             return Response({'message': 'An otp has been sent to your email'}, status=status.HTTP_200_OK)
