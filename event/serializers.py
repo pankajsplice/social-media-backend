@@ -41,7 +41,8 @@ class EventSerializer(serializers.ModelSerializer):
         if obj.venue:
             ven = Venue.objects.get(id=obj.venue.id)
             venue_detail = {'name': ven.name, 'city': ven.city, 'state': ven.state_name, 'longitude': ven.longitude,
-                            'latitude': ven.latitude, 'url': ven.url, 'country': ven.country_name, 'address': ven.address}
+                            'latitude': ven.latitude, 'url': ven.url, 'country': ven.country_name,
+                            'address': ven.address, 'postal_code': ven.postal_code}
             return venue_detail
         return None
 

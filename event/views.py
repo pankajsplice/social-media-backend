@@ -515,7 +515,17 @@ class GroupMessageListCreateView(ListCreateAPIView):
         except:
             if self.request.user:
                 user_id = self.request.user.id
-                queryset = GroupMessage.objects.filter(Q(sender=user_id)).order_by('-id')
+                get_unique_group = GroupMessage.objects.filter(Q(sender=user_id)).order_by('-id')
+
+                # logic to get latest message from group-message
+                get_message_id = []
+                get_receiver_id = []
+                for q in get_unique_group:
+                    if q.receiver not in get_receiver_id:
+                        get_receiver_id.append(q.receiver)
+                        get_message_id.append(q.id)
+                queryset = GroupMessage.objects.filter(id__in=get_message_id).order_by('-id')
+
             else:
                 queryset = self.queryset
 
@@ -591,13 +601,39 @@ class EventLatLongApiView(APIView, PageNumberPagination):
     def get(self, request):
         lat = request.query_params.get('lat', '')
         long = request.query_params.get('long', '')
+        city = request.query_params.get('city', '')
+        state = request.query_params.get('state', '')
+        postal_code = request.query_params.get('postal_code', '')
         if lat != '' and long != '':
             res = get_location(lat, long)
-            queryset = res
+            get_related_events = Event.objects.filter(venue__in=res).order_by('-id')
+            queryset = get_related_events
             page = self.paginate_queryset(queryset, request)
-            serializer = VenueSerializer(
-                page, context=queryset, many=True
+            serializer = EventSerializer(
+                page, many=True
             )
             return self.get_paginated_response(serializer.data)
         else:
-            return Response({'error': 'Please add lat and long in params'})
+            if city != "":
+                queryset = Event.objects.filter(venue__city__iexact=city).order_by('-id')
+                page = self.paginate_queryset(queryset, request)
+                serializer = EventSerializer(
+                    page, many=True
+                )
+                return self.get_paginated_response(serializer.data)
+            elif state != "":
+                queryset = Event.objects.filter(venue__state_name__iexact=state).order_by('-id')
+                page = self.paginate_queryset(queryset, request)
+                serializer = EventSerializer(
+                    page, many=True
+                )
+                return self.get_paginated_response(serializer.data)
+            elif postal_code != "":
+                queryset = Event.objects.filter(venue__postal_code__iexact=postal_code).order_by('-id')
+                page = self.paginate_queryset(queryset, request)
+                serializer = EventSerializer(
+                    page, many=True
+                )
+                return self.get_paginated_response(serializer.data)
+            else:
+                return Response({'error': 'Please add lat and long or city or state or postal_code in params'})
