@@ -7,11 +7,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from utils.custom_mixin import QuerySetFilterMixin
 from event.models import Event, Category, Venue, Comment, Like, Subscription,\
-    Follow, Message, Group, EventSetting, Notification, GroupMessage, RecurringEvent, GroupInvitation
+    Follow, Message, Group, EventSetting, Notification, GroupMessage, RecurringEvent, GroupInvitation, MessageSetting
 from event.serializers import EventSerializer, CategorySerializer, VenueSerializer, \
     CommentSerializer, LikeSerializer, SubscriptionSerializer, FollowSerializer, MessageSerializer, \
     PostGroupSerializer, GetGroupSerializer, EventSettingSerializer, NotificationSerializer, GroupMessageSerializer, \
-    RecurringEventSerializer, GroupInvitationSerializer
+    RecurringEventSerializer, GroupInvitationSerializer, MessageSettingSerializer
 
 from event.ticketmaster import GetEventList
 from rest_framework.authentication import TokenAuthentication
@@ -637,3 +637,12 @@ class EventLatLongApiView(APIView, PageNumberPagination):
                 return self.get_paginated_response(serializer.data)
             else:
                 return Response({'error': 'Please add lat and long or city or state or postal_code in params'})
+
+
+# crud for Message-setting
+class MessageSettingViewSet(viewsets.ModelViewSet):
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = MessageSettingSerializer
+    queryset = MessageSetting.objects.all()
+    filterset_fields = ['sender__id', 'receiver__id', 'block']

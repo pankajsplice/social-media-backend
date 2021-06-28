@@ -1,5 +1,5 @@
 from event.models import Event, Category, Venue, Comment, Subscription, Like,\
-    Follow, Message, Group, EventSetting, Notification, GroupMessage, RecurringEvent, GroupInvitation
+    Follow, Message, Group, EventSetting, Notification, GroupMessage, RecurringEvent, GroupInvitation, MessageSetting
 from utils.custom_mixin import QuerySetFilterMixin, CustomBaseSerializer
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
@@ -16,13 +16,13 @@ class EventSerializer(serializers.ModelSerializer):
     venue_detail = serializers.SerializerMethodField()
     category_name = serializers.SerializerMethodField()
     date = serializers.DateField(input_formats=['%d-%m-%Y', ])
-    # recurring_detail = serializers.SerializerMethodField()
+    user_detail = serializers.SerializerMethodField()
 
     class Meta:
         model = Event
         fields = ('id', 'name', 'global_id', 'url', 'price_min', 'price_max', 'event_status', 'currency',
                   'image_json', 'event_image', 'category', 'category_name', 'venue', 'venue_detail', 'seatmap_url', 'timezone', 'time', 'date',
-                  'user', 'source', 'description', 'like', 'comment', 'group', 'created_by', 'updated_by', 'status',
+                  'user', 'source', 'description', 'like', 'comment', 'group', 'created_by', 'updated_by', 'user_detail', 'status',
                   'date_created', 'date_updated', 'recurring')
 
     def get_like(self, obj):
@@ -50,21 +50,29 @@ class EventSerializer(serializers.ModelSerializer):
         cat = Category.objects.get(id=obj.category.id)
         return cat.name
 
-    # def get_recurring_detail(self, obj):
-    #     recurring_detail = []
-    #     if obj.recurring:
-    #         event_id = obj.id
-    #         event_time = obj.time
-    #         event_date = obj.date
-    #         recurring_detail.append({'time': event_time, 'data': event_date})
-    #         recurring_event = RecurringEvent.objects.filter(event_id=event_id)
-    #         for event in recurring_event:
-    #             event_time = event.time
-    #             event_date = event.date
-    #             recurring_detail.append({'time': event_time, 'data': event_date})
-    #         return recurring_detail
-    #     else:
-    #         return recurring_detail
+    def get_user_detail(self, obj):
+        if obj.created_by:
+            user = User.objects.get(id=obj.created_by.pk)
+            try:
+                user_profile = UserProfile.objects.get(user=user)
+                if user_profile:
+                    profile = user_profile.profile_pic
+                    mobile = user_profile.mobile
+                    if profile:
+                        profile = profile.url
+                    else:
+                        profile = None
+                else:
+                    profile = None
+                    mobile = None
+                user_detail = {'name': f'{user.first_name} {user.last_name}', 'email': user.email, 'profile': profile,
+                               'mobile': mobile}
+                return user_detail
+            except:
+                user_detail = {'name': f'{user.first_name} {user.last_name}', 'email': user.email}
+                return user_detail
+        else:
+            return None
 
 
 class CategorySerializer(CustomBaseSerializer):
@@ -126,37 +134,18 @@ class CommentSerializer(CustomBaseSerializer):
 
 class LikeSerializer(CustomBaseSerializer):
     event_detail = serializers.SerializerMethodField()
-    user_detail = serializers.SerializerMethodField()
+    like = serializers.SerializerMethodField()
 
     class Meta:
         model = Like
-        fields = ('id', 'status', 'count', 'event', 'event_detail', 'created_by', 'updated_by', 'user_detail',
+        fields = ('id', 'status', 'count', 'event', 'event_detail', 'created_by', 'updated_by', 'like',
                   'date_created', 'date_updated')
 
-    def get_user_detail(self, obj):
+    def get_like(self, obj):
         if obj.created_by:
-            user = User.objects.get(id=obj.created_by.pk)
-            try:
-                user_profile = UserProfile.objects.get(user=user)
-                if user_profile:
-                    profile = user_profile.profile_pic
-                    mobile = user_profile.mobile
-                    if profile:
-                        profile = profile.url
-                    else:
-                        profile = None
-                else:
-                    profile = None
-                    mobile = None
-                user_detail = {'name': f'{user.first_name} {user.last_name}', 'email': user.email, 'profile': profile,
-                               'mobile': mobile}
-                return user_detail
-            except:
-                user_detail = {'name': f'{user.first_name} {user.last_name}', 'email': user.email}
-                return user_detail
-
+            return True
         else:
-            return None
+            return False
 
     def get_event_detail(self, obj):
         event = Event.objects.get(id=obj.event.id)
@@ -453,5 +442,62 @@ class GroupInvitationSerializer(serializers.ModelSerializer):
                     return user_detail
             except:
                 return None
+        else:
+            return None
+
+
+class MessageSettingSerializer(serializers.ModelSerializer):
+    sender_detail = serializers.SerializerMethodField()
+    receiver_detail = serializers.SerializerMethodField()
+
+    class Meta:
+        model = MessageSetting
+        fields = ('id', 'sender', 'sender_detail', 'receiver', 'receiver_detail', 'block', 'report', 'date_created')
+
+    def get_sender_detail(self, obj):
+        if obj.sender:
+            user = User.objects.get(id=obj.sender.id)
+            try:
+                user_profile = UserProfile.objects.get(user=user)
+                if user_profile:
+                    profile = user_profile.profile_pic
+                    mobile = user_profile.mobile
+                    if profile:
+                        profile = profile.url
+                    else:
+                        profile = None
+                else:
+                    profile = None
+                    mobile = None
+                user_detail = {'name': f'{user.first_name} {user.last_name}', 'email': user.email, 'profile': profile,
+                               'mobile': mobile}
+                return user_detail
+            except:
+                user_detail = {'name': f'{user.first_name} {user.last_name}', 'email': user.email}
+                return user_detail
+        else:
+            return None
+
+    def get_receiver_detail(self, obj):
+        if obj.receiver:
+            user = User.objects.get(id=obj.receiver.id)
+            try:
+                user_profile = UserProfile.objects.get(user=user)
+                if user_profile:
+                    profile = user_profile.profile_pic
+                    mobile = user_profile.mobile
+                    if profile:
+                        profile = profile.url
+                    else:
+                        profile = None
+                else:
+                    profile = None
+                    mobile = None
+                user_detail = {'name': f'{user.first_name} {user.last_name}', 'email': user.email, 'profile': profile,
+                               'mobile': mobile}
+                return user_detail
+            except:
+                user_detail = {'name': f'{user.first_name} {user.last_name}', 'email': user.email}
+                return user_detail
         else:
             return None

@@ -23,16 +23,22 @@ class RegisterSerializer(DefaultRegisterSerializer):
     mobile = serializers.CharField(max_length=15)
     type = serializers.ChoiceField(choices=STAFF_TYPE)
     profile_pic = serializers.ImageField(required=False, allow_null=True)
+    profile_interest = serializers.BooleanField(required=False, allow_null=True)
+    enabled_msg = serializers.BooleanField(required=False, allow_null=True)
 
     def custom_signup(self, request, user):
         mobile = self.validated_data.get('mobile', '')
         type = self.validated_data.get('type', '')
         profile_pic = self.validated_data.get('profile_pic', '')
+        profile_interest = self.validated_data.get('profile_interest', '')
+        enabled_msg = self.validated_data.get('enabled_msg', '')
         user_profile = UserProfile(
             user=user,
             mobile=mobile,
             type=type,
             profile_pic=profile_pic,
+            profile_interest=profile_interest,
+            enabled_msg=enabled_msg,
         )
         user_profile.save()
 
@@ -49,7 +55,9 @@ class RegisterSerializer(DefaultRegisterSerializer):
             'last_name': self.validated_data.get('last_name', ''),
             'mobile': self.validated_data.get('mobile', ''),
             'type': self.validated_data.get('type', ''),
-            'profile_pic': self.validated_data.get('profile_pic', '')
+            'profile_pic': self.validated_data.get('profile_pic', ''),
+            'profile_interest': self.validated_data.get('profile_interest', ''),
+            'enabled_msg': self.validated_data.get('enabled_msg', '')
         }
 
 
