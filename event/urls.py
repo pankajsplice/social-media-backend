@@ -5,7 +5,7 @@ from event.views import EventViewSet, CategoryViewSet, VenueViewSet, FetchEventT
     LikeViewSet, SubscriptionViewSet, FollowViewSet, MessageViewSet, \
     PostGroupViewSet, GetGroupList, EventSettingViewSet, NotificationViewSet, MessageView,\
     MessageUser, GroupInvitationApi, GroupMessageListCreateView, RecurringEventChangeApiView, RecurringEventViewSet,\
-    GroupInvitationViewset, EventLatLongApiView
+    GroupInvitationViewset, EventLatLongApiView, MessageSettingViewSet
 from fcm_django.api.rest_framework import FCMDeviceCreateOnlyViewSet
 
 router = routers.DefaultRouter()
@@ -24,6 +24,7 @@ router.register(r'notification', NotificationViewSet)
 router.register(r'push-notifications', FCMDeviceCreateOnlyViewSet)
 router.register(r'recurring-events', RecurringEventViewSet)
 router.register(r'group-invitation-setting', GroupInvitationViewset)
+router.register(r'message-setting', MessageSettingViewSet)
 
 
 urlpatterns = [

@@ -187,3 +187,15 @@ class GroupInvitation(models.Model):
 
     def __str__(self):
         return self.status
+
+
+class MessageSetting(models.Model):
+    sender = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='sender_setting', null=True, help_text=_('sender'))
+    receiver = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='receiver_setting', null=True,
+                                 help_text=_('receiver'))
+    block = models.BooleanField(default=False)
+    report = models.TextField(blank=True, null=True)
+    date_created = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return "{}".format(self.block)
