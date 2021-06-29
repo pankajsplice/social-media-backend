@@ -166,9 +166,47 @@ class SubscriptionSerializer(CustomBaseSerializer):
 
 
 class FollowSerializer(CustomBaseSerializer):
+    event_detail = serializers.SerializerMethodField()
+    user_detail = serializers.SerializerMethodField()
+
     class Meta:
         model = Follow
-        fields = '__all__'
+        fields = ('id', 'event', 'event_detail', 'user', 'user_detail', 'created_by', 'updated_by', 'date_created', 'date_updated')
+
+    def get_event_detail(self, obj):
+        event = Event.objects.get(id=obj.event.id)
+        if event.event_image:
+            ev_img = event.event_image.url
+        else:
+            ev_img = None
+        event_detail = {'name': event.name, 'event_status': event.event_status, 'date': event.date,
+                        'url': event.url, 'time': event.time, 'currency': event.currency, 'source': event.source,
+                        'event_image': ev_img, 'image_json': event.image_json}
+        return event_detail
+
+    def get_user_detail(self, obj):
+        if obj.user:
+            get_user = User.objects.get(id=obj.user.pk)
+            try:
+                user_profile = UserProfile.objects.get(user=get_user)
+                if user_profile:
+                    profile = user_profile.profile_pic
+                    mobile = user_profile.mobile
+                    if profile:
+                        profile = profile.url
+                    else:
+                        profile = None
+                else:
+                    profile = None
+                    mobile = None
+                user_detail = {'name': f'{get_user.first_name} {get_user.last_name}', 'email': get_user.email,
+                               'profile': profile, 'mobile': mobile}
+                return user_detail
+            except:
+                user_detail = {'name': f'{get_user.first_name} {get_user.last_name}', 'email': get_user.email}
+                return user_detail
+        else:
+            return None
 
 
 class MessageSerializer(CustomBaseSerializer):

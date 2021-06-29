@@ -101,6 +101,9 @@ class Follow(ModelMixin):
     user = models.ForeignKey(User, on_delete=models.CASCADE, help_text=_('Follower'))
     event = models.ForeignKey(Event, on_delete=models.CASCADE, help_text=_('Event'))
 
+    def __str__(self):
+        return "{}".format(self.event.name)
+
 
 class Message(ModelMixin):
     sender = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='sender', null=True, help_text=_('sender'))
