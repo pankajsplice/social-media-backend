@@ -284,6 +284,7 @@ class FollowViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = FollowSerializer
     queryset = Follow.objects.all()
+    filterset_fields = ['event__id', 'user__id']
 
 
 class MessageViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
@@ -604,9 +605,27 @@ class EventLatLongApiView(APIView, PageNumberPagination):
         city = request.query_params.get('city', '')
         state = request.query_params.get('state', '')
         postal_code = request.query_params.get('postal_code', '')
+        date__gte = request.query_params.get('date__gte', '')
+        date__lte = request.query_params.get('date__lte', '')
+        category__parent_id = request.query_params.get('category__parent_id', '')
         if lat != '' and long != '':
-            res = get_location(lat, long)
-            get_related_events = Event.objects.filter(venue__in=res).order_by('-id')
+            res = get_location(lat, long)  # getting venue results on the basis of lat-long
+
+            # filtering the upcoming result in date range
+            if date__lte != '' and date__gte != '':
+                get_related_events = Event.objects.filter(venue__in=res, date__gte=date__gte, date__lte=date__lte
+                                                          ).order_by('-id')
+
+            # filtering the upcoming result in date range
+            elif date__lte != '' and date__gte != '' and category__parent_id != '':
+                get_related_events = Event.objects.filter(venue__in=res, date__gte=date__gte, date__lte=date__lte,
+                                                          category__parent_id=category__parent_id).order_by('-id')
+
+            # showing same results if date range and category is not found
+            else:
+                get_related_events = Event.objects.filter(venue__in=res).order_by('-id')
+
+            # creating page instance for pagination
             queryset = get_related_events
             page = self.paginate_queryset(queryset, request)
             serializer = EventSerializer(
