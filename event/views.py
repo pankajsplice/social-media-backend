@@ -261,6 +261,13 @@ class CommentViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     filterset_fields = ['event__id', 'created_by__id']
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        event_filter = self.request.query_params.get('event__id', '')
+        if event_filter != '':
+            queryset = super().get_queryset().order_by('-created_by')
+        return queryset
+
 
 # crud for like
 class LikeViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
@@ -665,3 +672,30 @@ class MessageSettingViewSet(viewsets.ModelViewSet):
     serializer_class = MessageSettingSerializer
     queryset = MessageSetting.objects.all()
     filterset_fields = ['sender__id', 'receiver__id', 'block']
+
+
+class CommentUserStackApiView(APIView, PageNumberPagination):
+    def get(self, request):
+        event = self.request.query_params.get('event_id', '')
+        if event != '':
+            event_comment = Comment.objects.filter(event_id=event)
+            cr = []
+            result = []
+
+            # getting all the comments user wise and returning it in result list
+            for ec in event_comment:
+                if ec.created_by:
+                    if ec.created_by_id not in cr:
+                        cr.append(ec.created_by_id)
+                        result.append(Comment.objects.filter(created_by_id=ec.created_by_id).order_by('-id'))
+
+            # stacking comments user wise in data list
+            data = []
+            for i, j in enumerate(result):
+                serializer = CommentSerializer(result[i], many=True)
+                data.append({'id': i, 'comments': serializer.data})
+            page = self.paginate_queryset(data, request)
+            return self.get_paginated_response(page)
+        else:
+            return Response({'error': 'Please add event_id in query_params'})
+

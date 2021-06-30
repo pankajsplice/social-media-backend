@@ -124,7 +124,7 @@ class Group(ModelMixin):
     icon = models.ImageField(blank=True, null=True, help_text=_('Group Image'))
     description = models.TextField(help_text=_('Group Description'))
     event = models.ForeignKey(Event, on_delete=models.CASCADE, help_text=_('Event'), blank=True, null=True)
-    member = models.ManyToManyField(User, blank=True, null=True, related_name='member')
+    member = models.ManyToManyField(User, blank=True, related_name='members')
     limit = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
