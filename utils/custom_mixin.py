@@ -1,7 +1,7 @@
 from django.db.models import Q
 from rest_framework import serializers
 from event.notifications import create_notification
-from event.models import Category, Event, Venue
+from event.models import Category, Event, Venue, Group
 from django.contrib.auth.models import User
 
 
@@ -124,21 +124,6 @@ class QuerySetFilterMixin(object):
                       'group': ''}
             create_notification(**kwargs)
             serializer.save(created_by=self.request.user, updated_by=self.request.user)
-
-        if self.basename == 'message':
-            # user = self.request.user
-            notification_type = self.basename
-            event = self.request.data['event']
-            get_user_event = Event.objects.get(id=event)
-            user = get_user_event.created_by
-            sender = self.request.data['sender']
-            message = 'You have received a new message '
-            # creating notification
-            kwargs = {'user': user, 'notification_type': notification_type, 'message': message, 'event': get_user_event,
-                      'group': ''}
-            create_notification(**kwargs)
-            serializer.save(created_by=self.request.user, updated_by=self.request.user)
-
         else:
             serializer.created_by = self.request.user
             serializer.updated_by = self.request.user
