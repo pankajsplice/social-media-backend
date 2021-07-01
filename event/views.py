@@ -434,7 +434,7 @@ class GroupInvitationApi(APIView):
 
                     subject = 'LocalMingle Group Invitation'
                     text_content = ''
-                    html_content = render_to_string('mail/otp.html', {
+                    html_content = render_to_string('mail/group_invitation.html', {
                         "message": email_message,
                         "user": f"{user.first_name} {user.last_name}",
                     })

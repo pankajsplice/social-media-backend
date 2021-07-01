@@ -65,7 +65,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     """
 
     """
-    dob = serializers.DateField(input_formats=['%d-%m-%Y', ])
+    dob = serializers.DateField(format='%d-%m-%Y', input_formats=['%d-%m-%Y',])
 
     class Meta:
         model = UserProfile
