@@ -91,6 +91,8 @@ class Subscription(ModelMixin):
     validity = models.IntegerField(choices=SUBSCRIPTION_CHOICES, help_text=_('Validity in months'))
     stripe_product_id = models.CharField(max_length=100, blank=True, null=True)
     stripe_price_id = models.CharField(max_length=100, blank=True, null=True)
+    paypal_product_id = models.CharField(max_length=100, blank=True, null=True)
+    paypal_plan_id = models.CharField(max_length=100, blank=True, null=True)
     description = models.TextField(blank=True, null=True, help_text=_('Description'))
 
     def __str__(self):
@@ -140,7 +142,7 @@ class EventSetting(ModelMixin):
 
 
 class Notification(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_notifications')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_notifications', blank=True, null=True)
     event = models.ForeignKey(Event, on_delete=models.CASCADE, blank=True, null=True)
     group = models.ForeignKey(Group, on_delete=models.CASCADE, blank=True, null=True)
     notification_type = models.CharField(max_length=100, blank=True, null=True)
