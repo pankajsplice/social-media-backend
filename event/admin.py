@@ -39,7 +39,8 @@ class LikeAdmin(admin.ModelAdmin, ExportCsvMixin):
 
 class SubscriptionAdmin(admin.ModelAdmin, ExportCsvMixin):
     model = Subscription
-    list_display = ['id', 'name', 'price', 'validity', 'description', 'stripe_product_id', 'stripe_price_id']
+    list_display = ['id', 'name', 'price', 'validity', 'description', 'stripe_product_id', 'stripe_price_id',
+                    'paypal_product_id', 'paypal_plan_id']
     actions = ["download_csv"]
 
 
