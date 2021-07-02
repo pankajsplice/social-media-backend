@@ -15,7 +15,7 @@ class StripeCustomer(models.Model):
 
 
 class PaypalCustomer(models.Model):
-    user = models.ForeignKey(User, related_name='paypal_customer', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name='paypal_customer', on_delete=models.CASCADE, blank=True, null=True)
     customer = models.CharField(max_length=255, default='')
     email = models.CharField(max_length=150, default='')
     subscription = models.ForeignKey(Subscription, on_delete=models.CASCADE, blank=True, null=True)
