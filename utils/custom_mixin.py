@@ -104,7 +104,7 @@ class QuerySetFilterMixin(object):
             event = self.request.data['event']
             get_user_event = Event.objects.get(id=event)
             user = get_user_event.created_by
-            message = 'A new person is followed your event'
+            message = 'You have followed' f'{get_user_event.name}' 'event'
 
             # creating notification
             kwargs = {'user': user, 'notification_type': notification_type, 'message': message, 'event': get_user_event,
