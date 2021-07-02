@@ -2,6 +2,8 @@ from django.urls import path, include
 from payment.views import CreateProductApi, GetStripePriceApi, StripeCustomerApiView, StripeCustomerViewSets,\
     GetPaymentDetails, ConfirmPaymentIntent
 from rest_framework import routers
+from payment.paypal import PaypalProductListCreateApi, PaypalPlanListCreateApi, PaypalSubscriptionApi,\
+    GetPaypalPaymentStatus
 
 router = routers.DefaultRouter()
 
@@ -14,4 +16,8 @@ urlpatterns = [
     path('stripe-customer-subscription/', StripeCustomerApiView.as_view(), name="stripe-customer"),
     path('get-payment-details/', GetPaymentDetails.as_view(), name="get-stripe-payment-details"),
     path('confirm-payment-intent/', ConfirmPaymentIntent.as_view(), name="confirm-payment-intent"),
+    path('paypal-product/', PaypalProductListCreateApi.as_view(), name="paypal-product"),
+    path('paypal-plan/', PaypalPlanListCreateApi.as_view(), name="paypal-plan"),
+    path('paypal-subscription/', PaypalSubscriptionApi.as_view(), name="paypal-subscription"),
+    path('get-paypal-subscription/', GetPaypalPaymentStatus.as_view(), name="get-paypal-subscription"),
 ]

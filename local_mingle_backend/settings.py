@@ -212,6 +212,15 @@ TWILIO_ACCOUNT_SID = 'ACbfe0cd41ed4784bd87a52c2bc82afeaa'
 TWILIO_AUTH_TOKEN = '7e281b8730edd965bb151031d95ad121'
 
 
+# *** paypal config start ***
+
+PAYPAL_CLIENT_ID = 'AekPd_mXXFSb9BHNmPRUkWOHRW3dk99vBgYBNZtSdIXclTOMyvdPVxkJ_Z_Gtohs_PzX52bQE7SQFRGD'
+PAYPAL_CLIENT_SECRET = 'EFwsGaJA9foAq3Ok6-3a_vbd3V3786FtZ_CZtSyegOu94C4jpFCYTYuvHFKT5-ywv8j5IB2_lVOKwiKj'
+
+# *** paypal config end ***
+
+LOCAL_MINGLE_PRODUCT_LIST = ['Silver', 'Gold', 'Platinum']
+
 # *** fcm-django settings start ***
 
 FCM_DJANGO_SETTINGS = {
