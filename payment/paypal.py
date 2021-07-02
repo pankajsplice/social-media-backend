@@ -17,6 +17,8 @@ paypal_api = paypalrestsdk.Api({
     "client_id": settings.PAYPAL_CLIENT_ID,
     "client_secret": settings.PAYPAL_CLIENT_SECRET,
 })
+
+
 # *** paypal rest-sdk api settings end ***
 
 
@@ -33,7 +35,8 @@ class PaypalProductListCreateApi(APIView):
                 if get_subscription:
                     get_subscription.update(paypal_product_id=create_product['id'])
                 else:
-                    return Response({'error': 'subscription with the name' f'{create_product["name"]}' 'is not defined'})
+                    return Response(
+                        {'error': 'subscription with the name' f'{create_product["name"]}' 'is not defined'})
         else:
             for product in get_products:
                 get_subscription = Subscription.objects.filter(name=product['name'])
@@ -131,34 +134,41 @@ class PaypalPlanListCreateApi(APIView):
 class PaypalSubscriptionApi(APIView):
 
     def get(self, request, format=None):
-        paypal_customer = PaypalCustomer.objects.all()
+        paypal_customer = PaypalCustomer.objects.filter(user_id=request.user.id)
         serializer = PaypalCustomerSerializer(paypal_customer, many=True)
         return Response(serializer.data)
 
     def post(self, request, format=None):
-        subscription_id = request.data['subscription']
-        if subscription_id:
-            subscription = Subscription.objects.get(id=subscription_id)
-            data = {'plan_id': subscription.paypal_plan_id}
-            create_subscription = paypal_api.post("/v1/billing/subscriptions", data)
-            serializer = PaypalCustomerSerializer(data=request.data)
-            if serializer.is_valid(raise_exception=True):
-                payment_link = None
-                status = None
-                serializer.save(paypal_subscription=create_subscription['id'],
-                                status=create_subscription['status'])
-                for links in create_subscription['links']:
-                    if links['rel'] == 'approve':
-                        payment_link = links
-                status = create_subscription['status']
-                return Response({'data': {'payment_link': payment_link, 'status': status}})
+        user_id = request.user.id
+        try:
+            paypal_customer = PaypalCustomer.objects.get(user_id=user_id)
+            if paypal_customer.status == 'ACTIVE':
+                return Response({'info': "You have already subscribed"})
+        except:
+            subscription_id = request.data['subscription']
+            if subscription_id:
+                subscription = Subscription.objects.get(id=subscription_id)
+                data = {'plan_id': subscription.paypal_plan_id}
+                create_subscription = paypal_api.post("/v1/billing/subscriptions", data)
+                serializer = PaypalCustomerSerializer(data=request.data)
+                if serializer.is_valid(raise_exception=True):
+                    payment_link = None
+                    status = None
+                    serializer.save(user_id=user_id, paypal_subscription=create_subscription['id'],
+                                    status=create_subscription['status'])
+                    for links in create_subscription['links']:
+                        if links['rel'] == 'approve':
+                            payment_link = links
+                    status = create_subscription['status']
+                    return Response({'data': {'payment_link': payment_link, 'status': status}})
+            else:
+                return Response({'error': "Need to pass subscription in payload"})
 
 
 class GetPaypalPaymentStatus(APIView, PageNumberPagination):
     def get(self, request):
-        user_id = request.query_params.get('user_id', '')
-        if user_id != '':
-
+        user_id = request.user.id
+        if user_id:
             try:
                 paypal = PaypalCustomer.objects.get(user_id=user_id)
                 update_paypal_customer_status = PaypalCustomer.objects.filter(user_id=user_id)
@@ -168,8 +178,7 @@ class GetPaypalPaymentStatus(APIView, PageNumberPagination):
                 serializer = PaypalCustomerSerializer(page, many=True)
                 return self.get_paginated_response(serializer.data)
             except:
-                return Response({'error': 'There is no paypal payment belonging to this user'})
+                return Response({'error': 'There is no paypal payment for this user'})
 
         else:
-            return Response({'error': 'Please pass user_id to get status of paypal payment'})
-
+            return Response({'error': 'Please add existing user token to get status of paypal payment'})
