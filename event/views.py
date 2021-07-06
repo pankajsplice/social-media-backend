@@ -24,6 +24,7 @@ from django.core.mail import send_mail, EmailMultiAlternatives
 from local_mingle_backend.settings import DEFAULT_FROM_EMAIL, TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN
 from event.location_filter import get_location
 from rest_framework.pagination import PageNumberPagination
+from datetime import datetime
 
 User = get_user_model()
 
@@ -47,6 +48,10 @@ class EventViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
                         'id': ['exact'],
                         'created_by__id': ['exact'],
                         }
+
+    def get_queryset(self):
+        queryset = Event.objects.filter(date__gte=datetime.today())
+        return queryset
 
 
 # to create events' category
@@ -591,6 +596,10 @@ class RecurringEventViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
                         'event__id': ['exact'],
                         'date': ['gte', 'lte', 'exact']}
 
+    def get_queryset(self):
+        queryset = RecurringEvent.objects.filter(event__date__gte=datetime.today())
+        return queryset
+
 
 class GroupInvitationViewset(viewsets.ModelViewSet):
     authentication_classes = (authentication.TokenAuthentication,)
@@ -630,7 +639,7 @@ class EventLatLongApiView(APIView, PageNumberPagination):
 
             # showing same results if date range and category is not found
             else:
-                get_related_events = Event.objects.filter(venue__in=res).order_by('-id')
+                get_related_events = Event.objects.filter(venue__in=res, date__gte=datetime.today()).order_by('-id')
 
             # creating page instance for pagination
             queryset = get_related_events
@@ -641,21 +650,21 @@ class EventLatLongApiView(APIView, PageNumberPagination):
             return self.get_paginated_response(serializer.data)
         else:
             if city != "":
-                queryset = Event.objects.filter(venue__city__iexact=city).order_by('-id')
+                queryset = Event.objects.filter(venue__city__iexact=city, date__gte=datetime.today()).order_by('-id')
                 page = self.paginate_queryset(queryset, request)
                 serializer = EventSerializer(
                     page, many=True
                 )
                 return self.get_paginated_response(serializer.data)
             elif state != "":
-                queryset = Event.objects.filter(venue__state_name__iexact=state).order_by('-id')
+                queryset = Event.objects.filter(venue__state_name__iexact=state, date__gte=datetime.today()).order_by('-id')
                 page = self.paginate_queryset(queryset, request)
                 serializer = EventSerializer(
                     page, many=True
                 )
                 return self.get_paginated_response(serializer.data)
             elif postal_code != "":
-                queryset = Event.objects.filter(venue__postal_code__iexact=postal_code).order_by('-id')
+                queryset = Event.objects.filter(venue__postal_code__iexact=postal_code, date__gte=datetime.today()).order_by('-id')
                 page = self.paginate_queryset(queryset, request)
                 serializer = EventSerializer(
                     page, many=True
