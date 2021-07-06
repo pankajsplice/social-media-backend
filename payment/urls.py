@@ -3,7 +3,7 @@ from payment.views import CreateProductApi, GetStripePriceApi, StripeCustomerApi
     GetPaymentDetails, ConfirmPaymentIntent
 from rest_framework import routers
 from payment.paypal import PaypalProductListCreateApi, PaypalPlanListCreateApi, PaypalSubscriptionApi,\
-    GetPaypalPaymentStatus
+    GetPaypalPaymentStatus, CancelPaypalSubscription
 
 router = routers.DefaultRouter()
 
@@ -20,4 +20,5 @@ urlpatterns = [
     path('paypal-plan/', PaypalPlanListCreateApi.as_view(), name="paypal-plan"),
     path('paypal-subscription/', PaypalSubscriptionApi.as_view(), name="paypal-subscription"),
     path('get-paypal-subscription/', GetPaypalPaymentStatus.as_view(), name="get-paypal-subscription"),
+    path('cancel-paypal-subscription/', CancelPaypalSubscription.as_view(), name="cancel-paypal-subscription"),
 ]

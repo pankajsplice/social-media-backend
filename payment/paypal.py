@@ -177,8 +177,29 @@ class GetPaypalPaymentStatus(APIView, PageNumberPagination):
                 page = self.paginate_queryset(update_paypal_customer_status, request)
                 serializer = PaypalCustomerSerializer(page, many=True)
                 return self.get_paginated_response(serializer.data)
-            except:
+            except Exception as e:
                 return Response({'error': 'There is no paypal payment for this user'})
 
         else:
             return Response({'error': 'Please add existing user token to get status of paypal payment'})
+
+
+class CancelPaypalSubscription(APIView):
+    def get(self, request):
+        user_id = request.user.id
+        if user_id:
+            try:
+                data = {"status": "CANCELLED"}
+                paypal = PaypalCustomer.objects.get(user_id=user_id)
+                update_paypal_customer_status = PaypalCustomer.objects.filter(user_id=user_id)
+                cancel_subscription = paypal_api.patch("/v1/billing/subscriptions/" + paypal.paypal_subscription, data)
+                print(cancel_subscription)
+                update_paypal_customer_status.update(status='CANCELLED')
+                page = self.paginate_queryset(update_paypal_customer_status, request)
+                serializer = PaypalCustomerSerializer(page, many=True)
+                return self.get_paginated_response(serializer.data)
+            except Exception as e:
+                return Response({'error': 'There is no paypal based subscription for this user'})
+
+        else:
+            return Response({'error': 'Please add existing user token to cancel the paypal subscription'})
