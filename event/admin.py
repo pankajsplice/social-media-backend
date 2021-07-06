@@ -1,6 +1,6 @@
 from django.contrib import admin
 from event.models import Event, Venue, Category, Comment, Like, Subscription, Message, Follow, \
-     Group, EventSetting, Notification, RecurringEvent
+     Group, EventSetting, Notification, RecurringEvent, MessageSetting
 from utils.download_csv import ExportCsvMixin
 from django_mptt_admin.admin import DjangoMpttAdmin
 
@@ -75,6 +75,12 @@ class RecurringEventAdmin(admin.ModelAdmin):
     list_display = ['id', 'event', 'date', 'time']
 
 
+class MessageSettingAdmin(admin.ModelAdmin):
+    model = MessageSetting
+    list_display = ['id', 'sender', 'receiver', 'block', 'report', 'date_created']
+    list_filter = ['block']
+
+
 admin.site.register(Event, EventAdmin)
 admin.site.register(Venue, VenueAdmin)
 admin.site.register(Category, CategoryAdmin)
@@ -87,3 +93,4 @@ admin.site.register(Group, GroupAdmin)
 admin.site.register(EventSetting, EventSettingAdmin)
 admin.site.register(Notification, EventNotification)
 admin.site.register(RecurringEvent, RecurringEventAdmin)
+admin.site.register(MessageSetting, MessageSettingAdmin)
