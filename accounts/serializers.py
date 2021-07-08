@@ -3,7 +3,7 @@ from django.db.models import DateTimeField
 from django.utils.timezone import now
 from rest_auth.registration.serializers import RegisterSerializer as DefaultRegisterSerializer
 from rest_framework import serializers
-from accounts.models import UserProfile, STAFF_TYPE, SocialAccount, Otp
+from accounts.models import UserProfile, STAFF_TYPE, SocialAccount, Otp, ROLE_TYPE
 from django.conf import settings
 from django.contrib.auth.forms import SetPasswordForm
 
@@ -25,10 +25,12 @@ class RegisterSerializer(DefaultRegisterSerializer):
     profile_pic = serializers.ImageField(required=False, allow_null=True)
     profile_interest = serializers.BooleanField(required=False, allow_null=True)
     enabled_msg = serializers.BooleanField(required=False, allow_null=True)
+    role = serializers.ChoiceField(choices=ROLE_TYPE)
 
     def custom_signup(self, request, user):
         mobile = self.validated_data.get('mobile', '')
         type = self.validated_data.get('type', '')
+        role = self.validated_data.get('role', '')
         profile_pic = self.validated_data.get('profile_pic', '')
         profile_interest = self.validated_data.get('profile_interest', '')
         enabled_msg = self.validated_data.get('enabled_msg', '')
@@ -36,6 +38,7 @@ class RegisterSerializer(DefaultRegisterSerializer):
             user=user,
             mobile=mobile,
             type=type,
+            role=role,
             profile_pic=profile_pic,
             profile_interest=profile_interest,
             enabled_msg=enabled_msg,
@@ -55,6 +58,7 @@ class RegisterSerializer(DefaultRegisterSerializer):
             'last_name': self.validated_data.get('last_name', ''),
             'mobile': self.validated_data.get('mobile', ''),
             'type': self.validated_data.get('type', ''),
+            'role': self.validated_data.get('role', ''),
             'profile_pic': self.validated_data.get('profile_pic', ''),
             'profile_interest': self.validated_data.get('profile_interest', ''),
             'enabled_msg': self.validated_data.get('enabled_msg', '')
@@ -70,7 +74,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
         fields = ('mobile', 'type', 'profile_pic', 'location', 'enabled_msg', 'public_profile', 'invited',
-                  'profile_groups', 'profile_interest', 'dob')
+                  'profile_groups', 'profile_interest', 'dob', 'role')
 
 
 class UserDetailsSerializer(serializers.ModelSerializer):
@@ -98,6 +102,7 @@ class UserDetailsSerializer(serializers.ModelSerializer):
             profile_obj.profile_groups = profile.get('profile_groups', profile_obj.profile_groups)
             profile_obj.profile_interest = profile.get('profile_interest', profile_obj.profile_interest)
             profile_obj.dob = profile.get('dob', profile_obj.dob)
+            profile_obj.role = profile.get('role', profile_obj.role)
 
             profile_obj.save()
         return instance

@@ -26,6 +26,11 @@ GENDER_TYPE = (
         ('other','Other'),
     )
 
+ROLE_TYPE = (
+        ('customer', _('Customer')),
+        ('vendor', _('Vendor'))
+    )
+
 
 class UserProfile(models.Model):
     """
@@ -43,6 +48,7 @@ class UserProfile(models.Model):
     profile_groups = models.BooleanField(default=False, help_text=_('Show Group on Profile'))
     profile_interest = models.BooleanField(default=False, help_text=_('Show interest on Profile'))
     dob = models.DateField(blank=True, null=True)
+    role = models.CharField(max_length=10, choices=ROLE_TYPE, blank=True, null=True)
 
 
 class SocialAccount(models.Model):
