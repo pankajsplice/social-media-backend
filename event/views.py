@@ -49,10 +49,6 @@ class EventViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
                         'created_by__id': ['exact'],
                         }
 
-    def get_queryset(self):
-        queryset = Event.objects.filter(date__gte=datetime.today())
-        return queryset
-
 
 # to create events' category
 class CategoryViewSet(viewsets.ModelViewSet):
@@ -587,7 +583,7 @@ class RecurringEventChangeApiView(APIView):
             return Response({"success": True})
 
 
-class RecurringEventViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
+class RecurringEventViewSet(viewsets.ModelViewSet):
     # authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (permissions.AllowAny,)
     serializer_class = RecurringEventSerializer
