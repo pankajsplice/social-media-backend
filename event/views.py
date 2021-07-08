@@ -587,7 +587,7 @@ class RecurringEventChangeApiView(APIView):
             return Response({"success": True})
 
 
-class RecurringEventViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
+class RecurringEventViewSet(viewsets.ModelViewSet):
     # authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (permissions.AllowAny,)
     serializer_class = RecurringEventSerializer
