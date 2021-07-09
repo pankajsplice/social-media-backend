@@ -188,6 +188,7 @@ class ConfirmPaymentIntent(APIView):
             confirm_payment_intent = stripe.PaymentIntent.confirm(
                                         payment_intent_id,
                                         payment_method=payment_method_id)
+
             return Response({'data': confirm_payment_intent})
 
         else:
@@ -199,6 +200,8 @@ class GetPaymentDetails(APIView):
     def post(self, request, format=None):
         payment_id = request.data['payment']
         get_payment = stripe.PaymentIntent.retrieve(payment_id)
+        stripe_customer = StripeCustomer.objects.filter(customer=get_payment['customer'])
+        stripe_customer.update(status=get_payment['status'])
         return Response({'data': get_payment})
 
 
