@@ -43,6 +43,8 @@ class UserTokenDetailView(generics.RetrieveAPIView):
 
 
 class SocialAccountLoginView(APIView):
+    permission_classes = (AllowAny,)
+
     def post(self, request):
         token = request.data['token']
         social_data = SocialAccount.objects.filter(token=token)
@@ -63,6 +65,7 @@ class SocialAccountLoginView(APIView):
 
 
 class SocialAccountLogoutView(APIView):
+    permission_classes = (AllowAny,)
 
     def post(self, request):
         SocialAccount.objects.filter(email=request.data['email']).update(is_social_login=False)

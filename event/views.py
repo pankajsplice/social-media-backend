@@ -231,13 +231,16 @@ class FetchEventTicketMasterApiView(APIView):
                         if event_availability.exists():
                             pass
                         elif event_recurring.exists():
-                            event_obj = Event.objects.get(name=global_event_json['name'])
-                            if event_obj.event_status == event.status and event_obj.venue.id == venue_id:
-                                event_recurring.update(recurring=True)
-                                if event_obj.recurring:
-                                    recurring_event = Event(event_id=event_obj.id, time=event.local_start_time,
-                                                            date=event.local_start_date,)
-                                    recurring_event.save()
+                            if event_recurring.count() == 1:
+                                event_obj = Event.objects.get(name=global_event_json['name'])
+                                if event_obj.event_status == event.status and event_obj.venue.id == venue_id:
+                                    event_recurring.update(recurring=True)
+                                    if event_obj.recurring:
+                                        recurring_event = RecurringEvent(event_id=event_obj.id, time=event.local_start_time,
+                                                                         date=event.local_start_date,)
+                                        recurring_event.save()
+                                else:
+                                    pass
                             else:
                                 pass
                         else:
