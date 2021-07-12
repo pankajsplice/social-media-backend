@@ -47,6 +47,7 @@ class SocialAccountLoginView(APIView):
 
     def post(self, request):
         token = request.data['token']
+        email = request.data.get('email', None)
         social_data = SocialAccount.objects.filter(token=token)
         if social_data:
             SocialAccount.objects.filter(token=token).update(is_social_login=True)
@@ -54,14 +55,24 @@ class SocialAccountLoginView(APIView):
             return Response({'message': 'Token Exist', 'success': True, 'data': serializer.data},
                             status=status.HTTP_200_OK)
         else:
-            social_serializer = SocialAccountSerializer(data=request.data)
-            if social_serializer.is_valid():
-                social_serializer.save()
+            response = None
+            user_exists = None
+            if email:
+                user_exists = User.objects.filter(email=email)
 
-                SocialAccount.objects.filter(token=token).update(is_social_login=True)
-                serializer = SocialAccountSerializer(social_data, many=True)
-                response = {'message': 'Token Saved', 'data': serializer.data}
-                return Response(response, status=status.HTTP_200_OK)
+            if user_exists:
+                response = {'message': 'You have already registered with us. In-case you have forgotten your'
+                                       'credentials you can click on Forgot Password button', 'data': []}
+            else:
+                social_serializer = SocialAccountSerializer(data=request.data)
+                if social_serializer.is_valid():
+                    social_serializer.save()
+
+                    SocialAccount.objects.filter(token=token).update(is_social_login=True)
+                    serializer = SocialAccountSerializer(social_data, many=True)
+
+                    response = {'message': 'Token Saved', 'data': serializer.data}
+            return Response(response, status=status.HTTP_200_OK)
 
 
 class SocialAccountLogoutView(APIView):
