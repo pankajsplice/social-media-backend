@@ -17,13 +17,14 @@ class EventSerializer(serializers.ModelSerializer):
     category_name = serializers.SerializerMethodField()
     date = serializers.DateField(input_formats=['%d-%m-%Y', ])
     user_detail = serializers.SerializerMethodField()
+    day = serializers.SerializerMethodField()
 
     class Meta:
         model = Event
         fields = ('id', 'name', 'global_id', 'url', 'price_min', 'price_max', 'event_status', 'currency',
                   'image_json', 'event_image', 'category', 'category_name', 'venue', 'venue_detail', 'seatmap_url', 'timezone', 'time', 'date',
                   'user', 'source', 'description', 'like', 'comment', 'group', 'created_by', 'updated_by', 'user_detail', 'status',
-                  'date_created', 'date_updated', 'recurring')
+                  'date_created', 'date_updated', 'recurring', 'day')
 
     def get_like(self, obj):
         like = Like.objects.filter(event_id=obj.id).count()
@@ -73,6 +74,11 @@ class EventSerializer(serializers.ModelSerializer):
                 return user_detail
         else:
             return None
+
+    def get_day(self, obj):
+        dat_data = obj.date
+        day_name = (dat_data.strftime("%A"))
+        return day_name
 
 
 class CategorySerializer(CustomBaseSerializer):

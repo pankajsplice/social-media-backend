@@ -6,6 +6,7 @@ from rest_framework import serializers
 from accounts.models import UserProfile, STAFF_TYPE, SocialAccount, Otp, ROLE_TYPE
 from django.conf import settings
 from django.contrib.auth.forms import SetPasswordForm
+from event.models import EventSetting, Like, Comment
 
 User = get_user_model()
 
@@ -81,6 +82,9 @@ class UserDetailsSerializer(serializers.ModelSerializer):
     """
     User model w/o password
     """
+    going = serializers.SerializerMethodField()
+    interested = serializers.SerializerMethodField()
+    commented = serializers.SerializerMethodField()
     profile = UserProfileSerializer()
     last_login = serializers.DateTimeField(default=now(), read_only=True)
 
@@ -109,8 +113,21 @@ class UserDetailsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('pk', 'username', 'email', 'first_name', 'last_name', 'profile', 'last_login')
+        fields = ('pk', 'username', 'email', 'first_name', 'last_name', 'profile', 'last_login', 'going',
+                  'interested', 'commented')
         read_only_fields = ('email', )
+
+    def get_going(self, obj):
+        going = EventSetting.objects.filter(user_id=obj.id).count()
+        return going
+
+    def get_interested(self, obj):
+        like = Like.objects.filter(created_by__id=obj.id).count()
+        return like
+
+    def get_commented(self, obj):
+        comment = Comment.objects.filter(created_by__id=obj.id).count()
+        return comment
 
 
 class UserSerializer(serializers.ModelSerializer):
