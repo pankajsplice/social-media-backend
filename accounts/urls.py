@@ -15,7 +15,7 @@ router.register(r'user_list', djoser.views.UserViewSet)
 urlpatterns = [
     path('', include(router.urls)),
     url(r'^token/$', SocialLoginView.as_view(), name='home_token'),
-    path('current-social-user', UserTokenDetailView.as_view(),  name="current_user_token"),
+    path('current-user/', UserTokenDetailView.as_view(),  name="current_user_token"),
     path('social-account-login/', SocialAccountLoginView.as_view(), name="social-login"),
     path('social-account-logout/', SocialAccountLogoutView.as_view(), name="social-logout"),
     path('send-otp/', SendOtpApiView.as_view(), name="send-otp"),
