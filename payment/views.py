@@ -3,11 +3,11 @@ import stripe
 from django.conf import settings
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from payment.models import StripeCustomer
+from payment.models import StripeCustomer, PaypalCustomer
 from event.models import Subscription
 from payment.serializers import StripeCustomerSerializer
 from django.contrib.auth.models import User
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import TokenAuthentication
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -218,3 +218,18 @@ class CancelSubscription(APIView):
             return Response({'data': cancel_subscription})
         else:
             return Response({'data': [], 'error': 'please provide subscription id'})
+
+
+class GetLocalMinglePaymentDetails(APIView):
+
+    permission_classes = (AllowAny, )
+
+    def post(self, request, format=None):
+        email = request.data.get('email', None)
+        if email:
+            stripe_customer = StripeCustomer.objects.filter(email=email, status='succeeded')
+            paypal_customer = PaypalCustomer.objects.filter(email=email, status='succeeded')
+            if stripe_customer or paypal_customer:
+                return Response({'payment': True})
+        else:
+            return Response({'payment': False})

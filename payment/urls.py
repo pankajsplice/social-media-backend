@@ -1,6 +1,6 @@
 from django.urls import path, include
 from payment.views import CreateProductApi, GetStripePriceApi, StripeCustomerApiView, StripeCustomerViewSets,\
-    GetPaymentDetails, ConfirmPaymentIntent
+    GetPaymentDetails, ConfirmPaymentIntent, GetLocalMinglePaymentDetails
 from rest_framework import routers
 from payment.paypal import PaypalProductListCreateApi, PaypalPlanListCreateApi, PaypalSubscriptionApi,\
     GetPaypalPaymentStatus, CancelPaypalSubscription
@@ -21,4 +21,5 @@ urlpatterns = [
     path('paypal-subscription/', PaypalSubscriptionApi.as_view(), name="paypal-subscription"),
     path('get-paypal-subscription/', GetPaypalPaymentStatus.as_view(), name="get-paypal-subscription"),
     path('cancel-paypal-subscription/', CancelPaypalSubscription.as_view(), name="cancel-paypal-subscription"),
+    path('local-mingle-payment-details/', GetLocalMinglePaymentDetails.as_view(), name="pay-detail"),
 ]
