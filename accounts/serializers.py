@@ -16,20 +16,24 @@ class RegisterSerializer(DefaultRegisterSerializer):
 
     """
     username = serializers.CharField(max_length=50)
-    first_name = serializers.CharField(max_length=20)
-    last_name = serializers.CharField(max_length=20)
+    first_name = serializers.CharField(max_length=20, allow_null=True, allow_blank=True)
+    last_name = serializers.CharField(max_length=20, allow_null=True, allow_blank=True)
     email = serializers.EmailField(required=True)
     password1 = serializers.CharField(write_only=True)
     password2 = serializers.CharField(write_only=True)
-    mobile = serializers.CharField(max_length=15)
-    type = serializers.ChoiceField(choices=STAFF_TYPE)
-    profile_pic = serializers.ImageField(required=False, allow_null=True)
+    mobile = serializers.CharField(max_length=15, allow_null=True, allow_blank=True)
+    dob = serializers.DateField(format='%m-%d-%Y', input_formats=['%m-%d-%Y'], allow_null=True)
+    location = serializers.CharField(max_length=255, allow_null=True, allow_blank=True)
+    type = serializers.ChoiceField(choices=STAFF_TYPE, allow_null=True, allow_blank=True)
+    profile_pic = serializers.ImageField(required=False, allow_null=True, allow_empty_file=True)
     profile_interest = serializers.BooleanField(required=False, allow_null=True)
     enabled_msg = serializers.BooleanField(required=False, allow_null=True)
     role = serializers.ChoiceField(choices=ROLE_TYPE)
 
     def custom_signup(self, request, user):
         mobile = self.validated_data.get('mobile', '')
+        dob = self.validated_data.get('dob', '')
+        location = self.validated_data.get('location', '')
         type = self.validated_data.get('type', '')
         role = self.validated_data.get('role', '')
         profile_pic = self.validated_data.get('profile_pic', '')
@@ -38,6 +42,8 @@ class RegisterSerializer(DefaultRegisterSerializer):
         user_profile = UserProfile(
             user=user,
             mobile=mobile,
+            dob=dob,
+            location=location,
             type=type,
             role=role,
             profile_pic=profile_pic,
