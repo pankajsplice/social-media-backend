@@ -66,6 +66,8 @@ class RegisterSerializer(DefaultRegisterSerializer):
             'mobile': self.validated_data.get('mobile', ''),
             'type': self.validated_data.get('type', ''),
             'role': self.validated_data.get('role', ''),
+            'dob': self.validated_data.get('dob', ''),
+            'location': self.validated_data.get('location', ''),
             'profile_pic': self.validated_data.get('profile_pic', ''),
             'profile_interest': self.validated_data.get('profile_interest', ''),
             'enabled_msg': self.validated_data.get('enabled_msg', '')
