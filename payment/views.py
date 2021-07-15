@@ -188,7 +188,9 @@ class ConfirmPaymentIntent(APIView):
             confirm_payment_intent = stripe.PaymentIntent.confirm(
                                         payment_intent_id,
                                         payment_method=payment_method_id)
-
+            get_payment = stripe.PaymentIntent.retrieve(confirm_payment_intent.id)
+            stripe_customer = StripeCustomer.objects.filter(customer=get_payment['customer'])
+            stripe_customer.update(status=get_payment['status'])
             return Response({'data': confirm_payment_intent})
 
         else:
