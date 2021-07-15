@@ -230,8 +230,15 @@ class GetLocalMinglePaymentDetails(APIView):
         email = request.data.get('email', None)
         if email:
             stripe_customer = StripeCustomer.objects.filter(email=email, status='succeeded')
-            paypal_customer = PaypalCustomer.objects.filter(email=email, status='succeeded')
-            if stripe_customer or paypal_customer:
+            if stripe_customer:
                 return Response({'payment': True})
+            else:
+                get_user = User.objects.filter(email=email).last()
+                if get_user:
+                    paypal_customer = PaypalCustomer.objects.filter(user=get_user.id, status='ACTIVE')
+                    if paypal_customer:
+                        return Response({'payment': True})
+                else:
+                    return Response({'payment': False})
         else:
             return Response({'payment': False})
