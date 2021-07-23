@@ -4,21 +4,14 @@ from event.models import Subscription
 User = get_user_model()
 
 
-class StripeCustomer(models.Model):
+class Customer(models.Model):
     user = models.ForeignKey(User, related_name='customer', on_delete=models.CASCADE)
     customer = models.CharField(max_length=255, default='')
     email = models.CharField(max_length=150, default='')
     subscription = models.ForeignKey(Subscription, on_delete=models.CASCADE, blank=True, null=True)
-    strip_subscription = models.CharField(max_length=255, default='')
+    third_party_subscription = models.CharField(max_length=255, default='')
     status = models.CharField(max_length=100, default='')
+    source = models.CharField(max_length=100, default='')
+    transaction_id = models.CharField(max_length=255, default='')
     created_at = models.DateField(auto_now=True)
 
-
-class PaypalCustomer(models.Model):
-    user = models.ForeignKey(User, related_name='paypal_customer', on_delete=models.CASCADE, blank=True, null=True)
-    customer = models.CharField(max_length=255, default='')
-    email = models.CharField(max_length=150, default='')
-    subscription = models.ForeignKey(Subscription, on_delete=models.CASCADE, blank=True, null=True)
-    paypal_subscription = models.CharField(max_length=255, default='')
-    status = models.CharField(max_length=100, default='')
-    created_at = models.DateField(auto_now=True)

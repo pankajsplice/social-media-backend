@@ -1,13 +1,13 @@
 from django.urls import path, include
-from payment.views import CreateProductApi, GetStripePriceApi, StripeCustomerApiView, StripeCustomerViewSets,\
-    GetPaymentDetails, ConfirmPaymentIntent, GetLocalMinglePaymentDetails
+from payment.views import CreateProductApi, GetStripePriceApi, StripeCustomerApiView, \
+    GetPaymentDetails, ConfirmPaymentIntent, GetLocalMinglePaymentDetails, CustomerViewSets
 from rest_framework import routers
 from payment.paypal import PaypalProductListCreateApi, PaypalPlanListCreateApi, PaypalSubscriptionApi,\
     GetPaypalPaymentStatus, CancelPaypalSubscription
 
 router = routers.DefaultRouter()
 
-router.register(r'get-stripe-customer', StripeCustomerViewSets)
+router.register(r'create-customer', CustomerViewSets)
 
 urlpatterns = [
     path('', include(router.urls)),

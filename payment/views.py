@@ -3,9 +3,9 @@ import stripe
 from django.conf import settings
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from payment.models import StripeCustomer, PaypalCustomer
+from payment.models import Customer
 from event.models import Subscription
-from payment.serializers import StripeCustomerSerializer
+from payment.serializers import CustomerSerializer
 from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import TokenAuthentication
@@ -103,8 +103,8 @@ class GetStripePriceApi(APIView):
 class StripeCustomerApiView(APIView):
 
     def get(self, request, format=None):
-        stripe_customer = StripeCustomer.objects.all()
-        serializer = StripeCustomerSerializer(stripe_customer, many=True)
+        stripe_customer = Customer.objects.all()
+        serializer = CustomerSerializer(stripe_customer, many=True)
         return Response(serializer.data)
 
     def post(self, request, format=None):
@@ -117,6 +117,7 @@ class StripeCustomerApiView(APIView):
             country = request.data['country']
             postal_code = request.data['postal_code']
             address = request.data['address']
+            source = request.data['source']
             subscription_id = request.data['subscription']
             if email and subscription_id:
                 subscription = Subscription.objects.get(id=subscription_id)
@@ -133,10 +134,10 @@ class StripeCustomerApiView(APIView):
                     payment_behavior='default_incomplete',
                     expand=['latest_invoice.payment_intent'],
                 )
-                serializer = StripeCustomerSerializer(data=request.data)
+                serializer = CustomerSerializer(data=request.data)
                 if serializer.is_valid(raise_exception=True):
-                    serializer.save(customer=create_customer.id, strip_subscription=create_subscription.id,
-                                    status=create_subscription.status)
+                    serializer.save(customer=create_customer.id, third_party_subscription=create_subscription.id,
+                                    status=create_subscription.status, source=source)
 
                     return Response({'data': create_subscription})
 
@@ -152,15 +153,15 @@ class StripeCustomerApiView(APIView):
 class StripeCustomerViewSets(ModelViewSet):
     permission_classes = (IsAuthenticated, )
     authentication_classes = (TokenAuthentication, )
-    serializer_class = StripeCustomerSerializer
-    queryset = StripeCustomer.objects.all()
+    serializer_class = CustomerSerializer
+    queryset = Customer.objects.all()
 
     def get_queryset(self):
         user_id = self.request.query_params.get("user_id", None)
         if user_id is None:
-            queryset = StripeCustomer.objects.none()
+            queryset = Customer.objects.none()
         else:
-            queryset = StripeCustomer.objects.filter(user=user_id)
+            queryset = Customer.objects.filter(user=user_id, source='stripe')
         return queryset
 
 
@@ -189,7 +190,7 @@ class ConfirmPaymentIntent(APIView):
                                         payment_intent_id,
                                         payment_method=payment_method_id)
             get_payment = stripe.PaymentIntent.retrieve(confirm_payment_intent.id)
-            stripe_customer = StripeCustomer.objects.filter(customer=get_payment['customer'])
+            stripe_customer = Customer.objects.filter(customer=get_payment['customer'])
             stripe_customer.update(status=get_payment['status'])
             return Response({'data': confirm_payment_intent})
 
@@ -202,7 +203,7 @@ class GetPaymentDetails(APIView):
     def post(self, request, format=None):
         payment_id = request.data['payment']
         get_payment = stripe.PaymentIntent.retrieve(payment_id)
-        stripe_customer = StripeCustomer.objects.filter(customer=get_payment['customer'])
+        stripe_customer = Customer.objects.filter(customer=get_payment['customer'])
         stripe_customer.update(status=get_payment['status'])
         return Response({'data': get_payment})
 
@@ -211,7 +212,7 @@ class CancelSubscription(APIView):
     def post(self, request, format=None):
         subscription_id = request.data['subscription']
         if subscription_id:
-            stripe_customer = StripeCustomer.objects.get(subscription_id=subscription_id)
+            stripe_customer = Customer.objects.get(subscription_id=subscription_id, source='stripe')
             get_current_subscription_id = stripe_customer.strip_subscription
             cancel_subscription = stripe.Subscription.delete(get_current_subscription_id)
             subscription_instance = Subscription.objects.get(id=subscription_id)
@@ -229,16 +230,31 @@ class GetLocalMinglePaymentDetails(APIView):
     def post(self, request, format=None):
         email = request.data.get('email', None)
         if email:
-            stripe_customer = StripeCustomer.objects.filter(email=email, status='succeeded')
-            if stripe_customer:
+            customer = Customer.objects.filter(email=email, status='succeeded')
+            if customer:
                 return Response({'payment': True})
             else:
                 get_user = User.objects.filter(email=email).last()
                 if get_user:
-                    paypal_customer = PaypalCustomer.objects.filter(user=get_user.id, status='ACTIVE')
+                    paypal_customer = Customer.objects.filter(user=get_user.id, status='ACTIVE')
                     if paypal_customer:
                         return Response({'payment': True})
                 else:
                     return Response({'payment': False})
         else:
             return Response({'payment': False})
+
+
+class CustomerViewSets(ModelViewSet):
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, )
+    serializer_class = CustomerSerializer
+    queryset = Customer.objects.all()
+
+    def get_queryset(self):
+        user_id = self.request.query_params.get("user_id", None)
+        if user_id is None:
+            queryset = Customer.objects.none()
+        else:
+            queryset = Customer.objects.filter(user=user_id)
+        return queryset
