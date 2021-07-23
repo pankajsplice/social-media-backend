@@ -141,7 +141,7 @@ class PaypalSubscriptionApi(APIView):
     def post(self, request, format=None):
         user_id = request.user.id
         try:
-            paypal_customer = Customer.objects.get(user_id=user_id)
+            paypal_customer = Customer.objects.get(user_id=user_id, source='paypal', status='ACTIVE')
             if paypal_customer.status == 'ACTIVE':
                 return Response({'info': "You have already subscribed"})
         except:
