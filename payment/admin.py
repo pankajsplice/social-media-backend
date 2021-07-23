@@ -1,20 +1,14 @@
 from django.contrib import admin
-from payment.models import StripeCustomer, PaypalCustomer
+from payment.models import Customer
 from utils.download_csv import ExportCsvMixin
 
 
-class StripeCustomerAdmin(admin.ModelAdmin, ExportCsvMixin):
-    model = StripeCustomer
-    list_display = ['id', 'user', 'customer', 'email', 'subscription', 'strip_subscription', 'status', 'created_at']
+class CustomerAdmin(admin.ModelAdmin, ExportCsvMixin):
+    model = Customer
+    list_display = ['id', 'user', 'customer', 'email', 'subscription', 'third_party_subscription', 'status',
+                    'source', 'transaction_id', 'created_at']
     actions = ["download_csv"]
 
 
-class PaypalCustomerAdmin(admin.ModelAdmin, ExportCsvMixin):
-    model = StripeCustomer
-    list_display = ['id', 'user', 'customer', 'email', 'subscription', 'paypal_subscription', 'status', 'created_at']
-    actions = ["download_csv"]
-
-
-admin.site.register(StripeCustomer, StripeCustomerAdmin)
-admin.site.register(PaypalCustomer, PaypalCustomerAdmin)
+admin.site.register(Customer, CustomerAdmin)
 

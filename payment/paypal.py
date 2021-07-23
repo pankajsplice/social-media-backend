@@ -6,8 +6,8 @@ from local_mingle_backend import settings
 from rest_framework.views import APIView
 from event.models import Subscription
 from rest_framework.response import Response
-from payment.models import PaypalCustomer
-from payment.serializers import PaypalCustomerSerializer
+from payment.models import Customer
+from payment.serializers import CustomerSerializer
 from rest_framework.pagination import PageNumberPagination
 
 # *** paypal rest-sdk api settings start ***
@@ -134,28 +134,29 @@ class PaypalPlanListCreateApi(APIView):
 class PaypalSubscriptionApi(APIView):
 
     def get(self, request, format=None):
-        paypal_customer = PaypalCustomer.objects.filter(user_id=request.user.id)
-        serializer = PaypalCustomerSerializer(paypal_customer, many=True)
+        paypal_customer = Customer.objects.filter(user_id=request.user.id, source='paypal')
+        serializer = CustomerSerializer(paypal_customer, many=True)
         return Response(serializer.data)
 
     def post(self, request, format=None):
         user_id = request.user.id
         try:
-            paypal_customer = PaypalCustomer.objects.get(user_id=user_id)
+            paypal_customer = Customer.objects.get(user_id=user_id)
             if paypal_customer.status == 'ACTIVE':
                 return Response({'info': "You have already subscribed"})
         except:
             subscription_id = request.data['subscription']
+            source = request.data['source']
             if subscription_id:
                 subscription = Subscription.objects.get(id=subscription_id)
                 data = {'plan_id': subscription.paypal_plan_id}
                 create_subscription = paypal_api.post("/v1/billing/subscriptions", data)
-                serializer = PaypalCustomerSerializer(data=request.data)
+                serializer = CustomerSerializer(data=request.data)
                 if serializer.is_valid(raise_exception=True):
                     payment_link = None
                     status = None
-                    serializer.save(user_id=user_id, paypal_subscription=create_subscription['id'],
-                                    status=create_subscription['status'])
+                    serializer.save(user_id=user_id, third_party_subscription=create_subscription['id'],
+                                    status=create_subscription['status'], source=source)
                     for links in create_subscription['links']:
                         if links['rel'] == 'approve':
                             payment_link = links
@@ -170,12 +171,12 @@ class GetPaypalPaymentStatus(APIView, PageNumberPagination):
         user_id = request.user.id
         if user_id:
             try:
-                paypal = PaypalCustomer.objects.get(user_id=user_id)
-                update_paypal_customer_status = PaypalCustomer.objects.filter(user_id=user_id)
-                get_subscription = paypal_api.get("/v1/billing/subscriptions/" + paypal.paypal_subscription)
+                paypal = Customer.objects.get(user_id=user_id, source='paypal')
+                update_paypal_customer_status = Customer.objects.filter(user_id=user_id)
+                get_subscription = paypal_api.get("/v1/billing/subscriptions/" + paypal.third_party_subscription)
                 update_paypal_customer_status.update(status=get_subscription['status'])
                 page = self.paginate_queryset(update_paypal_customer_status, request)
-                serializer = PaypalCustomerSerializer(page, many=True)
+                serializer = CustomerSerializer(page, many=True)
                 return self.get_paginated_response(serializer.data)
             except Exception as e:
                 return Response({'error': 'There is no paypal payment for this user'})
@@ -190,13 +191,14 @@ class CancelPaypalSubscription(APIView):
         if user_id:
             try:
                 data = {"status": "CANCELLED"}
-                paypal = PaypalCustomer.objects.get(user_id=user_id)
-                update_paypal_customer_status = PaypalCustomer.objects.filter(user_id=user_id)
-                cancel_subscription = paypal_api.patch("/v1/billing/subscriptions/" + paypal.paypal_subscription, data)
+                paypal = Customer.objects.get(user_id=user_id, source='paypal')
+                update_paypal_customer_status = Customer.objects.filter(user_id=user_id, source='paypal')
+                cancel_subscription = paypal_api.patch("/v1/billing/subscriptions/" + paypal.third_party_subscription,
+                                                       data)
                 print(cancel_subscription)
                 update_paypal_customer_status.update(status='CANCELLED')
                 page = self.paginate_queryset(update_paypal_customer_status, request)
-                serializer = PaypalCustomerSerializer(page, many=True)
+                serializer = CustomerSerializer(page, many=True)
                 return self.get_paginated_response(serializer.data)
             except Exception as e:
                 return Response({'error': 'There is no paypal based subscription for this user'})
