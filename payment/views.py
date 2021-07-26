@@ -239,6 +239,8 @@ class GetLocalMinglePaymentDetails(APIView):
                     paypal_customer = Customer.objects.filter(user=get_user.id, status='ACTIVE')
                     if paypal_customer:
                         return Response({'payment': True})
+                    else:
+                        return Response({'payment': False})
                 else:
                     return Response({'payment': False})
         else:
