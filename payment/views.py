@@ -102,6 +102,8 @@ class GetStripePriceApi(APIView):
 
 class StripeCustomerApiView(APIView):
 
+    permission_classes = (AllowAny,)
+
     def get(self, request, format=None):
         stripe_customer = Customer.objects.all()
         serializer = CustomerSerializer(stripe_customer, many=True)
@@ -110,8 +112,9 @@ class StripeCustomerApiView(APIView):
     def post(self, request, format=None):
         try:
             email = request.data['email']
-            name = User.objects.get(id=request.data['user'])
-            full_name = f'{name.first_name}  {name.last_name}'
+            user = request.data.get('user', None)
+            user_exist = User.objects.get(id=user)
+            full_name = f'{user_exist.first_name}  {user_exist.last_name}'
             city = request.data['city']
             state = request.data['state']
             country = request.data['country']
