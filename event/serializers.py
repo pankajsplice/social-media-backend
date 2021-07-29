@@ -461,10 +461,12 @@ class GroupInvitationSerializer(serializers.ModelSerializer):
 class MessageSettingSerializer(serializers.ModelSerializer):
     sender_detail = serializers.SerializerMethodField()
     receiver_detail = serializers.SerializerMethodField()
+    group_receiver_detail = serializers.SerializerMethodField()
 
     class Meta:
         model = MessageSetting
-        fields = ('id', 'sender', 'sender_detail', 'receiver', 'receiver_detail', 'block', 'report', 'date_created')
+        fields = ('id', 'sender', 'sender_detail', 'receiver', 'receiver_detail', 'gp_receiver',
+                  'group_receiver_detail', 'block', 'report', 'date_created')
 
     def get_sender_detail(self, obj):
         if obj.sender:
@@ -511,5 +513,13 @@ class MessageSettingSerializer(serializers.ModelSerializer):
             except:
                 user_detail = {'name': f'{user.first_name} {user.last_name}', 'email': user.email}
                 return user_detail
+        else:
+            return None
+
+    def get_group_receiver_detail(self, obj):
+        if obj.gp_receiver:
+            group = Group.objects.get(id=obj.gp_receiver.id)
+            group_detail = {'name': group.name, 'description': group.description}
+            return group_detail
         else:
             return None
