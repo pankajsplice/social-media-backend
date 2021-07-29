@@ -18,6 +18,7 @@ class RegisterSerializer(DefaultRegisterSerializer):
     username = serializers.CharField(max_length=50)
     first_name = serializers.CharField(max_length=20, allow_null=True, allow_blank=True)
     last_name = serializers.CharField(max_length=20, allow_null=True, allow_blank=True)
+    social_profile_pic = serializers.CharField(max_length=255, allow_null=True, allow_blank=True)
     email = serializers.EmailField(required=True)
     password1 = serializers.CharField(write_only=True)
     password2 = serializers.CharField(write_only=True)
@@ -37,6 +38,7 @@ class RegisterSerializer(DefaultRegisterSerializer):
         type = self.validated_data.get('type', '')
         role = self.validated_data.get('role', '')
         profile_pic = self.validated_data.get('profile_pic', '')
+        social_profile_pic = self.validated_data.get('social_profile_pic', '')
         profile_interest = self.validated_data.get('profile_interest', '')
         enabled_msg = self.validated_data.get('enabled_msg', '')
         user_profile = UserProfile(
@@ -47,6 +49,7 @@ class RegisterSerializer(DefaultRegisterSerializer):
             type=type,
             role=role,
             profile_pic=profile_pic,
+            social_profile_pic=social_profile_pic,
             profile_interest=profile_interest,
             enabled_msg=enabled_msg,
         )
@@ -69,6 +72,7 @@ class RegisterSerializer(DefaultRegisterSerializer):
             'dob': self.validated_data.get('dob', ''),
             'location': self.validated_data.get('location', ''),
             'profile_pic': self.validated_data.get('profile_pic', ''),
+            'social_profile_pic': self.validated_data.get('social_profile_pic', ''),
             'profile_interest': self.validated_data.get('profile_interest', ''),
             'enabled_msg': self.validated_data.get('enabled_msg', '')
         }
@@ -82,7 +86,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserProfile
-        fields = ('mobile', 'type', 'profile_pic', 'location', 'enabled_msg', 'public_profile', 'invited',
+        fields = ('mobile', 'type', 'profile_pic', 'social_profile_pic', 'location', 'enabled_msg', 'public_profile', 'invited',
                   'profile_groups', 'profile_interest', 'dob', 'role')
 
 
@@ -106,6 +110,7 @@ class UserDetailsSerializer(serializers.ModelSerializer):
         if profile:
             profile_obj = UserProfile.objects.get(user__id=instance.pk)
             profile_obj.profile_pic = profile.get('profile_pic', profile_obj.profile_pic)
+            profile_obj.social_profile_pic = profile.get('social_profile_pic', profile_obj.social_profile_pic)
             profile_obj.mobile = profile.get('mobile', profile_obj.mobile)
             profile_obj.location = profile.get('location', profile_obj.location)
             profile_obj.public_profile = profile.get('public_profile', profile_obj.public_profile)

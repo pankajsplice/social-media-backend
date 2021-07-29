@@ -436,8 +436,8 @@ class GroupInvitationApi(APIView):
             except:
                 event = ''
             if get_email != '':
-                user = User.objects.get(email=get_email)
-                if user:
+                try:
+                    user = User.objects.get(email=get_email)
                     email_message = 'You are invited to join the group' f' {gp.name} ' 'for the event' f' {event.name}'
 
                     subject = 'LocalMingle Group Invitation'
@@ -458,11 +458,15 @@ class GroupInvitationApi(APIView):
                     create_notification(**kwargs)
                     # creating notification end
 
-                else:
+                except Exception as e:
+                    print(e)
                     subject = 'LocalMingle Group Invitation'
                     text_content = ''
-                    email_message = 'You are invited to join Local-mingle application. Here is the link you can ' \
-                                    'install it and register for free. '
+                    android_link = "https://play.google.com/store/apps/details?id=com.local_mingle"
+                    ios_link = ""
+                    email_message = 'You are invited to join Local-mingle application. Below Android Link : \n' \
+                                    + android_link + '\n for android users. And Ios Link : \n' + ios_link + '\n for ' \
+                                    'ios users.\n you can install it and register for free.'
                     html_content = render_to_string('mail/group_invitation.html', {
                         "message": email_message,
                         "user": get_email,
@@ -480,8 +484,9 @@ class GroupInvitationApi(APIView):
                     return Response({'error': 'Email can not sent'})
 
             if mobile != '':
-                user = User.objects.get(email=get_email)
-                if user:
+                try:
+                    get_user = UserProfile.objects.get(email=mobile)
+                    user = UserProfile.objects.get(user=get_user)
                     sms = 'You are invited to join the group' f' {gp.name} ' 'for the event' f' {event.name}'
                     notification_type = 'group_invitation'
                     get_user_event = Event.objects.get(id=gp.event_id)
@@ -491,9 +496,13 @@ class GroupInvitationApi(APIView):
                     kwargs = {'user': user, 'notification_type': notification_type, 'message': message,
                               'event': get_user_event, 'group': gp}
                     create_notification(**kwargs)
-                else:
-                    sms = 'You are invited to join Local-mingle application. Here is the link you can install it ' \
-                              'and register for free. '
+                except Exception as e:
+                    print(e)
+                    android_link = "https://play.google.com/store/apps/details?id=com.local_mingle"
+                    ios_link = ""
+                    sms = 'You are invited to join Local-mingle application. Below Android Link : \n' \
+                          + android_link + '\n for android users. And Ios Link : \n' + ios_link + '\n for ' \
+                          'ios users.\n you can install it and register for free.'
 
                 import os
                 from twilio.rest import Client
@@ -685,7 +694,7 @@ class MessageSettingViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = MessageSettingSerializer
     queryset = MessageSetting.objects.all()
-    filterset_fields = ['sender__id', 'receiver__id', 'block']
+    filterset_fields = ['sender__id', 'receiver__id', 'gp_receiver__id', 'block']
 
 
 class CommentUserStackApiView(APIView, PageNumberPagination):

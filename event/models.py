@@ -197,7 +197,9 @@ class GroupInvitation(models.Model):
 class MessageSetting(models.Model):
     sender = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='sender_setting', null=True, help_text=_('sender'))
     receiver = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='receiver_setting', null=True,
-                                 help_text=_('receiver'))
+                                 blank=True, help_text=_('receiver'))
+    gp_receiver = models.ForeignKey(Group, on_delete=models.SET_NULL, related_name='gp_receiver_setting', null=True,
+                                    blank=True, help_text=_('group_receiver'))
     block = models.BooleanField(default=False)
     report = models.TextField(blank=True, null=True)
     date_created = models.DateField(auto_now_add=True)

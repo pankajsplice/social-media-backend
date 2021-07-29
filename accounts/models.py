@@ -41,6 +41,7 @@ class UserProfile(models.Model):
     type = models.CharField(max_length=30, choices=STAFF_TYPE, blank=True, null=True)
     mobile = models.CharField(max_length=15, db_index=True)
     profile_pic = models.ImageField(blank=True, null=True, help_text=_('Upload your profile pic'))
+    social_profile_pic = models.CharField(max_length=255, blank=True, null=True, help_text=_('Link your Social profile pic'))
     enabled_msg = models.BooleanField(default=False)
     public_profile = models.BooleanField(default=False)
     invited = models.BooleanField(default=False)
