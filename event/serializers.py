@@ -394,17 +394,20 @@ class GroupInvitationSerializer(serializers.ModelSerializer):
                   'invited_to_detail', 'status')
 
     def get_group_detail(self, obj):
-        try:
-            name = obj.receiver.name
-            icon = obj.receiver.icon
-            if icon:
-                icon = icon.url
-            else:
-                icon = None
-            return {"id": obj.receiver.id, "name": name, "group_icon": icon}
-        except:
-            name = obj.receiver.name
-            return {"id": obj.receiver.id, "name": name, "group_icon": None}
+        if obj.group:
+            try:
+                name = obj.group.name
+                icon = obj.group.icon
+                if icon:
+                    icon = icon.url
+                else:
+                    icon = None
+                return {"id": obj.group.id, "name": name, "group_icon": icon}
+            except:
+                name = obj.group.name
+                return {"id": obj.group.id, "name": name, "group_icon": None}
+        else:
+            return None
 
     def get_invited_by_detail(self, obj):
         if obj.invited_by:
