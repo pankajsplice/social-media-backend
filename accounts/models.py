@@ -50,6 +50,7 @@ class UserProfile(models.Model):
     profile_interest = models.BooleanField(default=False, help_text=_('Show interest on Profile'))
     dob = models.DateField(blank=True, null=True)
     role = models.CharField(max_length=10, choices=ROLE_TYPE, blank=True, null=True)
+    is_profile_pic_updated = models.BooleanField(default=False)
 
 
 class SocialAccount(models.Model):
