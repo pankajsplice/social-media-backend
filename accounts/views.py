@@ -61,8 +61,11 @@ class SocialAccountLoginView(APIView):
                 user_exists = User.objects.filter(email=email)
 
             if user_exists:
-                response = {'message': 'You have already registered with us. In-case you have forgotten your'
-                                       'credentials you can click on Forgot Password button', 'data': []}
+                social_data = SocialAccount.objects.filter(token=token)
+                SocialAccount.objects.filter(token=token).update(is_social_login=True)
+                serializer = SocialAccountSerializer(social_data, many=True)
+                return Response({'message': 'Token already Exist', 'success': True, 'data': serializer.data},
+                                status=status.HTTP_200_OK)
             else:
                 social_serializer = SocialAccountSerializer(data=request.data)
                 if social_serializer.is_valid():
@@ -72,7 +75,7 @@ class SocialAccountLoginView(APIView):
                     serializer = SocialAccountSerializer(social_data, many=True)
 
                     response = {'message': 'Token Saved', 'data': serializer.data}
-            return Response(response, status=status.HTTP_200_OK)
+                    return Response(response, status=status.HTTP_200_OK)
 
 
 class SocialAccountLogoutView(APIView):

@@ -111,11 +111,16 @@ CKEDITOR_CONFIGS = {
     }
 }
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_FROM = 'noreply@letsemail.co'
 EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'AKIAVWS4NR6PXV4VWVEJ'
+EMAIL_HOST_PASSWORD = 'BI+Wc85+oj3eodj9CaAl9y5rz/VJH99vcR3k5hf8aneB'
+EMAIL_HOST = 'email-smtp.ap-south-1.amazonaws.com'
 EMAIL_PORT = 587
-DEFAULT_FROM_EMAIL = 'LocalMingle'
-EMAIL_HOST_USER = 'auctionvillage1'
-EMAIL_HOST_PASSWORD = 'auction@12345'
+EMAIL_ADMIN = 'noreply@letsemail.co'
+SENDER_NAME = 'LocalMingle Support Team'
+DEFAULT_FROM_EMAIL = EMAIL_FROM
