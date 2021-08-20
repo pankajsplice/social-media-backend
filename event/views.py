@@ -47,6 +47,8 @@ class EventViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
                         'source': ['iexact'],
                         'id': ['exact'],
                         'created_by__id': ['exact'],
+                        'venue__latitude': ['exact', 'startswith'],
+                        'venue__longitude': ['exact', 'startswith'],
                         }
 
     def get_queryset(self):
