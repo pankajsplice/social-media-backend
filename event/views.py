@@ -447,6 +447,7 @@ class GroupInvitationApi(APIView):
                     html_content = render_to_string('mail/group_invitation.html', {
                         "message": email_message,
                         "user": f"{user.first_name} {user.last_name}",
+                        "app_install": False,
                     })
                     msg = EmailMultiAlternatives(subject, text_content, DEFAULT_FROM_EMAIL, [get_email])
                     msg.attach_alternative(html_content, "text/html")
@@ -466,12 +467,14 @@ class GroupInvitationApi(APIView):
                     text_content = ''
                     android_link = "https://play.google.com/store/apps/details?id=com.local_mingle"
                     ios_link = ""
-                    email_message = 'You are invited to join Local-mingle application. Below Android Link : \n' \
-                                    + android_link + '\n for android users. And Ios Link : \n' + ios_link + '\n for ' \
-                                    'ios users.\n you can install it and register for free.'
+                    email_message = 'You are invited to join Local-mingle application. Click on below buttons to ' \
+                                    'install and register it for free.'
                     html_content = render_to_string('mail/group_invitation.html', {
                         "message": email_message,
                         "user": get_email,
+                        "app_install": True,
+                        "android_link": android_link,
+                        "ios_link": ios_link,
                     })
                     msg = EmailMultiAlternatives(subject, text_content, DEFAULT_FROM_EMAIL, [get_email])
                     msg.attach_alternative(html_content, "text/html")
