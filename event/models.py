@@ -148,6 +148,7 @@ class Notification(models.Model):
     notification_type = models.CharField(max_length=100, blank=True, null=True)
     message = models.TextField(blank=True, null=True)
     read_status = models.BooleanField(default=False)
+    accepted = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
 

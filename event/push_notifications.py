@@ -44,12 +44,12 @@ def create_notification_group_message(sender, created, instance, **kwargs):
         sender = instance.sender
 
         # creating notification
-        kwargs = {'user': sender, 'notification_type': notification_type, 'message': message, 'event': get_user_event,
-                  'group': gp_obj}
-        try:
-            create_notification(**kwargs)
-        except Exception as e:
-            print(e)
+        # kwargs = {'user': sender, 'notification_type': notification_type, 'message': message, 'event': get_user_event,
+        #           'group': gp_obj}
+        # try:
+        #     create_notification(**kwargs)
+        # except Exception as e:
+        #     print(e)
 
 
 @receiver(signals.post_save, sender=Notification)
@@ -69,15 +69,15 @@ def send_push_notification(sender, created, instance, **kwargs):
                 print(e)
 
 
-@receiver(signals.post_save, sender=Message)
-def create_notification_dm_message(sender, created, instance, **kwargs):
-    if created:
-        notification_type = 'message'
-        user = instance.receiver
-        message = instance.msg
-        kwargs = {'user': user, 'notification_type': notification_type, 'message': message,
-                  'event': None, 'group': ''}
-        try:
-            create_notification(**kwargs)
-        except Exception as e:
-            print(e)
+# @receiver(signals.post_save, sender=Message)
+# def create_notification_dm_message(sender, created, instance, **kwargs):
+#     if created:
+#         notification_type = 'message'
+#         user = instance.receiver
+#         message = instance.msg
+#         kwargs = {'user': user, 'notification_type': notification_type, 'message': message,
+#                   'event': None, 'group': ''}
+#         try:
+#             create_notification(**kwargs)
+#         except Exception as e:
+#             print(e)
