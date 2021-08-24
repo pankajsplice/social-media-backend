@@ -25,6 +25,7 @@ from local_mingle_backend.settings import DEFAULT_FROM_EMAIL, TWILIO_ACCOUNT_SID
 from event.location_filter import get_location
 from rest_framework.pagination import PageNumberPagination
 from datetime import datetime
+from rest_framework import status
 
 User = get_user_model()
 
@@ -447,6 +448,7 @@ class GroupInvitationApi(APIView):
                     html_content = render_to_string('mail/group_invitation.html', {
                         "message": email_message,
                         "user": f"{user.first_name} {user.last_name}",
+                        "app_install": False,
                     })
                     msg = EmailMultiAlternatives(subject, text_content, DEFAULT_FROM_EMAIL, [get_email])
                     msg.attach_alternative(html_content, "text/html")
@@ -466,12 +468,14 @@ class GroupInvitationApi(APIView):
                     text_content = ''
                     android_link = "https://play.google.com/store/apps/details?id=com.local_mingle"
                     ios_link = ""
-                    email_message = 'You are invited to join Local-mingle application. Below Android Link : \n' \
-                                    + android_link + '\n for android users. And Ios Link : \n' + ios_link + '\n for ' \
-                                    'ios users.\n you can install it and register for free.'
+                    email_message = 'You are invited to join Local-mingle application. Click on below buttons to ' \
+                                    'install and register it for free.'
                     html_content = render_to_string('mail/group_invitation.html', {
                         "message": email_message,
                         "user": get_email,
+                        "app_install": True,
+                        "android_link": android_link,
+                        "ios_link": ios_link,
                     })
                     msg = EmailMultiAlternatives(subject, text_content, DEFAULT_FROM_EMAIL, [get_email])
                     msg.attach_alternative(html_content, "text/html")
@@ -724,3 +728,23 @@ class CommentUserStackApiView(APIView, PageNumberPagination):
         else:
             return Response({'error': 'Please add event_id in query_params'})
 
+
+class AcceptRejectGroupInvitation(APIView):
+    # permission_classes = (permissions.AllowAny, )
+
+    def get(self, request):
+        get_status = self.request.query_params.get('status', '')
+        notification = self.request.query_params.get('notification', '')
+        if get_status != '' and notification != '':
+            if get_status == "accepted":
+                get_notification = Notification.objects.get(id=notification)
+                create_member = Group.member.through.objects.create(group_id=get_notification.group_id,
+                                                                    user_id=get_notification.user_id)
+
+                return Response({'status': status.HTTP_201_CREATED, 'success': True})
+
+            else:
+                return Response({'status': "rejected"})
+
+        else:
+            return Response({'status': status.HTTP_400_BAD_REQUEST, 'error': "Fields can not be blank"})
