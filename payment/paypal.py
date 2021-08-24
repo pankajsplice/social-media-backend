@@ -133,7 +133,7 @@ class PaypalPlanListCreateApi(APIView):
 
 class PaypalSubscriptionApi(APIView):
 
-    permission_classes = (AllowAny,)
+    # permission_classes = (AllowAny,)
 
     def get(self, request, format=None):
         paypal_customer = Customer.objects.filter(user_id=request.user.id, source='paypal')
@@ -174,7 +174,7 @@ class PaypalSubscriptionApi(APIView):
 
 class GetPaypalPaymentStatus(APIView, PageNumberPagination):
 
-    permission_classes = (AllowAny,)
+    # permission_classes = (AllowAny,)
 
     def get(self, request):
         user_id = request.query_params.get("user", None)

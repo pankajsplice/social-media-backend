@@ -740,10 +740,15 @@ class AcceptRejectGroupInvitation(APIView):
                 get_notification = Notification.objects.get(id=notification)
                 create_member = Group.member.through.objects.create(group_id=get_notification.group_id,
                                                                     user_id=get_notification.user_id)
+                if create_member:
+                    get_notification = Notification.objects.filter(id=notification)
+                    get_notification.update(message='You have accepted the group invitation', accepted=True)
 
                 return Response({'status': status.HTTP_201_CREATED, 'success': True})
 
             else:
+                get_notification = Notification.objects.filter(id=notification)
+                get_notification.update(message='You have rejected the group invitation', accepted=False)
                 return Response({'status': "rejected"})
 
         else:

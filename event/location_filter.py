@@ -11,13 +11,13 @@ def get_venue(lat, long):
                 ven_location = (ven.latitude, ven.longitude)
                 user_location = (lat, long)
                 get_miles = great_circle(user_location, ven_location).miles
-                if get_miles <= 50:
+                if get_miles <= 300:
                     yield ven
             else:
                 ven_location = (ven.longitude, ven.latitude )
                 user_location = (lat, long)
                 get_miles = great_circle(user_location, ven_location).miles
-                if get_miles <= 50:
+                if get_miles <= 300:
                     yield ven
 
 
