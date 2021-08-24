@@ -5,7 +5,8 @@ from event.views import EventViewSet, CategoryViewSet, VenueViewSet, FetchEventT
     LikeViewSet, SubscriptionViewSet, FollowViewSet, MessageViewSet, \
     PostGroupViewSet, GetGroupList, EventSettingViewSet, NotificationViewSet, MessageView,\
     MessageUser, GroupInvitationApi, GroupMessageListCreateView, RecurringEventChangeApiView, RecurringEventViewSet,\
-    GroupInvitationViewset, EventLatLongApiView, MessageSettingViewSet, CommentUserStackApiView
+    GroupInvitationViewset, EventLatLongApiView, MessageSettingViewSet, CommentUserStackApiView,\
+    AcceptRejectGroupInvitation
 from fcm_django.api.rest_framework import FCMDeviceCreateOnlyViewSet
 from event.web_api import EventWebViewSet
 
@@ -41,4 +42,5 @@ urlpatterns = [
     path('recurring-event-change/', RecurringEventChangeApiView.as_view(), name='recurring-event-change'),
     path('event-location/', EventLatLongApiView.as_view(), name='event-location'),
     path('comment-stack/', CommentUserStackApiView.as_view(), name='comment-stack'),
+    path('accept-reject-invitation/', AcceptRejectGroupInvitation.as_view(), name='accept_invitation'),
 ]

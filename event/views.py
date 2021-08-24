@@ -25,6 +25,7 @@ from local_mingle_backend.settings import DEFAULT_FROM_EMAIL, TWILIO_ACCOUNT_SID
 from event.location_filter import get_location
 from rest_framework.pagination import PageNumberPagination
 from datetime import datetime
+from rest_framework import status
 
 User = get_user_model()
 
@@ -727,3 +728,23 @@ class CommentUserStackApiView(APIView, PageNumberPagination):
         else:
             return Response({'error': 'Please add event_id in query_params'})
 
+
+class AcceptRejectGroupInvitation(APIView):
+    # permission_classes = (permissions.AllowAny, )
+
+    def get(self, request):
+        get_status = self.request.query_params.get('status', '')
+        notification = self.request.query_params.get('notification', '')
+        if get_status != '' and notification != '':
+            if get_status == "accepted":
+                get_notification = Notification.objects.get(id=notification)
+                create_member = Group.member.through.objects.create(group_id=get_notification.group_id,
+                                                                    user_id=get_notification.user_id)
+
+                return Response({'status': status.HTTP_201_CREATED, 'success': True})
+
+            else:
+                return Response({'status': "rejected"})
+
+        else:
+            return Response({'status': status.HTTP_400_BAD_REQUEST, 'error': "Fields can not be blank"})
