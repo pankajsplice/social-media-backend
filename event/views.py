@@ -765,9 +765,11 @@ class PrimeOrLocalEventApiView(APIView, PageNumberPagination):
         if lat != '' and long != '' and source != '':
             res = get_location(lat, long)  # getting venue results on the basis of lat-long
 
-            get_related_events = Event.objects.filter(Q(venue__in=res, date__gte=datetime.today()) |
-                                                      Q(source=source, date__gte=datetime.today())).order_by('-id')
+            # get_related_events = Event.objects.filter(Q(venue__in=res, date__gte=datetime.today()) |
+            #                                           Q(source=source, date__gte=datetime.today())).order_by('-id')
 
+            get_related_events = Event.objects.filter(venue__in=res, date__gte=datetime.today(),
+                                                      source=source).order_by('-id')
             # creating page instance for pagination
             queryset = get_related_events
             page = self.paginate_queryset(queryset, request)
