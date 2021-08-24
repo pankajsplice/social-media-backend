@@ -275,7 +275,7 @@ class CommentViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        event_filter = self.request.query_params.get('event__id', '').order_by('-id')
+        event_filter = self.request.query_params.get('event__id', '')
         if event_filter != '':
             queryset = super().get_queryset().order_by('-created_by')
         return queryset
