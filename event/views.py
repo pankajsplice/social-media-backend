@@ -266,6 +266,7 @@ class FetchEventTicketMasterApiView(APIView):
 
 # crud for comment
 class CommentViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
+    pagination_class = None
     authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = CommentSerializer
@@ -274,7 +275,7 @@ class CommentViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        event_filter = self.request.query_params.get('event__id', '')
+        event_filter = self.request.query_params.get('event__id', '').order_by('-id')
         if event_filter != '':
             queryset = super().get_queryset().order_by('-created_by')
         return queryset
@@ -753,3 +754,26 @@ class AcceptRejectGroupInvitation(APIView):
 
         else:
             return Response({'status': status.HTTP_400_BAD_REQUEST, 'error': "Fields can not be blank"})
+
+
+class PrimeOrLocalEventApiView(APIView, PageNumberPagination):
+
+    def get(self, request):
+        lat = request.query_params.get('lat', '')
+        long = request.query_params.get('long', '')
+        source = request.query_params.get('source', '')
+        if lat != '' and long != '' and source != '':
+            res = get_location(lat, long)  # getting venue results on the basis of lat-long
+
+            get_related_events = Event.objects.filter(Q(venue__in=res, date__gte=datetime.today()) |
+                                                      Q(source=source, date__gte=datetime.today())).order_by('-id')
+
+            # creating page instance for pagination
+            queryset = get_related_events
+            page = self.paginate_queryset(queryset, request)
+            serializer = EventSerializer(
+                page, many=True
+            )
+            return self.get_paginated_response(serializer.data)
+        else:
+            return Response({'error': 'Please add lat and long or source in params'})
