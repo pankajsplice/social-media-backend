@@ -10,7 +10,7 @@ def create_manual_category(category, parent):
     category_ins = None
     if category_obj:
         if category_obj.parent.name == 'Prime Events':
-            return category_obj
+            return category
         else:
             name = f"{'Prime'} {category_obj.name}"
             try:
