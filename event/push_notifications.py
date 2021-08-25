@@ -89,7 +89,7 @@ def send_push_notification_for_dm_message(sender, created, instance, **kwargs):
         # get current notification instance
         get_user = instance.receiver
         get_title = 'New Message'
-        get_message = instance.message
+        get_message = instance.msg
         try:
             device = FCMDevice.objects.get(user=get_user)
             device.send_message(title=get_title, body=get_message)
