@@ -59,6 +59,7 @@ class EventSerializer(serializers.ModelSerializer):
                 if user_profile:
                     profile = user_profile.profile_pic
                     mobile = user_profile.mobile
+                    enabled_msg = user_profile.enabled_msg
                     if profile:
                         profile = profile.url
                     else:
@@ -66,8 +67,9 @@ class EventSerializer(serializers.ModelSerializer):
                 else:
                     profile = None
                     mobile = None
+                    enabled_msg = None
                 user_detail = {'name': f'{user.first_name} {user.last_name}', 'email': user.email, 'profile': profile,
-                               'mobile': mobile}
+                               'mobile': mobile, 'enabled_msg': enabled_msg}
                 return user_detail
             except:
                 user_detail = {'name': f'{user.first_name} {user.last_name}', 'email': user.email}
@@ -110,6 +112,7 @@ class CommentSerializer(CustomBaseSerializer):
                 if user_profile:
                     profile = user_profile.profile_pic
                     mobile = user_profile.mobile
+                    enabled_msg = user_profile.enabled_msg
                     if profile:
                         profile = profile.url
                     else:
@@ -117,8 +120,9 @@ class CommentSerializer(CustomBaseSerializer):
                 else:
                     profile = None
                     mobile = None
+                    enabled_msg = None
                 user_detail = {'name': f'{user.first_name} {user.last_name}', 'email': user.email, 'profile': profile,
-                               'mobile': mobile}
+                               'mobile': mobile, 'enabled_msg': enabled_msg}
                 return user_detail
             except:
                 user_detail = {'name': f'{user.first_name} {user.last_name}', 'email': user.email}
@@ -299,6 +303,7 @@ class EventSettingSerializer(serializers.ModelSerializer):
                 if user_profile:
                     profile = user_profile.profile_pic
                     mobile = user_profile.mobile
+                    enabled_msg = user_profile.enabled_msg
                     if profile:
                         profile = profile.url
                     else:
@@ -306,8 +311,9 @@ class EventSettingSerializer(serializers.ModelSerializer):
                 else:
                     profile = None
                     mobile = None
+                    enabled_msg = None
                 user_detail = {'name': f'{user.first_name} {user.last_name}', 'email': user.email, 'profile': profile,
-                               'mobile': mobile}
+                               'mobile': mobile, 'enabled_msg': enabled_msg}
                 return user_detail
             except:
                 user_detail = {'name': f'{user.first_name} {user.last_name}', 'email': user.email}
@@ -360,6 +366,7 @@ class GroupMessageSerializer(CustomBaseSerializer):
                 if user_profile:
                     profile = user_profile.profile_pic
                     mobile = user_profile.mobile
+                    enabled_msg = user_profile.enabled_msg
                     if profile:
                         profile = profile.url
                     else:
@@ -367,8 +374,9 @@ class GroupMessageSerializer(CustomBaseSerializer):
                 else:
                     profile = None
                     mobile = None
+                    enabled_msg = None
                 user_detail = {'name': f'{user.first_name} {user.last_name}', 'email': user.email, 'profile': profile,
-                               'mobile': mobile}
+                               'mobile': mobile, enabled_msg: 'enabled_msg'}
                 return user_detail
             except:
                 user_detail = {'name': f'{user.first_name} {user.last_name}', 'email': user.email}
