@@ -442,53 +442,67 @@ class GroupInvitationApi(APIView):
             if get_email != '':
                 try:
                     user = User.objects.get(email=get_email)
-                    email_message = 'You are invited to join the group' f' {gp.name} ' 'for the event' f' {event.name}'
+                    group_invitation_instance = GroupInvitation.objects.filter(group_id=group,
+                                                                               invited_to=get_email)
+                    if group_invitation_instance:
+                        return Response({'error': 'User is already invited', 'status': status.HTTP_404_NOT_FOUND})
+                    else:
+                        email_message = 'You are invited to join the group' f' {gp.name} ' 'for the event' f' {event.name}'
 
-                    subject = 'LocalMingle Group Invitation'
-                    text_content = ''
-                    html_content = render_to_string('mail/group_invitation.html', {
-                        "message": email_message,
-                        "user": f"{user.first_name} {user.last_name}",
-                        "app_install": False,
-                    })
-                    msg = EmailMultiAlternatives(subject, text_content, DEFAULT_FROM_EMAIL, [get_email])
-                    msg.attach_alternative(html_content, "text/html")
+                        subject = 'LocalMingle Group Invitation'
+                        text_content = ''
+                        html_content = render_to_string('mail/group_invitation.html', {
+                            "message": email_message,
+                            "user": f"{user.first_name} {user.last_name}",
+                            "app_install": False,
+                        })
+                        msg = EmailMultiAlternatives(subject, text_content, DEFAULT_FROM_EMAIL, [get_email])
+                        msg.attach_alternative(html_content, "text/html")
 
-                    # creating notification start
-                    notification_type = 'group_invitation'
-                    get_user_event = Event.objects.get(id=gp.event_id)
-                    message = 'You have got an invitation to join the group' f' {gp.name}'
-                    kwargs = {'user': user, 'notification_type': notification_type, 'message': message,
-                              'event': get_user_event, 'group': gp}
-                    create_notification(**kwargs)
-                    # creating notification end
+                        # creating notification start
+                        notification_type = 'group_invitation'
+                        get_user_event = Event.objects.get(id=gp.event_id)
+                        message = 'You have got an invitation to join the group' f' {gp.name}'
+                        kwargs = {'user': user, 'notification_type': notification_type, 'message': message,
+                                  'event': get_user_event, 'group': gp}
+                        create_notification(**kwargs)
+                        # creating notification end
+                        try:
+                            msg.send()
+                            return Response({'success': 'Email sent'})
+
+                        except Exception as e:
+                            return Response({'error': 'Email can not sent'})
 
                 except Exception as e:
                     print(e)
-                    subject = 'LocalMingle Group Invitation'
-                    text_content = ''
-                    android_link = "https://play.google.com/store/apps/details?id=com.local_mingle"
-                    ios_link = ""
-                    email_message = 'You are invited to join Local-mingle application. Click on below buttons to ' \
-                                    'install and register it for free.'
-                    html_content = render_to_string('mail/group_invitation.html', {
-                        "message": email_message,
-                        "user": get_email,
-                        "app_install": True,
-                        "android_link": android_link,
-                        "ios_link": ios_link,
-                    })
-                    msg = EmailMultiAlternatives(subject, text_content, DEFAULT_FROM_EMAIL, [get_email])
-                    msg.attach_alternative(html_content, "text/html")
+                    group_invitation_instance = GroupInvitation.objects.filter(group_id=group,
+                                                                               invited_to=get_email)
+                    if group_invitation_instance:
+                        return Response({'error': 'User is already invited', 'status': status.HTTP_404_NOT_FOUND})
+                    else:
+                        subject = 'LocalMingle Group Invitation'
+                        text_content = ''
+                        android_link = "https://play.google.com/store/apps/details?id=com.local_mingle"
+                        ios_link = ""
+                        email_message = 'You are invited to join Local-mingle application. Click on below buttons to ' \
+                                        'install and register it for free.'
+                        html_content = render_to_string('mail/group_invitation.html', {
+                            "message": email_message,
+                            "user": get_email,
+                            "app_install": True,
+                            "android_link": android_link,
+                            "ios_link": ios_link,
+                        })
+                        msg = EmailMultiAlternatives(subject, text_content, DEFAULT_FROM_EMAIL, [get_email])
+                        msg.attach_alternative(html_content, "text/html")
 
-                try:
-                    # send_mail(subject='Invitation Link', message=email_message, from_email=DEFAULT_FROM_EMAIL,
-                    #           recipient_list=[get_email], fail_silently=True)
-                    msg.send()
-                    return Response({'success': 'Email sent'})
+                        try:
+                            msg.send()
+                            return Response({'success': 'Email sent'})
 
-                except Exception as e:
-                    return Response({'error': 'Email can not sent'})
+                        except Exception as e:
+                            return Response({'error': 'Email can not sent'})
 
             if mobile != '':
                 try:
@@ -741,6 +755,15 @@ class AcceptRejectGroupInvitation(APIView):
                 get_notification = Notification.objects.get(id=notification)
                 create_member = Group.member.through.objects.create(group_id=get_notification.group_id,
                                                                     user_id=get_notification.user_id)
+                get_user = User.objects.filter(id=get_notification.user_id)
+                if get_user:
+                    user = User.objects.get(id=get_notification.user_id)
+                    group_invitation_instance = GroupInvitation.objects.filter(group_id=get_notification.group_id,
+                                                                               invited_to=user.email)
+                    if group_invitation_instance:
+                        group_invitation_instance.update(status='accepted')
+                else:
+                    pass
                 if create_member:
                     get_notification = Notification.objects.filter(id=notification)
                     get_notification.update(message='You have accepted the group invitation', accepted=True)
@@ -750,7 +773,16 @@ class AcceptRejectGroupInvitation(APIView):
             else:
                 get_notification = Notification.objects.filter(id=notification)
                 get_notification.update(message='You have rejected the group invitation', accepted=False)
-                return Response({'status': "rejected"})
+                get_user = User.objects.filter(id=get_notification.user_id)
+                if get_user:
+                    user = User.objects.get(id=get_notification.user_id)
+                    group_invitation_instance = GroupInvitation.objects.filter(group_id=get_notification.group_id,
+                                                                               invited_to=user.email)
+                    if group_invitation_instance:
+                        group_invitation_instance.update(status='rejected')
+                else:
+                    pass
+            return Response({'status': "rejected"})
 
         else:
             return Response({'status': status.HTTP_400_BAD_REQUEST, 'error': "Fields can not be blank"})

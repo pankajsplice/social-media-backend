@@ -180,6 +180,7 @@ class UserSerializer(serializers.ModelSerializer):
     """
 
     """
+    profile = UserProfileSerializer()
 
     class Meta:
         model = User
