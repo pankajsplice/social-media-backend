@@ -282,7 +282,7 @@ class CommentViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
         queryset = super().get_queryset()
         event_filter = self.request.query_params.get('event__id', '')
         if event_filter != '':
-            queryset = super().get_queryset().order_by('-created_by')
+            queryset = super().get_queryset()
         return queryset
 
 
@@ -399,29 +399,11 @@ class MessageView(APIView):
     authentication_classes = (TokenAuthentication,)
 
     def get(self, request, user, friend):
-        messages1 = Message.objects.filter(sender=user, receiver=friend).order_by('id')
-        messages2 = Message.objects.filter(sender=friend, receiver=user).order_by('id')
-        print(messages1, messages2)
+        msg = Message.objects.filter(Q(sender=user, receiver=friend) | Q(sender=friend, receiver=user)).order_by('id', 'date_created')
         messages = []
-        if len(messages1) + len(messages2) >= 2:
-            for i in range(len(messages1) + len(messages2)):
-                try:
-                    serializer1 = MessageSerializer(messages1[i])
-                    messages.append(serializer1.data)
-                except:
-                    pass
-                try:
-                    serializer2 = MessageSerializer(messages2[i])
-                    messages.append(serializer2.data)
-                except:
-                    pass
-        else:
-            if len(messages1) >= 1:
-                serializer1 = MessageSerializer(messages1[0])
-                messages.append(serializer1.data)
-            if len(messages2) >= 1:
-                serializer2 = MessageSerializer(messages2[0])
-                messages.append(serializer2.data)
+        for m in msg:
+            serializer = MessageSerializer(m)
+            messages.append(serializer.data)
         return Response(messages)
 
     def post(self, request):
