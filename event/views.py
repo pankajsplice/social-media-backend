@@ -48,12 +48,17 @@ class EventViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
                         'source': ['iexact'],
                         'id': ['exact'],
                         'created_by__id': ['exact'],
-                        'venue__latitude': ['exact', 'startswith'],
-                        'venue__longitude': ['exact', 'startswith'],
+                        # 'venue__latitude': ['exact', 'startswith'],
+                        # 'venue__longitude': ['exact', 'startswith'],
                         }
 
     def get_queryset(self):
         queryset = Event.objects.filter(date__gte=datetime.today())
+        venue_lat = self.request.query_params.get('venue__latitude', None)
+        venue_long = self.request.query_params.get('venue__longitude', None)
+        if venue_long and venue_lat:
+            res = get_location(venue_lat, venue_long)
+            queryset = queryset.filter(venue__in=res)
         return queryset
 
 
