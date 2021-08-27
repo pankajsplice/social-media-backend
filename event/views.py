@@ -55,10 +55,16 @@ class EventViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = Event.objects.filter(date__gte=datetime.today())
         venue_lat = self.request.query_params.get('venue__latitude', None)
+        location = self.request.query_params.get('location', None)
         venue_long = self.request.query_params.get('venue__longitude', None)
         if venue_long and venue_lat:
             res = get_location(venue_lat, venue_long)
             queryset = queryset.filter(venue__in=res)
+        if location:
+            queryset = queryset.filter(Q(venue__city__istartswith=location) | Q(venue__state_name__istartswith=location)
+                                   | Q(venue__postal_code__istartswith=location)).order_by('-id')
+            # state = queryset.filter(venue__state_name__iexact=location).order_by('-id')
+            # postal = queryset.filter(venue__postal_code__iexact=location).order_by('-id')
         return queryset
 
 
@@ -334,7 +340,8 @@ class GetGroupList(ListAPIView):
 
     def get_queryset(self):
         if self.request.user:
-            queryset = Group.objects.filter(Q(member=self.request.user) | Q(created_by=self.request.user))
+            queryset = Group.objects.filter(Q(member=self.request.user, event__date__gte=datetime.today()) |
+                                            Q(created_by=self.request.user, event__date__gte=datetime.today()))
             return queryset
         else:
             return self.queryset
@@ -825,3 +832,21 @@ class EventLocationApiView(APIView, PageNumberPagination):
             return self.get_paginated_response(serializer.data)
         else:
             return Response({'error': 'Please add location in query params'})
+
+
+class EventLocationAutoSuggestApiView(APIView, PageNumberPagination):
+    permission_classes = (permissions.AllowAny,)
+
+    def get(self, request):
+        query = request.query_params.get('q', '')
+        if query != "" and len(query) >= 2:
+            get_ven = Venue.objects.filter(Q(city__icontains=query) | Q(state_name__icontains=query)).values_list(
+                'city', 'state_name').distinct()[:7]
+            venue = []
+            for ven in get_ven:
+                venue.append(ven[0])
+                venue.append(ven[1])
+
+            return Response(set(venue))
+        else:
+            return Response({'error': 'Please add q in query params'})
