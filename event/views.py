@@ -542,14 +542,16 @@ class GroupMessageListCreateView(ListCreateAPIView):
     queryset = GroupMessage.objects.all()
 
     def get_queryset(self):
+
+        # Showing only that group which events are present today-onwards
         try:
             group_id = self.request.query_params['group_id']
             queryset = GroupMessage.objects.filter(Q(receiver=group_id),
-                                                   receiver__event__date__gte=datetime.today()).order_by('-id')
+                                                   receiver__event__date__gte=datetime.today()).order_by('id')
         except:
             if self.request.user:
                 user_id = self.request.user.id
-                get_unique_group = GroupMessage.objects.filter(Q(sender=user_id)).order_by('-id')
+                get_unique_group = GroupMessage.objects.filter(Q(sender=user_id)).order_by('id')
 
                 # logic to get latest message from group-message
                 get_message_id = []
@@ -559,7 +561,7 @@ class GroupMessageListCreateView(ListCreateAPIView):
                         get_receiver_id.append(q.receiver)
                         get_message_id.append(q.id)
                 queryset = GroupMessage.objects.filter(id__in=get_message_id,
-                                                       receiver__event__date__gte=datetime.today()).order_by('-id')
+                                                       receiver__event__date__gte=datetime.today()).order_by('id')
 
             else:
                 queryset = self.queryset

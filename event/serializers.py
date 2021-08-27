@@ -255,10 +255,11 @@ class GetGroupSerializer(CustomBaseSerializer):
     member = UserSerializer(read_only=True, many=True)
     total_member = serializers.SerializerMethodField()
     event_name = serializers.SerializerMethodField()
+    message = serializers.SerializerMethodField()
 
     class Meta:
         model = Group
-        fields = ('id', 'name', 'icon', 'description', 'limit', 'member', 'event', 'event_name', 'total_member', 'created_by',
+        fields = ('id', 'name', 'icon', 'description', 'limit', 'member', 'message', 'event', 'event_name', 'total_member', 'created_by',
                   'updated_by', 'date_created', 'date_updated')
 
     def get_total_member(self, obj):
@@ -270,6 +271,39 @@ class GetGroupSerializer(CustomBaseSerializer):
         if obj.event:
             event_name = obj.event.name
         return event_name
+
+    def get_message(self, obj):
+        group_message = GroupMessage.objects.filter(receiver_id=obj.id).last()
+        if group_message:
+            if group_message.sender:
+                user = User.objects.get(id=group_message.sender.id)
+                try:
+                    user_profile = UserProfile.objects.get(user=user)
+                    if user_profile:
+                        profile = user_profile.profile_pic
+                        mobile = user_profile.mobile
+                        enabled_msg = user_profile.enabled_msg
+                        if profile:
+                            profile = profile.url
+                        else:
+                            profile = None
+                    else:
+                        profile = None
+                        mobile = None
+                        enabled_msg = None
+                    user_detail = {'name': f'{user.first_name} {user.last_name}', 'email': user.email,
+                                   'profile': profile,
+                                   'mobile': mobile, enabled_msg: 'enabled_msg'}
+                except:
+                    user_detail = {'name': f'{user.first_name} {user.last_name}', 'email': user.email}
+            else:
+                return None
+            message = []
+            message.append({'sender': user_detail, 'receiver': group_message.receiver.name,
+                            'msg': group_message.msg, 'timestamp': group_message.timestamp})
+            return message
+        else:
+            return None
 
 
 class EventSettingSerializer(serializers.ModelSerializer):

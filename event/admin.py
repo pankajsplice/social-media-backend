@@ -1,6 +1,6 @@
 from django.contrib import admin
 from event.models import Event, Venue, Category, Comment, Like, Subscription, Message, Follow, \
-     Group, EventSetting, Notification, RecurringEvent, MessageSetting
+     Group, EventSetting, Notification, RecurringEvent, MessageSetting, GroupMessage
 from utils.download_csv import ExportCsvMixin
 from django_mptt_admin.admin import DjangoMpttAdmin
 
@@ -50,6 +50,12 @@ class MessageAdmin(admin.ModelAdmin, ExportCsvMixin):
     actions = ["download_csv"]
 
 
+class GroupMessageAdmin(admin.ModelAdmin, ExportCsvMixin):
+    model = Message
+    list_display = ['id', 'sender', 'receiver', 'msg', 'timestamp']
+    actions = ["download_csv"]
+
+
 class FollowAdmin(admin.ModelAdmin, ExportCsvMixin):
     model = Follow
     list_display = ['id', 'event', 'user']
@@ -89,6 +95,7 @@ admin.site.register(Like, LikeAdmin)
 admin.site.register(Subscription, SubscriptionAdmin)
 admin.site.register(Follow, FollowAdmin)
 admin.site.register(Message, MessageAdmin)
+admin.site.register(GroupMessage, GroupMessageAdmin)
 admin.site.register(Group, GroupAdmin)
 admin.site.register(EventSetting, EventSettingAdmin)
 admin.site.register(Notification, EventNotification)
