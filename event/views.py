@@ -844,8 +844,10 @@ class EventLocationAutoSuggestApiView(APIView, PageNumberPagination):
                 'city', 'state_name').distinct()[:7]
             venue = []
             for ven in get_ven:
-                venue.append(ven[0])
-                venue.append(ven[1])
+                if ven[0] != "":
+                    venue.append(ven[0])
+                if ven[1] != "":
+                    venue.append(ven[1])
 
             return Response(set(venue))
         else:
