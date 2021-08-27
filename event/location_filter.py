@@ -9,7 +9,7 @@ def get_venue(lat, long):
             print(ven.id)
             if -90 < float(ven.latitude) < 90:
                 ven_location = (ven.latitude, ven.longitude)
-                user_location = (lat, long)
+                user_location = (long, lat)
                 get_miles = great_circle(user_location, ven_location).miles
                 if get_miles <= 300:
                     yield ven

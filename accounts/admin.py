@@ -10,6 +10,7 @@ from utils.download_csv import ExportCsvMixin
 
 User = get_user_model()
 
+
 class CustomUserAdmin(admin.ModelAdmin, ExportCsvMixin):
     """
     For Export purpose only(ca_num and mobile)
@@ -33,6 +34,9 @@ class UserAdmin(UAdmin, ExportCsvMixin):
     def get_mobile(self, instance):
         return instance.profile.mobile
     get_mobile.short_description = 'mobile'
+
+    def has_delete_permission(request, obj=None):
+        return False
 
 
 class OtpAdmin(admin.ModelAdmin):

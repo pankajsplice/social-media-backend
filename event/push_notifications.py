@@ -68,6 +68,20 @@ def send_push_notification(sender, created, instance, **kwargs):
             except Exception as e:
                 print(e)
 
+    if not created:
+        # get current notification instance
+        get_user = instance.user
+        get_title = instance.notification_type
+        if get_title == 'group_message':
+            pass
+        else:
+            get_message = instance.message
+            try:
+                device = FCMDevice.objects.get(user=get_user)
+                device.send_message(title=get_title, body=get_message)
+            except Exception as e:
+                print(e)
+
 
 # @receiver(signals.post_save, sender=Message)
 # def create_notification_dm_message(sender, created, instance, **kwargs):
