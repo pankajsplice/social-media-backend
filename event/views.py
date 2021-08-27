@@ -800,3 +800,28 @@ class PrimeOrLocalEventApiView(APIView, PageNumberPagination):
             return self.get_paginated_response(serializer.data)
         else:
             return Response({'error': 'Please add lat and long or source in params'})
+
+
+class EventLocationApiView(APIView, PageNumberPagination):
+    permission_classes = (permissions.AllowAny,)
+
+    def get(self, request):
+        location = request.query_params.get('location', '')
+        page = None
+        if location != "":
+            city = Event.objects.filter(venue__city__iexact=location, date__gte=datetime.today()).order_by('-id')
+            state = Event.objects.filter(venue__state_name__iexact=location, date__gte=datetime.today()).order_by('-id')
+            postal = Event.objects.filter(venue__postal_code__iexact=location, date__gte=datetime.today()).order_by('-id')
+            if city:
+                page = self.paginate_queryset(city, request)
+            elif state:
+                page = self.paginate_queryset(state, request)
+            else:
+                page = self.paginate_queryset(postal, request)
+
+            serializer = EventSerializer(
+                page, many=True
+            )
+            return self.get_paginated_response(serializer.data)
+        else:
+            return Response({'error': 'Please add location in query params'})

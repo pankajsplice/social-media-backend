@@ -297,11 +297,9 @@ class GetGroupSerializer(CustomBaseSerializer):
                 except:
                     user_detail = {'name': f'{user.first_name} {user.last_name}', 'email': user.email}
             else:
-                return None
-            message = []
-            message.append({'sender': user_detail, 'receiver': group_message.receiver.name,
-                            'msg': group_message.msg, 'timestamp': group_message.timestamp})
-            return message
+                user_detail = None
+            return {'sender': user_detail, 'receiver': group_message.receiver.name,
+                    'msg': group_message.msg, 'timestamp': group_message.timestamp}
         else:
             return None
 
