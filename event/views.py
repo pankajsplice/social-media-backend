@@ -285,10 +285,10 @@ class CommentViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
     filterset_fields = ['event__id', 'created_by__id']
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        queryset = Comment.objects.filter(event__date__gte=datetime.today())
         event_filter = self.request.query_params.get('event__id', '')
         if event_filter != '':
-            queryset = super().get_queryset()
+            queryset = Comment.objects.filter(event__date__gte=datetime.today())
         return queryset
 
 
@@ -299,6 +299,10 @@ class LikeViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
     serializer_class = LikeSerializer
     queryset = Like.objects.all()
     filterset_fields = ['event__id', 'created_by__id']
+
+    def get_queryset(self):
+        queryset = Follow.objects.filter(event__date__gte=datetime.today())
+        return queryset
 
 
 # crud for subscription
@@ -315,6 +319,10 @@ class FollowViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
     serializer_class = FollowSerializer
     queryset = Follow.objects.all()
     filterset_fields = ['event__id', 'user__id']
+
+    def get_queryset(self):
+        queryset = Follow.objects.filter(event__date__gte=datetime.today())
+        return queryset
 
 
 class MessageViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
@@ -363,6 +371,10 @@ class EventSettingViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
                         'event': ['exact'],
                         'going': ['exact'],
                         'user__id': ['exact']}
+
+    def get_queryset(self):
+        queryset = EventSetting.objects.filter(event__date__gte=datetime.today())
+        return queryset
 
 
 class NotificationViewSet(viewsets.ReadOnlyModelViewSet):
