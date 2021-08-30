@@ -111,6 +111,9 @@ CKEDITOR_CONFIGS = {
     }
 }
 
+# adding mile location filter
+MILE_LOCATION = 50
+
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
