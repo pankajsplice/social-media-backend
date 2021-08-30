@@ -227,6 +227,9 @@ FCM_DJANGO_SETTINGS = {
         "FCM_SERVER_KEY": "AAAAn4zIwB4:APA91bH2LGJJcCqzhuQXaKOq26tog5GissVWJybqxKrlv98yIu-sLfzWY6wm2BHt48-89XUPHa_yKSGVsLV0mAdI32oWO5I9r8tcrOWWSDdCpDchLk9hJyl6whTeVy6ESySM79McNJP7"
 }
 
+# adding mile location filter
+MILE_LOCATION = 50
+
 # *** fcm-django settings end ***
 
 try:

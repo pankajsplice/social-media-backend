@@ -176,15 +176,27 @@ class SubscriptionSerializer(CustomBaseSerializer):
 
 
 class FollowSerializer(CustomBaseSerializer):
+    event_detail = serializers.SerializerMethodField()
     interested = serializers.SerializerMethodField()
 
     class Meta:
         model = Follow
-        fields = ('id', 'event',  'user', 'interested')
+        fields = ('id', 'event', 'event_detail', 'user', 'interested')
 
     def get_interested(self, obj):
         if obj:
             return True
+
+    def get_event_detail(self, obj):
+        event = Event.objects.get(id=obj.event.id)
+        if event.event_image:
+            ev_img = event.event_image.url
+        else:
+            ev_img = None
+        event_detail = {'name': event.name, 'event_status': event.event_status, 'date': event.date,
+                        'url': event.url, 'time': event.time, 'currency': event.currency, 'source': event.source,
+                        'event_image': ev_img, 'image_json': event.image_json}
+        return event_detail
 
 
 class MessageSerializer(CustomBaseSerializer):
