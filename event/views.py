@@ -277,7 +277,7 @@ class FetchEventTicketMasterApiView(APIView):
 
 # crud for comment
 class CommentViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
-    pagination_class = None
+    # pagination_class = None
     authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = CommentSerializer
@@ -286,10 +286,43 @@ class CommentViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = Comment.objects.filter(event__date__gte=datetime.today())
+        # queryset = super().get_queryset()
+
+        # adding filter when user has enabled his profile_interest then only anyone can see his comment details
+
+        comment_id = []
+        for q in queryset:
+            if q.created_by:
+                if q.created_by == self.request.user:
+                    if q.id not in comment_id:
+                        comment_id.append(q.id)
+                else:
+                    get_profile = UserProfile.objects.get(user=q.created_by)
+                    if get_profile.profile_interest:
+                        if q.id not in comment_id:
+                            comment_id.append(q.id)
+
+        new_queryset = queryset.filter(id__in=comment_id)
+
         event_filter = self.request.query_params.get('event__id', '')
         if event_filter != '':
             queryset = Comment.objects.filter(event__date__gte=datetime.today())
-        return queryset
+            # queryset = super().get_queryset()
+            comment_id = []
+            for q in queryset:
+                if q.created_by:
+                    if q.created_by == self.request.user:
+                        if q.id not in comment_id:
+                            comment_id.append(q.id)
+                    else:
+                        get_profile = UserProfile.objects.get(user=q.created_by)
+                        if get_profile.profile_interest:
+                            if q.id not in comment_id:
+                                comment_id.append(q.id)
+
+            new_queryset = queryset.filter(id__in=comment_id)
+
+        return new_queryset
 
 
 # crud for like
@@ -374,7 +407,22 @@ class EventSettingViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = EventSetting.objects.filter(event__date__gte=datetime.today())
-        return queryset
+        # queryset = super().get_queryset()
+        event_setting_id = []
+        # adding filter when user has enabled his profile_interest then only anyone can see his going details
+        for q in queryset:
+            if q.user:
+                if q.user == self.request.user:
+                    if q.id not in event_setting_id:
+                        event_setting_id.append(q.id)
+                else:
+                    get_profile = UserProfile.objects.get(user=q.user)
+                    if get_profile.profile_interest:
+                        if q.id not in event_setting_id:
+                            event_setting_id.append(q.id)
+
+        new_queryset = queryset.filter(id__in=event_setting_id)
+        return new_queryset
 
 
 class NotificationViewSet(viewsets.ReadOnlyModelViewSet):
@@ -809,6 +857,7 @@ class PrimeOrLocalEventApiView(APIView, PageNumberPagination):
         lat = request.query_params.get('lat', '')
         long = request.query_params.get('long', '')
         source = request.query_params.get('source', '')
+        location = request.query_params.get('location', '')
         if lat != '' and long != '' and source != '':
             res = get_location(lat, long)  # getting venue results on the basis of lat-long
 
@@ -817,15 +866,25 @@ class PrimeOrLocalEventApiView(APIView, PageNumberPagination):
 
             get_related_events = Event.objects.filter(venue__in=res, date__gte=datetime.today(),
                                                       source=source).order_by('-id')
+            if get_related_events:
+                queryset = get_related_events
+            else:
+                if location != '':
+                    get_event = Event.objects.filter(date__gte=datetime.today())
+                    queryset = get_event.filter(Q(venue__city__istartswith=location) | Q(venue__state_name__istartswith=location)
+                                       | Q(venue__postal_code__istartswith=location)).order_by('-id')
+                else:
+                    return Response({'error': 'Please add location in params'})
+
             # creating page instance for pagination
-            queryset = get_related_events
+
             page = self.paginate_queryset(queryset, request)
             serializer = EventSerializer(
                 page, many=True
             )
             return self.get_paginated_response(serializer.data)
         else:
-            return Response({'error': 'Please add lat and long or source in params'})
+            return Response({'error': 'Please add lat, long and source in params'})
 
 
 class EventLocationApiView(APIView, PageNumberPagination):
