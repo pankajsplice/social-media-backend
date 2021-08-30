@@ -11,7 +11,7 @@ from event.models import Event, Category, Venue, Comment, Like, Subscription,\
 from event.serializers import EventSerializer, CategorySerializer, VenueSerializer, \
     CommentSerializer, LikeSerializer, SubscriptionSerializer, FollowSerializer, MessageSerializer, \
     PostGroupSerializer, GetGroupSerializer, EventSettingSerializer, NotificationSerializer, GroupMessageSerializer, \
-    RecurringEventSerializer, GroupInvitationSerializer, MessageSettingSerializer
+    RecurringEventSerializer, GroupInvitationSerializer, MessageSettingSerializer, GetGroupMemberSerializer
 
 from event.ticketmaster import GetEventList
 from rest_framework.authentication import TokenAuthentication
@@ -342,9 +342,16 @@ class GetGroupList(ListAPIView):
         if self.request.user:
             queryset = Group.objects.filter(Q(member=self.request.user, event__date__gte=datetime.today()) |
                                             Q(created_by=self.request.user, event__date__gte=datetime.today()))
+            # queryset = Group.objects.filter(Q(member=self.request.user) |
+            #                                 Q(created_by=self.request.user))
             return queryset
         else:
             return self.queryset
+
+    def get_serializer_context(self):
+        context = super(GetGroupList, self).get_serializer_context()
+        context.update({"request": self.request})
+        return context
 
 
 class EventSettingViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
@@ -852,3 +859,22 @@ class EventLocationAutoSuggestApiView(APIView, PageNumberPagination):
             return Response(set(venue))
         else:
             return Response({'error': 'Please add q in query params'})
+
+
+class GetMemberApiView(APIView, PageNumberPagination):
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = GetGroupMemberSerializer
+
+    def get(self, request):
+        group = self.request.query_params.get('group_id', None)
+
+        if group:
+            queryset = Group.objects.filter(id=group, event__date__gte=datetime.today())
+            page = self.paginate_queryset(queryset, request)
+            serializer = GetGroupMemberSerializer(
+                page, many=True
+            )
+            return self.get_paginated_response(serializer.data)
+        else:
+            return Response({'error': 'Please pass group_id in parameters'})
