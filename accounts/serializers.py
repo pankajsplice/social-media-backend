@@ -6,7 +6,7 @@ from rest_framework import serializers
 from accounts.models import UserProfile, STAFF_TYPE, SocialAccount, Otp, ROLE_TYPE
 from django.conf import settings
 from django.contrib.auth.forms import SetPasswordForm
-from event.models import EventSetting, Like, Comment
+from event.models import EventSetting, Like, Comment, Follow
 
 User = get_user_model()
 
@@ -30,11 +30,17 @@ class RegisterSerializer(DefaultRegisterSerializer):
     profile_interest = serializers.BooleanField(required=False, allow_null=True)
     enabled_msg = serializers.BooleanField(required=False, allow_null=True)
     role = serializers.ChoiceField(choices=ROLE_TYPE)
+    city = serializers.CharField(max_length=100, allow_null=True, allow_blank=True)
+    state = serializers.CharField(max_length=100, allow_null=True, allow_blank=True)
+    postal_code = serializers.CharField(max_length=6, allow_null=True, allow_blank=True)
 
     def custom_signup(self, request, user):
         mobile = self.validated_data.get('mobile', '')
         dob = self.validated_data.get('dob', '')
         location = self.validated_data.get('location', '')
+        city = self.validated_data.get('city', '')
+        state = self.validated_data.get('state', '')
+        postal_code = self.validated_data.get('postal_code', '')
         type = self.validated_data.get('type', '')
         role = self.validated_data.get('role', '')
         profile_pic = self.validated_data.get('profile_pic', '')
@@ -46,6 +52,9 @@ class RegisterSerializer(DefaultRegisterSerializer):
             mobile=mobile,
             dob=dob,
             location=location,
+            state=state,
+            city=city,
+            postal_code=postal_code,
             type=type,
             role=role,
             profile_pic=profile_pic,
@@ -71,6 +80,9 @@ class RegisterSerializer(DefaultRegisterSerializer):
             'role': self.validated_data.get('role', ''),
             'dob': self.validated_data.get('dob', ''),
             'location': self.validated_data.get('location', ''),
+            'city': self.validated_data.get('city', ''),
+            'state': self.validated_data.get('state', ''),
+            'postal_code': self.validated_data.get('postal_code', ''),
             'profile_pic': self.validated_data.get('profile_pic', ''),
             'social_profile_pic': self.validated_data.get('social_profile_pic', ''),
             'profile_interest': self.validated_data.get('profile_interest', ''),
@@ -82,14 +94,15 @@ class UserProfileSerializer(serializers.ModelSerializer):
     """
 
     """
-    # dob = serializers.DateField(format='%m-%d-%Y', input_formats=['%m-%d-%Y',])
+    dob = serializers.DateField(format='%m-%d-%Y', input_formats=['%m-%d-%Y',])
 
     is_profile_pic = serializers.SerializerMethodField()
 
     class Meta:
         model = UserProfile
-        fields = ('mobile', 'type', 'is_profile_pic', 'profile_pic', 'social_profile_pic', 'location', 'enabled_msg', 'public_profile', 'invited',
-                  'profile_groups', 'profile_interest', 'dob', 'role')
+        fields = ('mobile', 'type', 'is_profile_pic', 'profile_pic', 'social_profile_pic', 'location',
+                  'postal_code', 'city', 'state', 'enabled_msg', 'public_profile', 'invited', 'profile_groups',
+                  'profile_interest', 'dob', 'role')
 
     def get_is_profile_pic(self, obj):
         if obj.user:
@@ -133,6 +146,9 @@ class UserDetailsSerializer(serializers.ModelSerializer):
                     profile_obj.social_profile_pic = profile.get('social_profile_pic', profile_obj.social_profile_pic)
                     profile_obj.mobile = profile.get('mobile', profile_obj.mobile)
                     profile_obj.location = profile.get('location', profile_obj.location)
+                    profile_obj.postal_code = profile.get('postal_code', profile_obj.postal_code)
+                    profile_obj.city = profile.get('city', profile_obj.city)
+                    profile_obj.state = profile.get('state', profile_obj.state)
                     profile_obj.public_profile = profile.get('public_profile', profile_obj.public_profile)
                     profile_obj.enabled_msg = profile.get('enabled_msg', profile_obj.enabled_msg)
                     profile_obj.invited = profile.get('invited', profile_obj.invited)
@@ -146,6 +162,9 @@ class UserDetailsSerializer(serializers.ModelSerializer):
             profile_obj.social_profile_pic = profile.get('social_profile_pic', profile_obj.social_profile_pic)
             profile_obj.mobile = profile.get('mobile', profile_obj.mobile)
             profile_obj.location = profile.get('location', profile_obj.location)
+            profile_obj.postal_code = profile.get('postal_code', profile_obj.postal_code)
+            profile_obj.city = profile.get('city', profile_obj.city)
+            profile_obj.state = profile.get('state', profile_obj.state)
             profile_obj.public_profile = profile.get('public_profile', profile_obj.public_profile)
             profile_obj.enabled_msg = profile.get('enabled_msg', profile_obj.enabled_msg)
             profile_obj.invited = profile.get('invited', profile_obj.invited)
@@ -168,8 +187,8 @@ class UserDetailsSerializer(serializers.ModelSerializer):
         return going
 
     def get_interested(self, obj):
-        like = Like.objects.filter(created_by__id=obj.id).count()
-        return like
+        follow = Follow.objects.filter(created_by__id=obj.id).count()
+        return follow
 
     def get_commented(self, obj):
         comment = Comment.objects.filter(created_by__id=obj.id).count()

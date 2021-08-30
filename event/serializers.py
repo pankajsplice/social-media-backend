@@ -255,12 +255,13 @@ class GetGroupSerializer(CustomBaseSerializer):
     member = UserSerializer(read_only=True, many=True)
     total_member = serializers.SerializerMethodField()
     event_name = serializers.SerializerMethodField()
+    event_img = serializers.SerializerMethodField()
     message = serializers.SerializerMethodField()
 
     class Meta:
         model = Group
-        fields = ('id', 'name', 'icon', 'description', 'limit', 'member', 'message', 'event', 'event_name', 'total_member', 'created_by',
-                  'updated_by', 'date_created', 'date_updated')
+        fields = ('id', 'name', 'icon', 'description', 'limit', 'member', 'message', 'event', 'event_img',
+                  'event_name', 'total_member', 'created_by', 'updated_by', 'date_created', 'date_updated')
 
     def get_total_member(self, obj):
         member = obj.member.all().count()
@@ -271,6 +272,19 @@ class GetGroupSerializer(CustomBaseSerializer):
         if obj.event:
             event_name = obj.event.name
         return event_name
+
+    def get_event_img(self, obj):
+        if obj.event:
+            if obj.event.event_image:
+                request = self.context.get('request')
+                event_img = obj.event.event_image.url
+                return request.build_absolute_uri(event_img)
+            else:
+                event_img = obj.event.image_json[0]['url']
+                return event_img
+        else:
+            return None
+
 
     def get_message(self, obj):
         group_message = GroupMessage.objects.filter(receiver_id=obj.id).last()
@@ -566,3 +580,16 @@ class MessageSettingSerializer(serializers.ModelSerializer):
             return group_detail
         else:
             return None
+
+
+class GetGroupMemberSerializer(CustomBaseSerializer):
+    member = UserSerializer(read_only=True, many=True)
+    total_member = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Group
+        fields = ('member', 'total_member')
+
+    def get_total_member(self, obj):
+        member = obj.member.all().count()
+        return member

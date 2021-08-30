@@ -51,6 +51,9 @@ class UserProfile(models.Model):
     dob = models.DateField(blank=True, null=True)
     role = models.CharField(max_length=10, choices=ROLE_TYPE, blank=True, null=True)
     is_profile_pic_updated = models.BooleanField(default=False)
+    city = models.CharField(max_length=100, blank=True, null=True)
+    state = models.CharField(max_length=100, blank=True, null=True)
+    postal_code = models.IntegerField(max_length=6, blank=True, null=True)
 
 
 class SocialAccount(models.Model):
