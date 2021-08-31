@@ -62,9 +62,7 @@ class EventViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
             queryset = queryset.filter(venue__in=res)
         if location:
             queryset = queryset.filter(Q(venue__city__istartswith=location) | Q(venue__state_name__istartswith=location)
-                                   | Q(venue__postal_code__istartswith=location)).order_by('-id')
-            # state = queryset.filter(venue__state_name__iexact=location).order_by('-id')
-            # postal = queryset.filter(venue__postal_code__iexact=location).order_by('-id')
+                                       | Q(venue__postal_code__istartswith=location)).order_by('-id')
         return queryset
 
 
@@ -285,22 +283,27 @@ class CommentViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
     filterset_fields = ['event__id', 'created_by__id']
 
     def get_queryset(self):
-        queryset = Comment.objects.filter(event__date__gte=datetime.today())
-        # queryset = super().get_queryset()
+        # queryset = Comment.objects.filter(event__date__gte=datetime.today())
+        queryset = super().get_queryset()
 
         # adding filter when user has enabled his profile_interest then only anyone can see his comment details
 
         comment_id = []
+        event = []
         for q in queryset:
             if q.created_by:
                 if q.created_by == self.request.user:
                     if q.id not in comment_id:
-                        comment_id.append(q.id)
+                        if q.event_id not in event:
+                            event.append(q.event_id)
+                            comment_id.append(q.id)
                 else:
                     get_profile = UserProfile.objects.get(user=q.created_by)
                     if get_profile.profile_interest:
                         if q.id not in comment_id:
-                            comment_id.append(q.id)
+                            if q.event_id not in event:
+                                event.append(q.event_id)
+                                comment_id.append(q.id)
 
         new_queryset = queryset.filter(id__in=comment_id)
 
