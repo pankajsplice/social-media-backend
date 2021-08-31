@@ -458,11 +458,15 @@ class MessageUser(APIView):
         data = []
         for i in recent_message_user:
             serializer = UserSerializer(i)
-            profile = UserProfile.objects.get(user=i.id)
-            serializer_profile = UserProfileSerializer(profile)
-            print(profile.profile_pic)
+            check_profile = UserProfile.objects.filter(user=i.id)
             user = serializer.data
-            user['profile'] = serializer_profile.data
+            if check_profile:
+                profile = UserProfile.objects.get(user=i.id)
+                serializer_profile = UserProfileSerializer(profile)
+                print(profile.profile_pic)
+                user['profile'] = serializer_profile.data
+            else:
+                user['profile'] = None
             messages = Message.objects.filter(Q(sender__in=[i.id, request.user.id]), Q(receiver__in=[request.user.id, i.id])).order_by(
                 '-id').first()
             serializer_message = MessageSerializer(messages)
@@ -533,10 +537,10 @@ class GroupInvitationApi(APIView):
                         # creating notification end
                         try:
                             msg.send()
-                            return Response({'success': 'Email sent'})
+                            return Response({'success': 'Group Invitation sent'})
 
                         except Exception as e:
-                            return Response({'error': 'Email can not sent'})
+                            return Response({'error': 'Group Invitation can not sent'})
 
                 except Exception as e:
                     print(e)

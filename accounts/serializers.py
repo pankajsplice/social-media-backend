@@ -123,6 +123,7 @@ class UserDetailsSerializer(serializers.ModelSerializer):
     User model w/o password
     """
     going = serializers.SerializerMethodField()
+    is_staff = serializers.BooleanField(read_only=True)
     interested = serializers.SerializerMethodField()
     commented = serializers.SerializerMethodField()
     profile = UserProfileSerializer()
@@ -179,7 +180,7 @@ class UserDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('pk', 'username', 'email', 'first_name', 'last_name', 'profile', 'last_login', 'going',
-                  'interested', 'commented')
+                  'interested', 'commented', 'is_staff')
         read_only_fields = ('email', )
 
     def get_going(self, obj):
