@@ -117,7 +117,7 @@ class QuerySetFilterMixin(object):
             notification_type = self.basename
             event = self.request.data['event']
             event_obj = Event.objects.get(id=event)
-            message = 'Your group is created'
+            message = 'Your group is created successfully.'
 
             # creating notification
             kwargs = {'user': user, 'notification_type': notification_type, 'message': message, 'event': event_obj,

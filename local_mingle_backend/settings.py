@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'rest_social_auth',
     'sslserver',
     'fcm_django',
+    'django_crontab',
 ]
 
 CUSTOM_APPS = [
@@ -229,6 +230,14 @@ FCM_DJANGO_SETTINGS = {
 
 
 # *** fcm-django settings end ***
+
+# *** Cron-Job settings start ***
+
+CRONJOBS = [
+    ('30 4 * * *', 'event.management.commands.event_sync_ticketmaster', '>> event_sync.log')
+]
+
+# *** Cron-Job settings end ***
 
 try:
     from local_mingle_backend.settings_sgspl import *

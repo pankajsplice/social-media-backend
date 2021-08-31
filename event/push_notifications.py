@@ -3,8 +3,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.db.models import signals
 from django.dispatch import receiver
-from event.models import Notification, GroupMessage, Group, Event, Message
+from event.models import Notification, GroupMessage, Group, Event, Message, GroupInvitation
 from event.notifications import create_notification
+from django.contrib.auth.models import User
 
 
 class SendPushNotification(APIView):
@@ -58,7 +59,7 @@ def send_push_notification(sender, created, instance, **kwargs):
         # get current notification instance
         get_user = instance.user
         get_title = instance.notification_type
-        if get_title == 'group_message':
+        if get_title == 'group_message' or get_title == 'group_invitation':
             pass
         else:
             get_message = instance.message
@@ -72,7 +73,7 @@ def send_push_notification(sender, created, instance, **kwargs):
         # get current notification instance
         get_user = instance.user
         get_title = instance.notification_type
-        if get_title == 'group_message':
+        if get_title == 'group_message' or get_title == 'group_invitation':
             pass
         else:
             get_message = instance.message
@@ -106,6 +107,38 @@ def send_push_notification_for_dm_message(sender, created, instance, **kwargs):
         get_message = instance.msg
         try:
             device = FCMDevice.objects.get(user=get_user)
+            device.send_message(title=get_title, body=get_message)
+        except Exception as e:
+            print(e)
+
+
+@receiver(signals.post_save, sender=GroupInvitation)
+def send_push_notification(sender, created, instance, **kwargs):
+    if created:
+        # send push notification when user invited other users to join the group
+        invited_by = instance.invited_by
+        invited_to = instance.invited_to
+        invited_to_user = User.objects.filter(email=invited_to)
+        if invited_to_user:
+            group = instance.group
+            get_title = 'Group Invitation'
+            get_message = f' {invited_by.first_name} has invited you to join an event group' f' {group.name}'
+            try:
+                device = FCMDevice.objects.get(user=invited_to_user)
+                device.send_message(title=get_title, body=get_message)
+            except Exception as e:
+                print(e)
+
+    if not created:
+        # send push notification when user accepted the invitation
+        invited_by = instance.invited_by
+        invited_to = instance.invited_to
+        status = instance.status
+        group = instance.group
+        get_title = 'Group Invitation'
+        get_message = f' {invited_to} has {status} your invitation to join the group' f' {group.name}'
+        try:
+            device = FCMDevice.objects.get(user=invited_by)
             device.send_message(title=get_title, body=get_message)
         except Exception as e:
             print(e)
