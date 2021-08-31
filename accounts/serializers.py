@@ -191,8 +191,14 @@ class UserDetailsSerializer(serializers.ModelSerializer):
         return follow
 
     def get_commented(self, obj):
-        comment = Comment.objects.filter(created_by__id=obj.id).count()
-        return comment
+        comment = Comment.objects.filter(created_by__id=obj.id)
+        events = []
+        count = 0
+        for c in comment:
+            if c.event_id not in events:
+                events.append(c.event_id)
+                count = count + 1
+        return count
 
 
 class UserSerializer(serializers.ModelSerializer):
