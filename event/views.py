@@ -285,49 +285,23 @@ class CommentViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
     filterset_fields = ['event__id', 'created_by__id']
 
     def get_queryset(self):
-        queryset = Comment.objects.filter(event__date__gte=datetime.today())
-        # queryset = super().get_queryset()
-
         # adding filter when user has enabled his profile_interest then only anyone can see his comment details
-
-        comment_id = []
-        event = []
-        for q in queryset:
-            if q.created_by:
-                if q.created_by == self.request.user:
-                    if q.id not in comment_id:
-                        if q.event_id not in event:
-                            event.append(q.event_id)
-                            comment_id.append(q.id)
-                else:
-                    get_profile = UserProfile.objects.get(user=q.created_by)
-                    if get_profile.profile_interest:
-                        if q.id not in comment_id:
-                            if q.event_id not in event:
-                                event.append(q.event_id)
-                                comment_id.append(q.id)
-
-        new_queryset = queryset.filter(id__in=comment_id)
-
         event_filter = self.request.query_params.get('event__id', '')
         if event_filter != '':
             queryset = Comment.objects.filter(event__date__gte=datetime.today())
             # queryset = super().get_queryset()
+            return queryset
+        else:
+            queryset = Comment.objects.filter(event__date__gte=datetime.today())
+            # queryset = super().get_queryset()
             comment_id = []
-            for q in queryset:
-                if q.created_by:
-                    if q.created_by == self.request.user:
-                        if q.id not in comment_id:
-                            comment_id.append(q.id)
-                    else:
-                        get_profile = UserProfile.objects.get(user=q.created_by)
-                        if get_profile.profile_interest:
-                            if q.id not in comment_id:
-                                comment_id.append(q.id)
-
-            new_queryset = queryset.filter(id__in=comment_id)
-
-        return new_queryset
+            event = []
+            for q in queryset.iterator():
+                if q.event_id not in event and q.id not in comment_id:
+                    event.append(q.event_id)
+                    comment_id.append(q.id)
+            queryset = self.queryset.filter(id__in=comment_id)
+            return queryset
 
 
 # crud for like
