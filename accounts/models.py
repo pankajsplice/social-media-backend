@@ -53,7 +53,7 @@ class UserProfile(models.Model):
     is_profile_pic_updated = models.BooleanField(default=False)
     city = models.CharField(max_length=100, blank=True, null=True)
     state = models.CharField(max_length=100, blank=True, null=True)
-    postal_code = models.IntegerField(blank=True, null=True)
+    postal_code = models.CharField(max_length=6, blank=True, null=True)
 
 
 class SocialAccount(models.Model):
