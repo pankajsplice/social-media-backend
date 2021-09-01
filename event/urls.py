@@ -8,7 +8,7 @@ from event.views import EventViewSet, CategoryViewSet, VenueViewSet, FetchEventT
     GroupInvitationViewset, EventLatLongApiView, MessageSettingViewSet, CommentUserStackApiView,\
     AcceptRejectGroupInvitation, PrimeOrLocalEventApiView, EventLocationApiView, EventLocationAutoSuggestApiView,\
     GetMemberApiView
-from fcm_django.api.rest_framework import FCMDeviceCreateOnlyViewSet
+from fcm_django.api.rest_framework import FCMDeviceCreateOnlyViewSet, FCMDeviceAuthorizedViewSet
 from event.web_api import EventWebViewSet
 
 router = routers.DefaultRouter()
@@ -25,6 +25,7 @@ router.register(r'post-group', PostGroupViewSet)
 router.register(r'events-setting', EventSettingViewSet)
 router.register(r'notification', NotificationViewSet)
 router.register(r'push-notifications', FCMDeviceCreateOnlyViewSet)
+router.register(r'push-notifications-crud', FCMDeviceAuthorizedViewSet)
 router.register(r'recurring-events', RecurringEventViewSet)
 router.register(r'group-invitation-setting', GroupInvitationViewset)
 router.register(r'message-setting', MessageSettingViewSet)

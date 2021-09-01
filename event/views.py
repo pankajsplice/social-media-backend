@@ -384,10 +384,10 @@ class GetGroupList(ListAPIView):
 
     def get_queryset(self):
         if self.request.user:
-            queryset = Group.objects.filter(Q(member=self.request.user, event__date__gte=datetime.today()) |
-                                            Q(created_by=self.request.user, event__date__gte=datetime.today()))
-            # queryset = Group.objects.filter(Q(member=self.request.user) |
-            #                                 Q(created_by=self.request.user))
+            queryset = self.queryset.filter(Q(member=self.request.user, event__date__gte=datetime.today()) |
+                                            Q(created_by=self.request.user, event__date__gte=datetime.today())).distinct()
+            # queryset = self.queryset.filter(Q(member=self.request.user) |
+            #                                 Q(created_by=self.request.user)).distinct()
             return queryset
         else:
             return self.queryset

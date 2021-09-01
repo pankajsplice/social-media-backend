@@ -120,11 +120,12 @@ def send_push_notification(sender, created, instance, **kwargs):
         invited_to = instance.invited_to
         invited_to_user = User.objects.filter(email=invited_to)
         if invited_to_user:
+            invited_user = User.objects.get(email=invited_to)
             group = instance.group
             get_title = 'Group Invitation'
             get_message = f' {invited_by.first_name} has invited you to join an event group' f' {group.name}'
             try:
-                device = FCMDevice.objects.get(user=invited_to_user)
+                device = FCMDevice.objects.get(user=invited_user)
                 device.send_message(title=get_title, body=get_message)
             except Exception as e:
                 print(e)
