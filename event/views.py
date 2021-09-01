@@ -3,6 +3,7 @@ from django.template.loader import render_to_string
 from django_filters import rest_framework as filters
 from rest_framework import authentication, permissions
 from rest_framework import viewsets
+from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from utils.custom_mixin import QuerySetFilterMixin
@@ -280,11 +281,12 @@ class CommentViewSet(QuerySetFilterMixin, viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = CommentSerializer
     queryset = Comment.objects.all()
+    renderer_classes = [JSONRenderer]
     filterset_fields = ['event__id', 'created_by__id']
 
     def get_queryset(self):
-        # queryset = Comment.objects.filter(event__date__gte=datetime.today())
-        queryset = super().get_queryset()
+        queryset = Comment.objects.filter(event__date__gte=datetime.today())
+        # queryset = super().get_queryset()
 
         # adding filter when user has enabled his profile_interest then only anyone can see his comment details
 

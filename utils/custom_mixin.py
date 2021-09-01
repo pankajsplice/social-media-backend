@@ -153,7 +153,7 @@ class QuerySetFilterMixin(object):
 class CustomBaseSerializer(serializers.ModelSerializer):
     def save(self, **kwargs):
         validated_data = dict(list(self.validated_data.items()) + list(kwargs.items()))
-        print("validated_data: ", validated_data)
+        # print("validated_data: ", validated_data)
         # validated_data['updated_by'] = self.updated_by
         # validated_data['created_by'] = self.created_by
 
