@@ -239,6 +239,20 @@ CRONJOBS = [
 
 # *** Cron-Job settings end ***
 
+# *** Sentry settings start ***
+
+import sentry_sdk
+sentry_sdk.init(
+    "https://8f8cea06f0d745af8c0f5f37363768ea@o361285.ingest.sentry.io/5937468",
+
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    # We recommend adjusting this value in production.
+    traces_sample_rate=1.0
+)
+
+# *** Sentry settings end ***
+
 try:
     from local_mingle_backend.settings_sgspl import *
     from local_mingle_backend.settings_local import *

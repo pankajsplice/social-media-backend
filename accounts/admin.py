@@ -35,8 +35,8 @@ class UserAdmin(UAdmin, ExportCsvMixin):
         return instance.profile.mobile
     get_mobile.short_description = 'mobile'
 
-    def has_delete_permission(self, request, obj=None):
-        return False
+    # def has_delete_permission(self, request, obj=None):
+    #     return False
 
 
 class OtpAdmin(admin.ModelAdmin):
