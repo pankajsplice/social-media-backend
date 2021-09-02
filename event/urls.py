@@ -7,7 +7,7 @@ from event.views import EventViewSet, CategoryViewSet, VenueViewSet, FetchEventT
     MessageUser, GroupInvitationApi, GroupMessageListCreateView, RecurringEventChangeApiView, RecurringEventViewSet,\
     GroupInvitationViewset, EventLatLongApiView, MessageSettingViewSet, CommentUserStackApiView,\
     AcceptRejectGroupInvitation, PrimeOrLocalEventApiView, EventLocationApiView, EventLocationAutoSuggestApiView,\
-    GetMemberApiView
+    GetMemberApiView, TestEventTime
 from fcm_django.api.rest_framework import FCMDeviceCreateOnlyViewSet, FCMDeviceAuthorizedViewSet
 from event.web_api import EventWebViewSet
 
@@ -49,4 +49,5 @@ urlpatterns = [
     path('location/', EventLocationApiView.as_view(), name='event_city_location'),
     path('location-autosuggest/', EventLocationAutoSuggestApiView.as_view(), name='location-autosuggest'),
     path('get-group-member/', GetMemberApiView.as_view(), name='group-member'),
+    path('test-event/', TestEventTime.as_view(), name='test-event'),
 ]

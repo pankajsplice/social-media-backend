@@ -16,7 +16,7 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 class CreateProductApi(APIView):
 
     def get(self, *args, **kwargs):
-        product = ['Silver', 'Gold', 'Platinum']
+        product = ['Bronze', 'Silver', 'Gold']
         get_product = stripe.Product.list(limit=3)
         if get_product.is_empty:
             for prod in product:
@@ -25,23 +25,26 @@ class CreateProductApi(APIView):
         get_price = stripe.Price.list(limit=3)
         if get_price.is_empty:
             for data in get_product.data:
-                if data.name == 'Silver':
+                if data.name == 'Bronze':
                     stripe.Price.create(
-                        unit_amount=1500,
+                        # unit_amount=1500,
+                        unit_amount=2099,
                         currency="usd",
                         recurring={"interval": "month", "interval_count": 1},
                         product=data.id,
                     )
-                if data.name == 'Gold':
+                if data.name == 'Silver':
                     stripe.Price.create(
-                        unit_amount=5000,
+                        # unit_amount=5000,
+                        unit_amount=4599,
                         currency="usd",
-                        recurring={"interval": "month", "interval_count": 6},
+                        recurring={"interval": "month", "interval_count": 3},
                         product=data.id,
                     )
-                if data.name == 'Platinum':
+                if data.name == 'Gold':
                     stripe.Price.create(
-                        unit_amount=6000,
+                        # unit_amount=6000,
+                        unit_amount=6499,
                         currency="usd",
                         recurring={"interval": "year"},
                         product=data.id,
@@ -62,6 +65,17 @@ class GetStripePriceApi(APIView):
         for prod in product:
             individual_prod = stripe.Product.retrieve(prod.get('product_id'))
             individual_price = stripe.Price.retrieve(prod.get('price_id'))
+            if individual_prod.name == 'Bronze':
+                subscription = Subscription.objects.filter(name='Bronze')
+                if subscription:
+                    for subscription_instance in subscription:
+                        if subscription_instance.stripe_product_id is None or subscription_instance.stripe_price_id is None:
+                            Subscription.objects.update(id=subscription.id, stripe_product_id=individual_prod.id,
+                                                        stripe_price_id=individual_price.id)
+                else:
+                    Subscription.objects.create(name='Bronze', price=20.99, validity=1,
+                                                stripe_product_id=individual_prod.id,
+                                                stripe_price_id=individual_price.id)
             if individual_prod.name == 'Silver':
                 subscription = Subscription.objects.filter(name='Silver')
                 if subscription:
@@ -70,9 +84,10 @@ class GetStripePriceApi(APIView):
                             Subscription.objects.update(id=subscription.id, stripe_product_id=individual_prod.id,
                                                         stripe_price_id=individual_price.id)
                 else:
-                    Subscription.objects.create(name='Silver', price=15.00, validity=1,
+                    Subscription.objects.create(name='Silver', price=45.99, validity=3,
                                                 stripe_product_id=individual_prod.id,
                                                 stripe_price_id=individual_price.id)
+
             if individual_prod.name == 'Gold':
                 subscription = Subscription.objects.filter(name='Gold')
                 if subscription:
@@ -81,19 +96,7 @@ class GetStripePriceApi(APIView):
                             Subscription.objects.update(id=subscription.id, stripe_product_id=individual_prod.id,
                                                         stripe_price_id=individual_price.id)
                 else:
-                    Subscription.objects.create(name='Gold', price=50.00, validity=6,
-                                                stripe_product_id=individual_prod.id,
-                                                stripe_price_id=individual_price.id)
-
-            if individual_prod.name == 'Platinum':
-                subscription = Subscription.objects.filter(name='Platinum')
-                if subscription:
-                    for subscription_instance in subscription:
-                        if subscription_instance.stripe_product_id is None or subscription_instance.stripe_price_id is None:
-                            Subscription.objects.update(id=subscription.id, stripe_product_id=individual_prod.id,
-                                                        stripe_price_id=individual_price.id)
-                else:
-                    Subscription.objects.create(name='Platinum', price=60.00, validity=12,
+                    Subscription.objects.create(name='Gold', price=64.99, validity=12,
                                                 stripe_product_id=individual_prod.id,
                                                 stripe_price_id=individual_price.id)
 
