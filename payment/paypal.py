@@ -56,13 +56,13 @@ class PaypalPlanListCreateApi(APIView):
             res = paypal_api.get("v1/catalogs/products")
             get_products = res.get('products', '')
             for product in get_products:
-                if product['name'] == 'Silver':
-                    data = {"product_id": product['id'], "name": "Silver",
-                            "description": "Silver basic plan", "status": "ACTIVE",
+                if product['name'] == 'Bronze':
+                    data = {"product_id": product['id'], "name": "Bronze",
+                            "description": "Bronze basic plan", "status": "ACTIVE",
                             "billing_cycles": [{"frequency": {"interval_unit": "MONTH", "interval_count": 1},
                                                 "tenure_type": "REGULAR", "sequence": 1, "total_cycles": 0,
                                                 "pricing_scheme": {
-                                                    "fixed_price": {"value": "20", "currency_code": "USD"}}
+                                                    "fixed_price": {"value": "20.99", "currency_code": "USD"}}
                                                 }],
                             "payment_preferences": {"auto_bill_outstanding": 'true',
                                                     "setup_fee": {"value": "0", "currency_code": "USD"},
@@ -78,13 +78,13 @@ class PaypalPlanListCreateApi(APIView):
                         return Response(
                             {'error': 'subscription with the name' f'{product["name"]}' 'is not defined'})
 
-                elif product['name'] == 'Gold':
-                    data = {"product_id": product['id'], "name": "Gold",
-                            "description": "Gold basic plan", "status": "ACTIVE",
-                            "billing_cycles": [{"frequency": {"interval_unit": "MONTH", "interval_count": 6},
+                elif product['name'] == 'Silver':
+                    data = {"product_id": product['id'], "name": "Silver",
+                            "description": "Silver basic plan", "status": "ACTIVE",
+                            "billing_cycles": [{"frequency": {"interval_unit": "MONTH", "interval_count": 3},
                                                 "tenure_type": "REGULAR", "sequence": 1, "total_cycles": 0,
                                                 "pricing_scheme": {
-                                                    "fixed_price": {"value": "50", "currency_code": "USD"}}
+                                                    "fixed_price": {"value": "45.99", "currency_code": "USD"}}
                                                 }],
                             "payment_preferences": {"auto_bill_outstanding": 'true',
                                                     "setup_fee": {"value": "0", "currency_code": "USD"},
@@ -101,12 +101,12 @@ class PaypalPlanListCreateApi(APIView):
                             {'error': 'subscription with the name' f'{product["name"]}' 'is not defined'})
 
                 else:
-                    data = {"product_id": product["id"], "name": "Platinum",
-                            "description": "Platinum basic plan", "status": "ACTIVE",
+                    data = {"product_id": product["id"], "name": "Gold",
+                            "description": "Gold basic plan", "status": "ACTIVE",
                             "billing_cycles": [{"frequency": {"interval_unit": "YEAR", "interval_count": 1},
                                                 "tenure_type": "REGULAR", "sequence": 1, "total_cycles": 0,
                                                 "pricing_scheme": {
-                                                    "fixed_price": {"value": "60", "currency_code": "USD"}}
+                                                    "fixed_price": {"value": "64.99", "currency_code": "USD"}}
                                                 }],
                             "payment_preferences": {"auto_bill_outstanding": 'true',
                                                     "setup_fee": {"value": "0", "currency_code": "USD"},

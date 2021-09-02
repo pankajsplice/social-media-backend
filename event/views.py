@@ -932,3 +932,14 @@ class GetMemberApiView(APIView, PageNumberPagination):
             return self.get_paginated_response(serializer.data)
         else:
             return Response({'error': 'Please pass group_id in parameters'})
+
+
+class TestEventTime(APIView):
+
+    permission_classes = (permissions.AllowAny, )
+
+    def get(self, request):
+        event = Event.objects.all().values('id', 'name', 'global_id', 'url', 'price_min', 'price_max', 'event_status',
+                                           'currency', 'image_json', 'event_image', 'category', 'venue', 'seatmap_url',
+                                           'timezone', 'time', 'date', 'user', 'source', 'recurring', 'description')[:1000]
+        return Response(event)

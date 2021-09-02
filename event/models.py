@@ -9,6 +9,7 @@ User = get_user_model()
 
 SUBSCRIPTION_CHOICES = (
     (1, 'Monthly'),
+    (3, 'Quarterly'),
     (6, 'HalfYearly'),
     (12, 'Yearly'),
 )
