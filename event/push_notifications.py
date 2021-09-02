@@ -24,7 +24,7 @@ class SendPushNotification(APIView):
 
 
 @receiver(signals.post_save, sender=GroupMessage)
-def create_notification_group_message(sender, created, instance, **kwargs):
+def create_notification_group_message(created, instance, **kwargs):
     if created:
         notification_type = 'group_message'
         gp_obj = Group.objects.get(id=instance.receiver_id)
@@ -33,24 +33,16 @@ def create_notification_group_message(sender, created, instance, **kwargs):
 
         # iterating through each member of a group
         for member in get_member:
-            # sending push notification to all the members of a group
-            try:
-                device = FCMDevice.objects.get(user=member.id)
-                device.send_message(title=gp_obj.name, body=message)
-            except Exception as e:
-                print(e)
+            if member.id == instance.sender_id:
                 pass
-
-        get_user_event = Event.objects.get(id=gp_obj.event_id)
-        sender = instance.sender
-
-        # creating notification
-        # kwargs = {'user': sender, 'notification_type': notification_type, 'message': message, 'event': get_user_event,
-        #           'group': gp_obj}
-        # try:
-        #     create_notification(**kwargs)
-        # except Exception as e:
-        #     print(e)
+            else:
+                # sending push notification to all the members of a group
+                try:
+                    device = FCMDevice.objects.get(user=member.id)
+                    device.send_message(title=gp_obj.name, body=message)
+                except Exception as e:
+                    print(e)
+                    pass
 
 
 @receiver(signals.post_save, sender=Notification)
